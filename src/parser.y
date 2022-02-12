@@ -46,6 +46,7 @@
 %token <std::string> IDENTIFIER "identifier"
 %token <int> NUMBER "number"
 %token <double> FLOAT "float"
+%token <std::string> STRING "string"
 // TODO: This dictates what kind of type an expression evaluates to.
 // TODO: This should be a variant<int,float,str,etc.>
 %nterm <int> exp
@@ -68,6 +69,7 @@ assignment:
 exp:
   "number"      { $$ = $1; }
 | "float"       { $$ = $1; }
+| "string"      { std::cout << $1 << "\n"; $$ = 0; } // TODO: $$ = $1
 | "identifier"  { $$ = drv.variables[$1]; }
 | exp "+" exp   { $$ = $1 + $3; }
 | exp "-" exp   { $$ = $1 - $3; }
