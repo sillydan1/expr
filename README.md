@@ -1,2 +1,2 @@
 # expr
-An expression parser for C++
+A simple arithmetic expression parser with variables for C++ 
