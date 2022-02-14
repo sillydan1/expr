@@ -40,6 +40,7 @@
   SLASH   "/"
   LPAREN  "("
   RPAREN  ")"
+  TERM    ";"
 ;
 
 // Identifiers are strings
@@ -55,11 +56,13 @@
 
 %%
 %start unit;
-unit: assignments exp  { drv.result = $2; };
+unit: assignments { };
 
 assignments:
-  %empty                 {}
-| assignments assignment {};
+  %empty                     {}
+| assignment                 {}
+| assignment ";" assignments {}
+;
 
 assignment:
   "identifier" ":=" exp { drv.variables[$1] = $3; };

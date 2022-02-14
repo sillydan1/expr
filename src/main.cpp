@@ -9,9 +9,10 @@ int main (int argc, char *argv[]) {
             drv.trace_parsing = true;
         else if (argv[i] == std::string ("-s"))
             drv.trace_scanning = true;
-        else if (!drv.parse (argv[i]))
-            std::cout << "Result: " << drv.result << '\n';
-        else
+        else if (!drv.parse (argv[i])) {
+            for(auto& variable : drv.variables)
+                std::cout << variable.first << " = " << variable.second << std::endl;
+        } else
             res = 1;
     return res;
 }

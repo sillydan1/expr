@@ -115,6 +115,7 @@ blank [ \t\r]
 "("        return yy::parser::make_LPAREN (loc);
 ")"        return yy::parser::make_RPAREN (loc);
 ":="       return yy::parser::make_ASSIGN (loc);
+";"        return yy::parser::make_TERM   (loc);
 
 {int}      return make_NUMBER(yytext, loc);
 {flt}      return make_FLOAT(yytext, loc);
@@ -147,14 +148,17 @@ yy::parser::symbol_type make_STRING(const std::string &s, const yy::parser::loca
 
 void driver::scan_begin() {
     yy_flex_debug = trace_scanning;
-    if (file.empty () || file == "-")
+    if(file.empty() || file == "-")
         yyin = stdin;
-    else if (!(yyin = fopen (file.c_str (), "r"))) {
-        std::cerr << "cannot open " << file << ": " << strerror (errno) << '\n';
-        exit(EXIT_FAILURE); // TODO: This is pretty aggressive, maybe just throw exception instead
+    else {
+        yy_scan_string(file.c_str());
     }
+//    else if(!(yyin = fopen(file.c_str(), "r"))) {
+//        std::cerr << "cannot open " << file << ": " << strerror (errno) << '\n';
+//        exit(EXIT_FAILURE); // TODO: This is pretty aggressive, maybe just throw exception instead
+//    }
 }
 
 void driver::scan_end() {
-  fclose (yyin);
+//    fclose(yyin);
 }

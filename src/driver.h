@@ -9,7 +9,6 @@ YY_DECL;
 struct driver {
     driver();
     std::map<std::string, int> variables{};
-    int result{};
 
     int parse(const std::string& f);
     std::string file;
