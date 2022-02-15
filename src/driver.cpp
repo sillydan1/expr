@@ -1,8 +1,9 @@
 #include "driver.h"
+
+#include <utility>
 #include "parser.hpp"
 
-driver::driver() : trace_parsing (false), trace_scanning (false) {
-
+driver::driver(const symbol_map_t& map) : trace_parsing (false), trace_scanning (false), environment(map) {
 }
 
 int driver::parse(const std::string &f) {

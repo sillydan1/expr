@@ -5,10 +5,12 @@
 #include "parser.hpp"
 #define YY_DECL yy::parser::symbol_type yylex (driver& drv)
 YY_DECL;
+using symbol_map_t = std::map<std::string, int>;
 
 struct driver {
-    driver();
-    std::map<std::string, int> variables{};
+    explicit driver(const symbol_map_t& env);
+    const symbol_map_t& environment{};
+    symbol_map_t result{};
 
     int parse(const std::string& f);
     std::string file;

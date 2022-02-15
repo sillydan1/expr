@@ -3,14 +3,17 @@
 
 int main (int argc, char *argv[]) {
     int res = 0;
-    driver drv;
+    symbol_map_t env{};
+    env["one"] = 1;
+    env["two"] = 2;
+    driver drv{std::move(env)};
     for (int i = 1; i < argc; ++i)
         if (argv[i] == std::string ("-p"))
             drv.trace_parsing = true;
         else if (argv[i] == std::string ("-s"))
             drv.trace_scanning = true;
         else if (!drv.parse (argv[i])) {
-            for(auto& variable : drv.variables)
+            for(auto& variable : drv.result)
                 std::cout << variable.first << " = " << variable.second << std::endl;
         } else
             res = 1;

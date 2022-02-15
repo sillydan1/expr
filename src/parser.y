@@ -65,7 +65,7 @@ assignments:
 ;
 
 assignment:
-  "identifier" ":=" exp { drv.variables[$1] = $3; };
+  "identifier" ":=" exp { drv.result[$1] = $3; };
 
 %left "+" "-";
 %left "*" "/";
@@ -73,7 +73,7 @@ exp:
   "number"      { $$ = $1; }
 | "float"       { $$ = $1; }
 | "string"      { std::cout << $1 << "\n"; $$ = 0; } // TODO: $$ = $1
-| "identifier"  { $$ = drv.variables[$1]; }
+| "identifier"  { $$ = drv.environment.at($1); }
 | exp "+" exp   { $$ = $1 + $3; }
 | exp "-" exp   { $$ = $1 - $3; }
 | exp "*" exp   { $$ = $1 * $3; }
