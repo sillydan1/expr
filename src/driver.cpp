@@ -13,6 +13,6 @@ int driver::parse(const std::string &f) {
     yy::parser parse(*this);
     parse.set_debug_level(trace_parsing);
     int res = parse();
-    scan_end ();
+    scan_end();
     return res;
 }

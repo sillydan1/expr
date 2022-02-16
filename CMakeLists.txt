@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
         src/driver.cpp
+        src/symbol_table.cpp
         src/main.cpp
 )
 

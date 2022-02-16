@@ -11,6 +11,7 @@
 // Forward declare the driver (include later)
 %code requires {
     #include <string>
+    #include <symbol_table.h>
     class driver;
 }
 
@@ -46,13 +47,15 @@
 // Identifiers are strings
 %token <std::string> IDENTIFIER "identifier"
 %token <int> NUMBER "number"
-%token <double> FLOAT "float"
+%token <float> FLOAT "float"
 %token <std::string> STRING "string"
 // TODO: This dictates what kind of type an expression evaluates to.
 // TODO: This should be a variant<int,float,str,etc.>
-%nterm <int> exp
+%nterm <symbol_value_t> exp
 
-%printer { yyo << $$; } <*>;
+// TODO: This is stupid and annoying right now. Fuck you compiler, I FUCKING HAVE DEFINED THE FUNCTION!
+// TODO: There's probably something wrong with my understanding of the include-tree
+// %printer { yyo << $$; } <*>;
 
 %%
 %start unit;
@@ -74,10 +77,10 @@ exp:
 | "float"       { $$ = $1; }
 | "string"      { std::cout << $1 << "\n"; $$ = 0; } // TODO: $$ = $1
 | "identifier"  { $$ = drv.environment.at($1); }
-| exp "+" exp   { $$ = $1 + $3; }
-| exp "-" exp   { $$ = $1 - $3; }
-| exp "*" exp   { $$ = $1 * $3; }
-| exp "/" exp   { $$ = $1 / $3; }
+| exp "+" exp   { $$ = add($1,$3); }
+| exp "-" exp   { $$ = subtract($1,$3); }
+| exp "*" exp   { $$ = multiply($1,$3); }
+| exp "/" exp   { $$ = divide($1,$3); }
 | "(" exp ")"   { $$ = $2; }
 %%
 

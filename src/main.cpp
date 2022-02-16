@@ -7,15 +7,18 @@ int main (int argc, char *argv[]) {
     env["one"] = 1;
     env["two"] = 2;
     driver drv{std::move(env)};
-    for (int i = 1; i < argc; ++i)
-        if (argv[i] == std::string ("-p"))
+    for (int i = 1; i < argc; ++i) {
+        if (argv[i] == std::string("-p"))
             drv.trace_parsing = true;
-        else if (argv[i] == std::string ("-s"))
+        else if (argv[i] == std::string("-s"))
             drv.trace_scanning = true;
-        else if (!drv.parse (argv[i])) {
-            for(auto& variable : drv.result)
-                std::cout << variable.first << " = " << variable.second << std::endl;
+        else if (!drv.parse(argv[i])) {
+            for (auto &variable: drv.result)
+                std::cout << variable.first << " = " << to_string(variable.second) << std::endl;
         } else
             res = 1;
+    }
+    symbol_value_t x;
+    x = 3.3f;
     return res;
 }
