@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(expr VERSION 0.1.0)
-configure_file(include/config.h.in config.h)
+configure_file(src/config.h.in config.h)
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 

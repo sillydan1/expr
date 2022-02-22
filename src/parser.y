@@ -49,13 +49,8 @@
 %token <int> NUMBER "number"
 %token <float> FLOAT "float"
 %token <std::string> STRING "string"
-// TODO: This dictates what kind of type an expression evaluates to.
-// TODO: This should be a variant<int,float,str,etc.>
 %nterm <symbol_value_t> exp
-
-// TODO: This is stupid and annoying right now. Fuck you compiler, I FUCKING HAVE DEFINED THE FUNCTION!
-// TODO: There's probably something wrong with my understanding of the include-tree
-// %printer { yyo << $$; } <*>;
+%printer { yyo << $$; } <*>;
 
 %%
 %start unit;
@@ -77,10 +72,10 @@ exp:
 | "float"       { $$ = $1; }
 | "string"      { std::cout << $1 << "\n"; $$ = 0; } // TODO: $$ = $1
 | "identifier"  { $$ = drv.environment.at($1); }
-| exp "+" exp   { $$ = add($1,$3); }
-| exp "-" exp   { $$ = subtract($1,$3); }
-| exp "*" exp   { $$ = multiply($1,$3); }
-| exp "/" exp   { $$ = divide($1,$3); }
+| exp "+" exp   { $$ = $1 + $3; }
+| exp "-" exp   { $$ = $1 - $3; }
+| exp "*" exp   { $$ = $1 * $3; }
+| exp "/" exp   { $$ = $1 / $3; }
 | "(" exp ")"   { $$ = $2; }
 %%
 
