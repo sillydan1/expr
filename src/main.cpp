@@ -6,7 +6,7 @@ int main (int argc, char *argv[]) {
     symbol_map_t env{};
     env["one"] = 1;
     env["two"] = 2;
-    driver drv{std::move(env)};
+    driver drv{env};
     for (int i = 1; i < argc; ++i) {
         if (argv[i] == std::string("-p"))
             drv.trace_parsing = true;
@@ -18,7 +18,5 @@ int main (int argc, char *argv[]) {
         } else
             res = 1;
     }
-    symbol_value_t x;
-    x = 3.3f;
     return res;
 }
