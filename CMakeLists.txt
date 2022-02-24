@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
         ${FLEX_expr_scanner_OUTPUTS}
         src/driver.cpp
         src/symbol_table.cpp
+        src/operations/divide.cpp
         src/main.cpp
 )
 
