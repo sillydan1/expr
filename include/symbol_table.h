@@ -18,5 +18,6 @@ struct symbol_value_t : public underlying_symbol_value_t {
 };
 using symbol_map_t = std::map<std::string, symbol_value_t>;
 std::ostream& operator<<(std::ostream& os, const symbol_value_t& v);
+std::ostream& operator<<(std::ostream& os, const symbol_map_t& m);
 
 #endif
