@@ -12,6 +12,7 @@
 %code requires {
     #include <string>
     #include <symbol_table.h>
+    #include <operations/operations.h>
     class driver;
 }
 
@@ -70,7 +71,7 @@ assignment:
 exp:
   "number"      { $$ = $1; }
 | "float"       { $$ = $1; }
-| "string"      { std::cout << $1 << "\n"; $$ = 0; } // TODO: $$ = $1
+| "string"      { $$ = $1; }
 | "identifier"  { $$ = drv.environment.at($1); }
 | exp "+" exp   { $$ = $1 + $3; }
 | exp "-" exp   { $$ = $1 - $3; }

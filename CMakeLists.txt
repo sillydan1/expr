@@ -4,7 +4,7 @@ configure_file(src/config.h.in config.h)
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 20)
 set (CXX_STANDARD_REQUIRED ON)
 
 BISON_TARGET(expr_parser src/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
@@ -17,14 +17,18 @@ include_directories(
         src
 )
 
-add_executable(${PROJECT_NAME}
+add_library(${PROJECT_NAME}
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
         src/driver.cpp
         src/symbol_table.cpp
+        src/operations/add.cpp
+        src/operations/subtract.cpp
+        src/operations/multiply.cpp
         src/operations/divide.cpp
-        src/main.cpp
 )
 
-#add_executable(demo src/demo.cpp)
-#target_link_libraries(demo ${PROJECT_NAME})
+add_executable(${PROJECT_NAME}_demo
+        src/main.cpp
+)
+target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME})
