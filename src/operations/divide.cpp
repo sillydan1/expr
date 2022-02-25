@@ -1,4 +1,4 @@
-#include "divide.h"
+#include "operations/divide.h"
 #include "util.h"
 #include <sstream>
 

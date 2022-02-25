@@ -1,5 +1,5 @@
 #include <iostream>
-#include "driver.h"
+#include "parser/driver.h"
 #include "config.h"
 
 int main (int argc, char *argv[]) {
