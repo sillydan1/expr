@@ -40,6 +40,9 @@
   PLUS    "+"
   STAR    "*"
   SLASH   "/"
+  AND     "&&"
+  OR      "||"
+  NOT     "!"
   LPAREN  "("
   RPAREN  ")"
   TERM    ";"
@@ -49,6 +52,7 @@
 %token <std::string> IDENTIFIER "identifier"
 %token <int> NUMBER "number"
 %token <float> FLOAT "float"
+%token <bool> BOOL "bool"
 %token <std::string> STRING "string"
 %nterm <symbol_value_t> exp
 %printer { yyo << $$; } <*>;
@@ -72,11 +76,15 @@ exp:
   "number"      { $$ = $1; }
 | "float"       { $$ = $1; }
 | "string"      { $$ = $1; }
+| "bool"        { $$ = $1; }
 | "identifier"  { $$ = drv.environment.at($1); }
 | exp "+" exp   { $$ = $1 + $3; }
 | exp "-" exp   { $$ = $1 - $3; }
 | exp "*" exp   { $$ = $1 * $3; }
 | exp "/" exp   { $$ = $1 / $3; }
+| exp "||" exp  { $$ = or_($1,$3); }
+| exp "&&" exp  { $$ = and_($1,$3); }
+| "!" exp       { $$ = not_($2); }
 | "(" exp ")"   { $$ = $2; }
 %%
 

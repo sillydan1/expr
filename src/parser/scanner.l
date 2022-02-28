@@ -1,11 +1,12 @@
 %{
-# include <cerrno>
-# include <climits>
-# include <cstdlib>
-# include <cstring> // strerror
-# include <string>
-# include "parser/driver.h"
-# include "parser.hpp"
+#include <cerrno>
+#include <climits>
+#include <cstdlib>
+#include <cstring> // strerror
+#include <string>
+#include <sstream>
+#include "parser/driver.h"
+#include "parser.hpp"
 %}
 
 %{
@@ -86,11 +87,13 @@
   yy::parser::symbol_type make_NUMBER(const std::string &s, const yy::parser::location_type& loc);
   yy::parser::symbol_type make_FLOAT(const std::string &s, const yy::parser::location_type& loc);
   yy::parser::symbol_type make_STRING(const std::string &s, const yy::parser::location_type& loc);
+  yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type& loc);
 %}
 
 id    [a-z_A-Z][a-zA-Z_.0-9]*
 int   [0-9]+
 flt   [0-9]+[.][0-9]+f
+bool  [Ff]alse|[Tt]rue
 str   \"(\\.|[^"\\])*\"
 blank [ \t\r]
 
@@ -112,6 +115,9 @@ blank [ \t\r]
 "+"        return yy::parser::make_PLUS   (loc);
 "*"        return yy::parser::make_STAR   (loc);
 "/"        return yy::parser::make_SLASH  (loc);
+"&&"       return yy::parser::make_AND    (loc);
+"||"       return yy::parser::make_OR     (loc);
+"!"        return yy::parser::make_NOT    (loc);
 "("        return yy::parser::make_LPAREN (loc);
 ")"        return yy::parser::make_RPAREN (loc);
 ":="       return yy::parser::make_ASSIGN (loc);
@@ -120,6 +126,7 @@ blank [ \t\r]
 {int}      return make_NUMBER(yytext, loc);
 {flt}      return make_FLOAT(yytext, loc);
 {str}      return make_STRING(yytext, loc);
+{bool}     return make_BOOL(yytext, loc);
 {id}       return yy::parser::make_IDENTIFIER (yytext, loc);
 .          { throw yy::parser::syntax_error(loc, "invalid character: " + std::string(yytext)); }
 <<EOF>>    return yy::parser::make_YYEOF (loc);
@@ -144,6 +151,13 @@ yy::parser::symbol_type make_FLOAT(const std::string &s, const yy::parser::locat
 
 yy::parser::symbol_type make_STRING(const std::string &s, const yy::parser::location_type& loc) {
     return yy::parser::make_STRING(s.substr(1, s.size()-2), loc);
+}
+
+yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type& loc) {
+    std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return std::tolower(c); });
+    bool b;
+    std::istringstream(s) >> std::boolalpha >> b;
+    return yy::parser::make_BOOL(b, loc);
 }
 
 void driver::scan_begin() {
