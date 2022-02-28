@@ -4,9 +4,10 @@
 
 int main (int argc, char *argv[]) {
     symbol_map_t env{};
-    env["zero"] = 0;
-    env["one"] = 1;
-    env["two"] = 2;
+    env["false_b"] = false;
+    env["one_i"] = 1;
+    env["two_f"] = 2.0f;
+    env["hello_s"] = "Hello";
     std::cout
         << "=================== Welcome to the " << PROJECT_NAME << " v" << PROJECT_VER << " demo ==================\n"
         << "USAGE: " << argv[0] << " [OPTIONS] EXPR_STR or '-' for using stdin\n"
