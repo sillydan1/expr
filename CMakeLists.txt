@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(expr VERSION 1.1.0)
+project(expr VERSION 1.1.2)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
@@ -12,6 +12,7 @@ BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
 
+set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
 include_directories(${overload_SOURCE_DIR}/include)
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
