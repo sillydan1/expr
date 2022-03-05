@@ -12,8 +12,8 @@ BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
 
+include_directories(${overload_SOURCE_DIR}/include)
 include_directories(
-        ${CMAKE_CURRENT_BINARY_DIR}/_deps/overload-src/include
         ${CMAKE_CURRENT_BINARY_DIR}
         include
         src
