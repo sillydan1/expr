@@ -4,7 +4,9 @@
 
 template<typename T1, typename T2>
 auto t_subtract(const T1&, const T2&) {
-    throw std::domain_error((std::ostringstream{} << "Unable to subtract type " << typeid(T1).name() << " and " << typeid(T2).name()).str());
+    std::ostringstream ss{};
+    ss << "Unable to subtract type " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
 template<> auto t_subtract(const int& x, const int& y) {

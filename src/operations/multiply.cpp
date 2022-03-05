@@ -4,7 +4,9 @@
 
 template<typename T1, typename T2>
 auto t_multiply(const T1&, const T2&) {
-    throw std::domain_error((std::ostringstream{} << "Unable to multiply type " << typeid(T1).name() << " and " << typeid(T2).name()).str());
+    std::ostringstream ss{};
+    ss << "Unable to multiply type " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
 template<> auto t_multiply(const int& x, const int& y) {

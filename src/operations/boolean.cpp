@@ -4,17 +4,23 @@
 
 template<typename T1, typename T2>
 auto t_and(const T1&, const T2&) {
-    throw std::domain_error((std::ostringstream{} << "Unable to AND types " << typeid(T1).name() << " and " << typeid(T2).name()).str());
+    std::ostringstream ss{};
+    ss << "Unable to AND types " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
 template<typename T1, typename T2>
 auto t_or(const T1&, const T2&) {
-    throw std::domain_error((std::ostringstream{} << "Unable to OR types " << typeid(T1).name() << " and " << typeid(T2).name()).str());
+    std::ostringstream ss{};
+    ss << "Unable to OR types " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
 template<typename T1>
 auto t_not(const T1&) {
-    throw std::domain_error((std::ostringstream{} << "Unable to NOT type " << typeid(T1).name()).str());
+    std::ostringstream ss{};
+    ss << "Unable to NOT type " << typeid(T1).name();
+    throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
 

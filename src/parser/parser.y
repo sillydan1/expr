@@ -1,6 +1,5 @@
 %skeleton "lalr1.cc"
-%require "3.8"
-%header
+%require "3.5"
 
 %define api.token.raw
 
@@ -23,7 +22,7 @@
 
 // Enable parser tracing and detailed errors
 %define parse.trace
-%define parse.error detailed
+%define parse.error verbose
 // Enable full lookahead to avoid incorrect error information
 // See https://www.gnu.org/software/bison/manual/html_node/LAC.html for details
 %define parse.lac full
@@ -34,6 +33,7 @@
 }
 
 %define api.token.prefix {TOK_}
+%token YYEOF 0
 %token
   ASSIGN  ":="
   MINUS   "-"
