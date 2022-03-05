@@ -34,12 +34,12 @@ jobs:
         working-directory: ${{github.workspace}}/build
         shell: bash
         # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: cmake --build . --config $BUILD_TYPE -j$(nproc)
+        run: cmake --build . --config $BUILD_TYPE -j$(nproc) --target expr
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: library
-          path: ${{ github.workspace }}/build/expr
+          path: ${{ github.workspace }}/build/libexpr.so
   build-windows:
     if: ${{ github.event.pull_request.draft == false }}
     name: Build For MS Windows Systems
