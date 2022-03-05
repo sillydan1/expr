@@ -1,4 +1,5 @@
 #include "symbol_table.h"
+#include <overload.h>
 
 std::ostream& operator<<(std::ostream& os, const symbol_value_t& v) {
     std::visit(overload{

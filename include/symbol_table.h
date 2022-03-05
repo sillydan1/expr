@@ -4,7 +4,7 @@
 #include <map>
 #include <functional>
 #include <iostream>
-#include "overload.h"
+
 using underlying_symbol_value_t = std::variant<int,float,bool,std::string>;
 struct symbol_value_t : public underlying_symbol_value_t {
     symbol_value_t() = default;

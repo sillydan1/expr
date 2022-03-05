@@ -1,22 +1,23 @@
 cmake_minimum_required(VERSION 3.0)
 project(expr VERSION 0.1.0)
+include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
+set(CMAKE_CXX_STANDARD 20)
+set(CXX_STANDARD_REQUIRED ON)
+
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
-
-set (CMAKE_CXX_STANDARD 20)
-set (CXX_STANDARD_REQUIRED ON)
-
+CPMAddPackage("gh:sillydan1/overload#1.0.0")
 BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
 
 include_directories(
+        ${CMAKE_CURRENT_BINARY_DIR}/_deps/overload-src/include
         ${CMAKE_CURRENT_BINARY_DIR}
         include
         src
 )
-
 add_library(${PROJECT_NAME}
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
@@ -28,7 +29,6 @@ add_library(${PROJECT_NAME}
         src/operations/divide.cpp
         src/operations/boolean.cpp
 )
-
 add_executable(${PROJECT_NAME}_demo
         src/main.cpp
 )

@@ -12,7 +12,7 @@
 %code requires {
     #include <string>
     #include <symbol_table.h>
-    #include <operations/operations.h>
+    #include <operations.h>
     class driver;
 }
 
