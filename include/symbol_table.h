@@ -17,12 +17,12 @@ struct symbol_value_t : public underlying_symbol_value_t {
     }
 };
 
-using underlying_symbol_map_t = std::map<std::string, symbol_value_t>;
-struct symbol_map_t : public underlying_symbol_map_t {
-    symbol_map_t& operator+=(const symbol_map_t&);
+using underlying_symbol_table_t = std::map<std::string, symbol_value_t>;
+struct symbol_table_t : public underlying_symbol_table_t {
+    symbol_table_t& operator+=(const symbol_table_t&);
 };
-symbol_map_t operator+(const symbol_map_t& a, const symbol_map_t& b);
+symbol_table_t operator+(const symbol_table_t& a, const symbol_table_t& b);
 std::ostream& operator<<(std::ostream& os, const symbol_value_t& v);
-std::ostream& operator<<(std::ostream& os, const symbol_map_t& m);
+std::ostream& operator<<(std::ostream& os, const symbol_table_t& m);
 
 #endif

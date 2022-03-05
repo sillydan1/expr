@@ -1,14 +1,14 @@
 #include "symbol_table.h"
 #include <overload.h>
 
-symbol_map_t& symbol_map_t::operator+=(const symbol_map_t& other) {
+symbol_table_t& symbol_table_t::operator+=(const symbol_table_t& other) {
     for(auto& e : other)
         this->insert_or_assign(e.first, e.second);
     return *this;
 }
 
-symbol_map_t operator+(const symbol_map_t& a, const symbol_map_t& b) {
-    symbol_map_t r{};
+symbol_table_t operator+(const symbol_table_t& a, const symbol_table_t& b) {
+    symbol_table_t r{};
     r += a;
     r += b;
     return r;
@@ -22,7 +22,7 @@ std::ostream& operator<<(std::ostream& os, const symbol_value_t& v) {
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const symbol_map_t& m) {
+std::ostream& operator<<(std::ostream& os, const symbol_table_t& m) {
     for(auto& v : m)
         os << v.first << " :-> " << v.second << "\n";
     return os;

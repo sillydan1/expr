@@ -16,7 +16,7 @@ b :-> 3 i
 You can also use the project directly in code like so: 
 ```c++
 try {                               // Errors are handled with exceptions
-    symbol_map_t env{};             // Initialize an environment
+    symbol_table_t env{};             // Initialize an environment
     driver drv{env};                // Initialize the expr driver with the environment
     if (!drv.parse("a := 32 + 2"))  // Parse your expressions
         std::cout << drv.result;    // Print the result

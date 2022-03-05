@@ -3,7 +3,7 @@
 #include "config.h"
 
 int main (int argc, char *argv[]) {
-    symbol_map_t env{};
+    symbol_table_t env{};
     env["false_b"] = false;
     env["one_i"] = 1;
     env["two_f"] = 2.0f;

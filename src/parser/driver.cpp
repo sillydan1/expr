@@ -2,7 +2,7 @@
 #include <utility>
 #include "parser.hpp"
 
-driver::driver(const symbol_map_t& map) : trace_parsing (false), trace_scanning (false), environment(map) {
+driver::driver(const symbol_table_t& map) : trace_parsing (false), trace_scanning (false), environment(map) {
 }
 
 int driver::parse(const std::string &f) {

@@ -7,9 +7,9 @@
 YY_DECL;
 
 struct driver {
-    explicit driver(const symbol_map_t& env);
-    const symbol_map_t& environment{};
-    symbol_map_t result{};
+    explicit driver(const symbol_table_t& env);
+    const symbol_table_t& environment{};
+    symbol_table_t result{};
 
     int parse(const std::string& f);
     std::string file;
