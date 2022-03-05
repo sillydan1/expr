@@ -18,7 +18,7 @@ include_directories(
         include
         src
 )
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
         src/parser/driver.cpp

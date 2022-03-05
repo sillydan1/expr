@@ -1,10 +1,12 @@
 #include "operations/add.h"
-#include "util.h"
+#include "operations/util.h"
 #include <sstream>
 
 template<typename T1, typename T2>
 auto t_add(const T1&, const T2&) {
-    throw std::domain_error((std::ostringstream{} << "Unable to add type " << typeid(T1).name() << " and " << typeid(T2).name()).str());
+    std::ostringstream ss{};
+    ss << "Unable to add type " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
 template<> auto t_add(const int& x, const int& y) {
