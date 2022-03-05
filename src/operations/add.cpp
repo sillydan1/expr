@@ -1,5 +1,5 @@
 #include "operations/add.h"
-#include "util.h"
+#include "operations/util.h"
 #include <sstream>
 
 template<typename T1, typename T2>
