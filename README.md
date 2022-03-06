@@ -1,5 +1,10 @@
-# expr
+# EXPR
 A variable environment manipulation expression parser written in C++20 with flex and bison.
+
+## Features
+The parser rules have two different modes:
+ 1. Either evaluate a string of assignment expressions e.g. `a := 1; b := 2` or
+ 2. Evaluate a single expression with result stored in `driver.result["expression_result"]`
 
 ## Examples
 This project comes with an demo example command line interface called `expr_demo` so that you
@@ -25,10 +30,16 @@ try {                               // Errors are handled with exceptions
 }
 ```
 
-## Compile
-You should be able to compile with cmake like so:
-```
+## Use CMake
+This project is compiled through cmake, so you can simply configure the project and make it like so:
+```shell
 mkdir bin && cd bin
 cmake ..
-make 
+make
+```
+If you want to use the project in your own cmake project, simply include `expr` as a subdirectory and link
+with the `libexpr` library. The project is also tagged with release versions to be compatible with [cpm](https://github.com/cpm-cmake/CPM.cmake), 
+so if your project uses that, simply include the project like so:
+```cmake
+CPMAddPackage("gh:sillydan1/expr@latest")
 ```

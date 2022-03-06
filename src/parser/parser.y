@@ -59,7 +59,10 @@
 
 %%
 %start unit;
-unit: assignments { };
+unit:
+  assignments   { }
+| exp           { drv.result["expression_result"] = $1; }
+;
 
 assignments:
   %empty                     {}
