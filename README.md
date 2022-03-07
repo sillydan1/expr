@@ -41,5 +41,5 @@ If you want to use the project in your own cmake project, simply include `expr` 
 with the `libexpr` library. The project is also tagged with release versions to be compatible with [cpm](https://github.com/cpm-cmake/CPM.cmake), 
 so if your project uses that, simply include the project like so:
 ```cmake
-CPMAddPackage("gh:sillydan1/expr@latest")
+CPMAddPackage("gh:sillydan1/expr#latest")  # 'latest' is not neccesarily stable, check releases for stable tags
 ```
