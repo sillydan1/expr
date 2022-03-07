@@ -117,6 +117,12 @@ blank [ \t\r]
 "/"        return yy::parser::make_SLASH  (loc);
 "&&"       return yy::parser::make_AND    (loc);
 "||"       return yy::parser::make_OR     (loc);
+">"        return yy::parser::make_GT     (loc);
+">="       return yy::parser::make_GE     (loc);
+"=="       return yy::parser::make_EE     (loc);
+"!="       return yy::parser::make_NE     (loc);
+"<="       return yy::parser::make_LE     (loc);
+"<"        return yy::parser::make_LT     (loc);
 "!"        return yy::parser::make_NOT    (loc);
 "("        return yy::parser::make_LPAREN (loc);
 ")"        return yy::parser::make_RPAREN (loc);
