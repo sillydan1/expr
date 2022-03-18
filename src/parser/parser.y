@@ -81,6 +81,7 @@ assignment:
 
 %left "+" "-";
 %left "*" "/";
+%left ">" ">=" "==" "!=" "<=" "<" "&&" "||";
 exp:
   "number"      { $$ = $1; }
 | "float"       { $$ = $1; }
@@ -101,6 +102,7 @@ exp:
 | exp "<"  exp  { $$ = lt_($1,$3); }
 | "!" exp       { $$ = not_($2); }
 | "(" exp ")"   { $$ = $2; }
+;
 %%
 
 void yy::parser::error (const location_type& l, const std::string& m) {
