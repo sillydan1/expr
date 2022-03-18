@@ -60,14 +60,14 @@
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
 %token <std::string> STRING "string"
-%nterm <symbol_value_t> exp
+%nterm <symbol_value_t> exp cmp op
 %printer { yyo << $$; } <*>;
 
 %%
 %start unit;
 unit:
   assignments   { }
-| exp           { drv.result["expression_result"] = $1; }
+| cmp           { drv.result["expression_result"] = $1; }
 ;
 
 assignments:
@@ -77,31 +77,41 @@ assignments:
 ;
 
 assignment:
-  "identifier" ":=" exp { drv.result[$1] = $3; };
+  "identifier" ":=" cmp { drv.result[$1] = $3; };
 
 %left "+" "-";
 %left "*" "/";
-%left ">" ">=" "==" "!=" "<=" "<" "&&" "||";
-exp:
-  "number"      { $$ = $1; }
-| "float"       { $$ = $1; }
-| "string"      { $$ = $1; }
-| "bool"        { $$ = $1; }
-| "identifier"  { $$ = drv.environment.at($1); }
-| exp "+" exp   { $$ = $1 + $3; }
+%precedence "||" "&&";
+
+cmp:
+  op "||" op    { $$ = or_($1,$3); }
+| op "&&" op    { $$ = and_($1,$3); }
+| "!" op        { $$ = not_($2); }
+| op            { $$ = $1; }
+| "(" op ")"    { $$ = $2; }
+;
+
+op:
+  exp "+" exp   { $$ = $1 + $3; }
 | exp "-" exp   { $$ = $1 - $3; }
 | exp "*" exp   { $$ = $1 * $3; }
 | exp "/" exp   { $$ = $1 / $3; }
-| exp "||" exp  { $$ = or_($1,$3); }
-| exp "&&" exp  { $$ = and_($1,$3); }
 | exp ">"  exp  { $$ = gt_($1,$3); }
 | exp ">=" exp  { $$ = ge_($1,$3); }
 | exp "==" exp  { $$ = ee_($1,$3); }
 | exp "!=" exp  { $$ = ne_($1,$3); }
 | exp "<=" exp  { $$ = le_($1,$3); }
 | exp "<"  exp  { $$ = lt_($1,$3); }
-| "!" exp       { $$ = not_($2); }
-| "(" exp ")"   { $$ = $2; }
+| exp           { $$ = $1; }
+;
+
+exp:
+  cmp           { $$ = $1; }
+| "number"      { $$ = $1; }
+| "float"       { $$ = $1; }
+| "string"      { $$ = $1; }
+| "bool"        { $$ = $1; }
+| "identifier"  { $$ = drv.environment.at($1); }
 ;
 %%
 
