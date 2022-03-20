@@ -90,7 +90,10 @@
   yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type& loc);
 %}
 
-id     [a-z_A-Z][a-zA-Z_.0-9]*
+%{
+ // TODO: Remove [ðđ€\(\)]
+%}
+id     [a-z_A-Z][a-zA-Z_.0-9ðđ€\(\)]*
 int    [0-9]+
 flt    [0-9]+[.][0-9]+f
 bool   [Ff]alse|[Tt]rue
