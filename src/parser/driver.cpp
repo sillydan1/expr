@@ -6,6 +6,8 @@ driver::driver(const symbol_table_t& map) : trace_parsing (false), trace_scannin
 }
 
 int driver::parse(const std::string &f) {
+    if(f.empty())
+        return 0;
     file = f;
     location.initialize (&file);
     scan_begin();
