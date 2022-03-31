@@ -6,8 +6,12 @@ driver::driver(const symbol_table_t& map) : trace_parsing (false), trace_scannin
 }
 
 int driver::parse(const std::string &f) {
-    if(f.empty())
+    if(f.empty()) {
+#ifdef DEFAULT_EXPRESSION_VALUE
+        result["expression_result"] = DEFAULT_EXPRESSION_VALUE;
+#endif
         return 0;
+    }
     file = f;
     location.initialize (&file);
     scan_begin();

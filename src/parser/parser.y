@@ -51,6 +51,8 @@
   NOT     "!"
   LPAREN  "("
   RPAREN  ")"
+  ACCMOD  "access_modifier"
+  TYPE    "type"
   TERM    ";"
 ;
 
@@ -66,18 +68,21 @@
 %%
 %start unit;
 unit:
-  assignments   { }
+  statements    { }
 | cmp           { drv.result["expression_result"] = $1; }
 ;
 
-assignments:
-  %empty                     {}
-| assignment                 {}
-| assignment ";" assignments {}
+statements:
+  %empty                    {}
+| statement                 {}
+| statement ";" statements  {}
 ;
 
-assignment:
-  "identifier" ":=" cmp { drv.result[$1] = $3; };
+statement:
+  "identifier" ":=" cmp                          { drv.result[$1] = $3; }
+| "type" "identifier" ":=" cmp                   { drv.result[$2] = $4; }
+| "access_modifier" "type" "identifier" ":=" cmp { drv.result[$3] = $5; }
+;
 
 %left "+" "-";
 %left "*" "/";

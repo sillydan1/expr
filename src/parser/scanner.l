@@ -90,12 +90,17 @@
   yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type& loc);
 %}
 
-id    [a-z_A-Z][a-zA-Z_.0-9]*
-int   [0-9]+
-flt   [0-9]+[.][0-9]+f
-bool  [Ff]alse|[Tt]rue
-str   \"(\\.|[^"\\])*\"
-blank [ \t\r]
+%{
+ // TODO: Remove [ðđ€\(\)]
+%}
+id     [a-z_A-Z][a-zA-Z_.0-9ðđ€\(\)]*
+int    [0-9]+
+flt    [0-9]+[.][0-9]+f
+bool   [Ff]alse|[Tt]rue
+str    \"(\\.|[^"\\])*\"
+blank  [ \t\r]
+accmod [Pp](ublic|rivate|rotected)
+type   int|long|float|double|string|bool|var|auto
 
 %{
   // Code run each time a pattern is matched.
@@ -128,6 +133,9 @@ blank [ \t\r]
 ")"        return yy::parser::make_RPAREN (loc);
 ":="       return yy::parser::make_ASSIGN (loc);
 ";"        return yy::parser::make_TERM   (loc);
+
+{accmod}   return yy::parser::make_ACCMOD(loc);
+{type}     return yy::parser::make_TYPE(loc);
 
 {int}      return make_NUMBER(yytext, loc);
 {flt}      return make_FLOAT(yytext, loc);
