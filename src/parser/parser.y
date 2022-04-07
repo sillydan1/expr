@@ -62,14 +62,14 @@
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
 %token <std::string> STRING "string"
-%nterm <symbol_value_t> exp cmp op
+%nterm <symbol_value_t> lit exp
 %printer { yyo << $$; } <*>;
 
 %%
 %start unit;
 unit:
   statements    { }
-| cmp           { drv.result["expression_result"] = $1; }
+| exp           { drv.result["expression_result"] = $1; }
 ;
 
 statements:
@@ -79,25 +79,16 @@ statements:
 ;
 
 statement:
-  "identifier" ":=" cmp                          { drv.result[$1] = $3; }
-| "type" "identifier" ":=" cmp                   { drv.result[$2] = $4; }
-| "access_modifier" "type" "identifier" ":=" cmp { drv.result[$3] = $5; }
+  "identifier" ":=" exp                          { drv.result[$1] = $3; }
+| "type" "identifier" ":=" exp                   { drv.result[$2] = $4; }
+| "access_modifier" "type" "identifier" ":=" exp { drv.result[$3] = $5; }
 ;
 
-%left "+" "-";
-%left "*" "/";
-%precedence "||" "&&";
+%precedence "||" "&&" ">" ">=" "==" "!=" "<=" "<" "*" "/" "+" "-";
 
-cmp:
-  op "||" op    { $$ = or_($1,$3); }
-| op "&&" op    { $$ = and_($1,$3); }
-| "!" op        { $$ = not_($2); }
-| op            { $$ = $1; }
-| "(" op ")"    { $$ = $2; }
-;
-
-op:
-  exp "+" exp   { $$ = $1 + $3; }
+exp:
+  lit           { $$ = $1; }
+| exp "+" exp   { $$ = $1 + $3; }
 | exp "-" exp   { $$ = $1 - $3; }
 | exp "*" exp   { $$ = $1 * $3; }
 | exp "/" exp   { $$ = $1 / $3; }
@@ -107,13 +98,17 @@ op:
 | exp "!=" exp  { $$ = ne_($1,$3); }
 | exp "<=" exp  { $$ = le_($1,$3); }
 | exp "<"  exp  { $$ = lt_($1,$3); }
-| exp           { $$ = $1; }
+| exp "||" exp  { $$ = or_($1,$3); }
+| exp "&&" exp  { $$ = and_($1,$3); }
+| "!" exp       { $$ = not_($2); }
+| "(" exp ")"   { $$ = $2; }
 ;
 
-exp:
-  cmp           { $$ = $1; }
-| "number"      { $$ = $1; }
+lit:
+  "number"      { $$ = $1; }
+| "-" "number"  { $$ = -$2; }
 | "float"       { $$ = $1; }
+| "-" "float"   { $$ = -$2; }
 | "string"      { $$ = $1; }
 | "bool"        { $$ = $1; }
 | "identifier"  { $$ = drv.environment.at($1); }
