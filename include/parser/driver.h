@@ -10,6 +10,8 @@ struct driver {
     explicit driver(const symbol_table_t& env);
     const symbol_table_t& environment{};
     symbol_table_t result{};
+    symbol_value_t error{};
+    symbol_value_t expression_result{};
 
     int parse(const std::string& f);
     std::string file;

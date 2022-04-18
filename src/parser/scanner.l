@@ -94,8 +94,8 @@
  // TODO: Remove [ðđ€\(\)]
 %}
 id     [a-z_A-Z]([.ðđ€\(\)a-zA-Z_0-9]*[a-zA-Z_0-9]+)?
-int    [0-9]+
-flt    [0-9]+[.][0-9]+f
+int    [0-9]+[Ll]?
+flt    [0-9]+[.][0-9]+[fd]?
 bool   [Ff]alse|[Tt]rue
 str    \"(\\.|[^"\\])*\"
 blank  [ \t\r]
@@ -114,7 +114,7 @@ type   int|long|float|double|string|bool|var|auto
   loc.step();
 %}
 {blank}+   loc.step();
-\n+        loc.lines(yyleng); loc.step();
+\n+        { loc.lines(yyleng); loc.step(); return yy::parser::make_NEWLINE(loc); }
 
 "-"        return yy::parser::make_MINUS  (loc);
 "+"        return yy::parser::make_PLUS   (loc);

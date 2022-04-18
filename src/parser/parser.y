@@ -54,6 +54,7 @@
   ACCMOD  "access_modifier"
   TYPE    "type"
   TERM    ";"
+  NEWLINE "\n"
 ;
 
 // Identifiers are strings
@@ -74,15 +75,15 @@
 %start unit;
 unit:
   statements    { }
-| exp           { drv.result["expression_result"] = $1; }
+| exp           { drv.expression_result = $1; }
 ;
 
 statements:
   %empty                    {}
 | statement                 {}
 | statement TERM statements {}
+| statement NEWLINE statements {}
 ;
-
 
 statement:
   "identifier" ASSIGN exp                          { drv.result[$1] = $3; }
