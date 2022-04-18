@@ -65,8 +65,10 @@
 %nterm <symbol_value_t> lit exp
 %printer { yyo << $$; } <*>;
 
-%left PLUS MINUS STAR SLASH GT GE EE NE LE LT OR AND
-%precedence "bool" "id"
+%left OR
+%left AND
+%left GT GE EE NE LE LT
+%left PLUS MINUS STAR SLASH
 %precedence LPAREN NOT
 %%
 %start unit;
