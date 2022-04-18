@@ -65,6 +65,9 @@
 %nterm <symbol_value_t> lit exp
 %printer { yyo << $$; } <*>;
 
+%left PLUS MINUS STAR SLASH GT GE EE NE LE LT OR AND
+%precedence "bool" "id"
+%precedence LPAREN NOT
 %%
 %start unit;
 unit:
@@ -75,43 +78,42 @@ unit:
 statements:
   %empty                    {}
 | statement                 {}
-| statement ";" statements  {}
+| statement TERM statements {}
 ;
+
 
 statement:
-  "identifier" ":=" exp                          { drv.result[$1] = $3; }
-| "type" "identifier" ":=" exp                   { drv.result[$2] = $4; }
-| "access_modifier" "type" "identifier" ":=" exp { drv.result[$3] = $5; }
+  "identifier" ASSIGN exp                          { drv.result[$1] = $3; }
+| "type" "identifier" ASSIGN exp                   { drv.result[$2] = $4; }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv.result[$3] = $5; }
 ;
 
-%precedence "||" "&&" ">" ">=" "==" "!=" "<=" "<" "*" "/" "+" "-";
-
 exp:
-  lit           { $$ = $1; }
-| exp "+" exp   { $$ = $1 + $3; }
-| exp "-" exp   { $$ = $1 - $3; }
-| exp "*" exp   { $$ = $1 * $3; }
-| exp "/" exp   { $$ = $1 / $3; }
-| exp ">"  exp  { $$ = gt_($1,$3); }
-| exp ">=" exp  { $$ = ge_($1,$3); }
-| exp "==" exp  { $$ = ee_($1,$3); }
-| exp "!=" exp  { $$ = ne_($1,$3); }
-| exp "<=" exp  { $$ = le_($1,$3); }
-| exp "<"  exp  { $$ = lt_($1,$3); }
-| exp "||" exp  { $$ = or_($1,$3); }
-| exp "&&" exp  { $$ = and_($1,$3); }
-| "!" exp       { $$ = not_($2); }
-| "(" exp ")"   { $$ = $2; }
+  lit                   { $$ = $1; }
+| exp PLUS exp          { $$ = $1 + $3; }
+| exp MINUS exp         { $$ = $1 - $3; }
+| exp STAR exp          { $$ = $1 * $3; }
+| exp SLASH exp         { $$ = $1 / $3; }
+| exp GT  exp           { $$ = gt_($1,$3); }
+| exp GE exp            { $$ = ge_($1,$3); }
+| exp EE exp            { $$ = ee_($1,$3); }
+| exp NE exp            { $$ = ne_($1,$3); }
+| exp LE exp            { $$ = le_($1,$3); }
+| exp LT  exp           { $$ = lt_($1,$3); }
+| exp OR exp            { $$ = or_($1,$3); }
+| exp AND exp           { $$ = and_($1,$3); }
+| NOT exp               { $$ = not_($2); }
+| LPAREN exp RPAREN     { $$ = $2; }
 ;
 
 lit:
-  "number"      { $$ = $1; }
-| "-" "number"  { $$ = -$2; }
-| "float"       { $$ = $1; }
-| "-" "float"   { $$ = -$2; }
-| "string"      { $$ = $1; }
-| "bool"        { $$ = $1; }
-| "identifier"  { $$ = drv.environment.at($1); }
+  "number"       { $$ = $1; }
+| MINUS "number" { $$ = -$2; }
+| "float"        { $$ = $1; }
+| MINUS "float"  { $$ = -$2; }
+| "string"       { $$ = $1; }
+| "bool"         { $$ = $1; }
+| "identifier"   { $$ = drv.environment.at($1); }
 ;
 %%
 

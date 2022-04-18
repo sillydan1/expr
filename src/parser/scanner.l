@@ -93,7 +93,7 @@
 %{
  // TODO: Remove [ðđ€\(\)]
 %}
-id     [a-z_A-Z][a-zA-Z_.0-9ðđ€\(\)]*
+id     [a-z_A-Z]([.ðđ€\(\)a-zA-Z_0-9]*[a-zA-Z_0-9]+)?
 int    [0-9]+
 flt    [0-9]+[.][0-9]+f
 bool   [Ff]alse|[Tt]rue
