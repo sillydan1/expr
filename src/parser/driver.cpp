@@ -26,3 +26,11 @@ int driver::parse(const std::string &f) {
         return 1;
     }
 }
+
+auto driver::get_symbol(const std::string &identifier) -> symbol_value_t {
+#ifndef NDEBUG
+    if(!environment.contains(identifier))
+        throw std::out_of_range(identifier + " not found");
+#endif
+    return environment.at(identifier);
+}

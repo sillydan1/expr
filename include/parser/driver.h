@@ -14,6 +14,7 @@ struct driver {
     symbol_value_t expression_result{};
 
     int parse(const std::string& f);
+    auto get_symbol(const std::string& identifier) -> symbol_value_t;
     std::string file;
     bool trace_parsing;
 

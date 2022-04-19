@@ -116,7 +116,7 @@ lit:
 | MINUS "float"  { $$ = -$2; }
 | "string"       { $$ = $1; }
 | "bool"         { $$ = $1; }
-| "identifier"   { $$ = drv.environment.at($1); }
+| "identifier"   { $$ = drv.get_symbol($1); }
 ;
 %%
 
