@@ -114,7 +114,7 @@ type   int|long|float|double|string|bool|var|auto
   loc.step();
 %}
 {blank}+   loc.step();
-\n+        { loc.lines(yyleng); loc.step(); return yy::parser::make_NEWLINE(loc); }
+\n+        { loc.lines(yyleng); loc.step(); }
 
 "-"        return yy::parser::make_MINUS  (loc);
 "+"        return yy::parser::make_PLUS   (loc);
