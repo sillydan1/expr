@@ -62,61 +62,59 @@
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
 %token <std::string> STRING "string"
-%nterm <symbol_value_t> exp cmp op
+%nterm <symbol_value_t> lit exp
 %printer { yyo << $$; } <*>;
 
+%left OR
+%left AND
+%left GT GE EE NE LE LT
+%left PLUS MINUS STAR SLASH
+%precedence LPAREN NOT
 %%
 %start unit;
 unit:
   statements    { }
-| cmp           { drv.result["expression_result"] = $1; }
+| exp           { drv.expression_result = $1; }
 ;
 
 statements:
-  %empty                    {}
-| statement                 {}
-| statement ";" statements  {}
+  %empty               {}
+| statement statements {}
 ;
 
 statement:
-  "identifier" ":=" cmp                          { drv.result[$1] = $3; }
-| "type" "identifier" ":=" cmp                   { drv.result[$2] = $4; }
-| "access_modifier" "type" "identifier" ":=" cmp { drv.result[$3] = $5; }
-;
-
-%left "+" "-";
-%left "*" "/";
-%precedence "||" "&&";
-
-cmp:
-  op "||" op    { $$ = or_($1,$3); }
-| op "&&" op    { $$ = and_($1,$3); }
-| "!" op        { $$ = not_($2); }
-| op            { $$ = $1; }
-| "(" op ")"    { $$ = $2; }
-;
-
-op:
-  exp "+" exp   { $$ = $1 + $3; }
-| exp "-" exp   { $$ = $1 - $3; }
-| exp "*" exp   { $$ = $1 * $3; }
-| exp "/" exp   { $$ = $1 / $3; }
-| exp ">"  exp  { $$ = gt_($1,$3); }
-| exp ">=" exp  { $$ = ge_($1,$3); }
-| exp "==" exp  { $$ = ee_($1,$3); }
-| exp "!=" exp  { $$ = ne_($1,$3); }
-| exp "<=" exp  { $$ = le_($1,$3); }
-| exp "<"  exp  { $$ = lt_($1,$3); }
-| exp           { $$ = $1; }
+  "identifier" ASSIGN exp                          { drv.result[$1] = $3; }
+| "type" "identifier" ASSIGN exp                   { drv.result[$2] = $4; }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv.result[$3] = $5; }
+| statement TERM                                   { }
 ;
 
 exp:
-  cmp           { $$ = $1; }
-| "number"      { $$ = $1; }
-| "float"       { $$ = $1; }
-| "string"      { $$ = $1; }
-| "bool"        { $$ = $1; }
-| "identifier"  { $$ = drv.environment.at($1); }
+  lit                   { $$ = $1; }
+| exp PLUS exp          { $$ = $1 + $3; }
+| exp MINUS exp         { $$ = $1 - $3; }
+| exp STAR exp          { $$ = $1 * $3; }
+| exp SLASH exp         { $$ = $1 / $3; }
+| exp GT  exp           { $$ = gt_($1,$3); }
+| exp GE exp            { $$ = ge_($1,$3); }
+| exp EE exp            { $$ = ee_($1,$3); }
+| exp NE exp            { $$ = ne_($1,$3); }
+| exp LE exp            { $$ = le_($1,$3); }
+| exp LT  exp           { $$ = lt_($1,$3); }
+| exp OR exp            { $$ = or_($1,$3); }
+| exp AND exp           { $$ = and_($1,$3); }
+| NOT exp               { $$ = not_($2); }
+| LPAREN exp RPAREN     { $$ = $2; }
+;
+
+lit:
+  "number"       { $$ = $1; }
+| MINUS "number" { $$ = -$2; }
+| "float"        { $$ = $1; }
+| MINUS "float"  { $$ = -$2; }
+| "string"       { $$ = $1; }
+| "bool"         { $$ = $1; }
+| "identifier"   { $$ = drv.get_symbol($1); }
 ;
 %%
 
