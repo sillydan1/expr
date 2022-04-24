@@ -120,6 +120,7 @@ type   int|long|float|double|string|bool|var|auto
 "+"        return yy::parser::make_PLUS   (loc);
 "*"        return yy::parser::make_STAR   (loc);
 "/"        return yy::parser::make_SLASH  (loc);
+"%"        return yy::parser::make_PERCENT(loc);
 "&&"       return yy::parser::make_AND    (loc);
 "||"       return yy::parser::make_OR     (loc);
 ">"        return yy::parser::make_GT     (loc);

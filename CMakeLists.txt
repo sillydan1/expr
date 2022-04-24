@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/subtract.cpp
         src/operations/multiply.cpp
         src/operations/divide.cpp
+        src/operations/modulo.cpp
         src/operations/boolean.cpp
 )
 add_executable(${PROJECT_NAME}_demo

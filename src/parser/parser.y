@@ -40,6 +40,7 @@
   PLUS    "+"
   STAR    "*"
   SLASH   "/"
+  PERCENT "%"
   AND     "&&"
   OR      "||"
   GT      ">"
@@ -68,7 +69,7 @@
 %left OR
 %left AND
 %left GT GE EE NE LE LT
-%left PLUS MINUS STAR SLASH
+%left PLUS MINUS STAR SLASH PERCENT
 %precedence LPAREN NOT
 %%
 %start unit;
@@ -95,6 +96,7 @@ exp:
 | exp MINUS exp         { $$ = $1 - $3; }
 | exp STAR exp          { $$ = $1 * $3; }
 | exp SLASH exp         { $$ = $1 / $3; }
+| exp PERCENT exp       { $$ = $1 % $3; }
 | exp GT  exp           { $$ = gt_($1,$3); }
 | exp GE exp            { $$ = ge_($1,$3); }
 | exp EE exp            { $$ = ee_($1,$3); }
