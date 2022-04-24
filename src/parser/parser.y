@@ -15,7 +15,7 @@
     class driver;
 }
 
-%param { driver& drv }
+%param { driver* drv }
 
 // Enable parser location tracking
 %locations
@@ -74,7 +74,7 @@
 %start unit;
 unit:
   statements    { }
-| exp           { drv.expression_result = $1; }
+| exp           { drv->expression_result = $1; }
 ;
 
 statements:
@@ -83,9 +83,9 @@ statements:
 ;
 
 statement:
-  "identifier" ASSIGN exp                          { drv.result[$1] = $3; }
-| "type" "identifier" ASSIGN exp                   { drv.result[$2] = $4; }
-| "access_modifier" "type" "identifier" ASSIGN exp { drv.result[$3] = $5; }
+  "identifier" ASSIGN exp                          { drv->result[$1] = $3; }
+| "type" "identifier" ASSIGN exp                   { drv->result[$2] = $4; }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv->result[$3] = $5; }
 | statement TERM                                   { }
 ;
 
@@ -114,7 +114,7 @@ lit:
 | MINUS "float"  { $$ = -$2; }
 | "string"       { $$ = $1; }
 | "bool"         { $$ = $1; }
-| "identifier"   { $$ = drv.get_symbol($1); }
+| "identifier"   { $$ = drv->get_symbol($1); }
 ;
 %%
 
