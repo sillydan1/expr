@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(expr VERSION 1.3.0)
+project(expr VERSION 1.3.1)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
