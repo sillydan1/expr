@@ -84,9 +84,9 @@ statements:
 ;
 
 statement:
-  "identifier" ASSIGN exp                          { drv->result[$1] = $3; }
-| "type" "identifier" ASSIGN exp                   { drv->result[$2] = $4; }
-| "access_modifier" "type" "identifier" ASSIGN exp { drv->result[$3] = $5; }
+  "identifier" ASSIGN exp                          { drv->set_symbol($1, $3); }
+| "type" "identifier" ASSIGN exp                   { drv->set_symbol($2, $4); }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv->set_symbol($3, $5); }
 | statement TERM                                   { }
 ;
 

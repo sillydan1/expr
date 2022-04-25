@@ -34,3 +34,7 @@ auto driver::get_symbol(const std::string &identifier) -> symbol_value_t {
 #endif
     return environment.at(identifier);
 }
+
+void driver::set_symbol(const std::string &identifier, const symbol_value_t &value) {
+    result[identifier] = value;
+}

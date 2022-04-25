@@ -20,6 +20,7 @@ struct driver {
 
     virtual int parse(const std::string& f);
     virtual auto get_symbol(const std::string& identifier) -> symbol_value_t;
+    virtual void set_symbol(const std::string& identifier, const symbol_value_t& value);
     void scan_begin();
     void scan_end();
 };
