@@ -16,9 +16,8 @@ struct symbol_value_t : public underlying_symbol_value_t {
         this->underlying_symbol_value_t::operator=(t);
         return *this;
     }
-    template<>
-    symbol_value_t& operator=(const std::string& t) {
-        std::stringstream ss{t};
+    symbol_value_t& interpret(const std::string& s) {
+        std::stringstream ss{s};
         int i; float f; bool b;
         if(ss >> i)
             this->underlying_symbol_value_t::operator=(i);
@@ -27,8 +26,11 @@ struct symbol_value_t : public underlying_symbol_value_t {
         else if(ss >> b)
             this->underlying_symbol_value_t::operator=(b);
         else
-            this->underlying_symbol_value_t::operator=(t);
+            this->underlying_symbol_value_t::operator=(s);
         return *this;
+    }
+    symbol_value_t& operator<<=(const std::string& s) {
+        return interpret(s);
     }
 };
 
