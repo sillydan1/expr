@@ -22,7 +22,7 @@ include_directories(
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
-        src/parser/driver.cpp
+        src/parser/interpreter.cpp
         src/symbol_table.cpp
         src/operations/add.cpp
         src/operations/subtract.cpp

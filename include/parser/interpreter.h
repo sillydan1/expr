@@ -1,14 +1,14 @@
-#ifndef EXPR_DRIVER_H
-#define EXPR_DRIVER_H
+#ifndef EXPR_INTERPRETER_H
+#define EXPR_INTERPRETER_H
 #include <string>
 #include "symbol_table.h"
 #include "parser.hpp"
-#define YY_DECL yy::parser::symbol_type yylex (driver* drv)
+#define YY_DECL yy::parser::symbol_type yylex (interpreter* drv)
 YY_DECL;
 
-struct driver {
-    explicit driver(const symbol_table_t& env);
-    virtual ~driver() = default;
+struct interpreter {
+    explicit interpreter(const symbol_table_t& env);
+    virtual ~interpreter() = default;
     const symbol_table_t& environment{};
     symbol_table_t result{};
     symbol_value_t error{};

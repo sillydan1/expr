@@ -4,7 +4,7 @@ A variable environment manipulation expression parser written in C++20 with flex
 ## Features
 The parser rules have two different modes:
  1. Either evaluate a string of assignment expressions e.g. `a := 1; b := 2` or
- 2. Evaluate a single expression with result stored in `driver.result["expression_result"]`
+ 2. Evaluate a single expression with result stored in `interpreter.result["expression_result"]`
 
 ## Examples
 This project comes with an demo example command line interface called `expr_demo` so that you
@@ -22,7 +22,7 @@ You can also use the project directly in code like so:
 ```c++
 try {                               // Errors are handled with exceptions
     symbol_table_t env{};             // Initialize an environment
-    driver drv{env};                // Initialize the expr driver with the environment
+    interpreter drv{env};                // Initialize the expr interpreter with the environment
     if (!drv.parse("a := 32 + 2"))  // Parse your expressions
         std::cout << drv.result;    // Print the result
 } catch(const std::exception& e) {  // Parsing went wrong. Maybe bad syntax, type error or identifier not in environment

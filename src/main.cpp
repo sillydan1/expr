@@ -1,5 +1,5 @@
 #include <iostream>
-#include "parser/driver.h"
+#include "parser/interpreter.h"
 #include "config.h"
 
 int main (int argc, char *argv[]) {
@@ -26,7 +26,7 @@ int main (int argc, char *argv[]) {
         << "======================================================================\n" << std::endl;
     try {
         int res = 0;
-        driver drv{env};
+        interpreter drv{env};
         for (int i = 1; i < argc; ++i) {
             if (argv[i] == std::string("-p"))
                 drv.trace_parsing = true;

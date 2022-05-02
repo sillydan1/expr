@@ -1,11 +1,11 @@
-#include "parser/driver.h"
+#include "parser/interpreter.h"
 #include <utility>
 #include "parser.hpp"
 
-driver::driver(const symbol_table_t& map) : trace_parsing (false), trace_scanning (false), environment(map) {
+interpreter::interpreter(const symbol_table_t& map) : trace_parsing (false), trace_scanning (false), environment(map) {
 }
 
-int driver::parse(const std::string &f) {
+int interpreter::parse(const std::string &f) {
     if(f.empty()) {
 #ifdef DEFAULT_EXPRESSION_VALUE
         expression_result = DEFAULT_EXPRESSION_VALUE;
@@ -27,7 +27,7 @@ int driver::parse(const std::string &f) {
     }
 }
 
-auto driver::get_symbol(const std::string &identifier) -> symbol_value_t {
+auto interpreter::get_symbol(const std::string &identifier) -> symbol_value_t {
 #ifndef NDEBUG
     if(!environment.contains(identifier))
         throw std::out_of_range(identifier + " not found");
@@ -35,6 +35,6 @@ auto driver::get_symbol(const std::string &identifier) -> symbol_value_t {
     return environment.at(identifier);
 }
 
-void driver::set_symbol(const std::string &identifier, const symbol_value_t &value) {
+void interpreter::set_symbol(const std::string &identifier, const symbol_value_t &value) {
     result[identifier] = value;
 }
