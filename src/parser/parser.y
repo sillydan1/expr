@@ -12,10 +12,10 @@
     #include <string>
     #include <symbol_table.h>
     #include <operations.h>
-    namespace expr { class interpreter; }
+    namespace expr { class driver; }
 }
 
-%param { expr::interpreter* drv }
+%param { expr::driver* drv }
 
 // Enable parser location tracking
 %locations
@@ -29,7 +29,7 @@
 
 // Include the driver
 %code {
-    #include "parser/interpreter.h"
+    #include "parser/driver.h"
 }
 
 %define api.token.prefix {TOK_}

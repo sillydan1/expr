@@ -3,8 +3,7 @@
 #include "parser.hpp"
 
 namespace expr {
-    interpreter::interpreter(const symbol_table_t &map) : trace_parsing(false), trace_scanning(false),
-                                                          environment(map) {
+    interpreter::interpreter(const symbol_table_t &map) : driver{map} {
     }
 
     int interpreter::parse(const std::string &f) {
@@ -27,17 +26,5 @@ namespace expr {
             error = e.what();
             return 1;
         }
-    }
-
-    auto interpreter::get_symbol(const std::string &identifier) -> symbol_value_t {
-#ifndef NDEBUG
-        if (!environment.contains(identifier))
-            throw std::out_of_range(identifier + " not found");
-#endif
-        return environment.at(identifier);
-    }
-
-    void interpreter::set_symbol(const std::string &identifier, const symbol_value_t &value) {
-        result[identifier] = value;
     }
 }

@@ -5,7 +5,7 @@
 #include <cstring> // strerror
 #include <string>
 #include <sstream>
-#include "parser/interpreter.h"
+#include "parser/driver.h"
 #include "parser.hpp"
 %}
 
@@ -175,7 +175,7 @@ yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type
     return yy::parser::make_BOOL(b, loc);
 }
 
-void expr::interpreter::scan_begin() {
+void expr::driver::scan_begin() {
     yy_flex_debug = trace_scanning;
     if(file.empty() || file == "-")
         yyin = stdin;
@@ -183,5 +183,5 @@ void expr::interpreter::scan_begin() {
         yy_scan_string(file.c_str());
 }
 
-void expr::interpreter::scan_end() {
+void expr::driver::scan_end() {
 }
