@@ -12,16 +12,8 @@ namespace expr {
         virtual ~driver() = default;
 
         virtual int parse(const std::string &f) = 0;
-        virtual auto get_symbol(const std::string &identifier) -> symbol_value_t {
-#ifndef NDEBUG
-            if (!environment.contains(identifier))
-                throw std::out_of_range(identifier + " not found");
-#endif
-            return environment.at(identifier);
-        }
-        virtual void set_symbol(const std::string &identifier, const symbol_value_t &value) {
-            result[identifier] = value;
-        }
+        virtual auto get_symbol(const std::string &identifier) -> symbol_value_t = 0;
+        virtual void set_symbol(const std::string &identifier, const symbol_value_t &value) = 0;
         void scan_begin();
         void scan_end();
 

@@ -27,4 +27,16 @@ namespace expr {
             return 1;
         }
     }
+
+    auto interpreter::get_symbol(const std::string &identifier) -> symbol_value_t  {
+#ifndef NDEBUG
+        if (!environment.contains(identifier))
+            throw std::out_of_range(identifier + " not found");
+#endif
+        return environment.at(identifier);
+    }
+
+    void interpreter::set_symbol(const std::string &identifier, const symbol_value_t &value) {
+        result[identifier] = value;
+    }
 }
