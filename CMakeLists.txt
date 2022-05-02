@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(expr VERSION 1.3.1)
+project(expr VERSION 1.3.2)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/subtract.cpp
         src/operations/multiply.cpp
         src/operations/divide.cpp
+        src/operations/modulo.cpp
         src/operations/boolean.cpp
 )
 add_executable(${PROJECT_NAME}_demo

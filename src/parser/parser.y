@@ -15,7 +15,7 @@
     class driver;
 }
 
-%param { driver& drv }
+%param { driver* drv }
 
 // Enable parser location tracking
 %locations
@@ -40,6 +40,7 @@
   PLUS    "+"
   STAR    "*"
   SLASH   "/"
+  PERCENT "%"
   AND     "&&"
   OR      "||"
   GT      ">"
@@ -68,13 +69,13 @@
 %left OR
 %left AND
 %left GT GE EE NE LE LT
-%left PLUS MINUS STAR SLASH
+%left PLUS MINUS STAR SLASH PERCENT
 %precedence LPAREN NOT
 %%
 %start unit;
 unit:
   statements    { }
-| exp           { drv.expression_result = $1; }
+| exp           { drv->expression_result = $1; }
 ;
 
 statements:
@@ -83,9 +84,9 @@ statements:
 ;
 
 statement:
-  "identifier" ASSIGN exp                          { drv.result[$1] = $3; }
-| "type" "identifier" ASSIGN exp                   { drv.result[$2] = $4; }
-| "access_modifier" "type" "identifier" ASSIGN exp { drv.result[$3] = $5; }
+  "identifier" ASSIGN exp                          { drv->set_symbol($1, $3); }
+| "type" "identifier" ASSIGN exp                   { drv->set_symbol($2, $4); }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv->set_symbol($3, $5); }
 | statement TERM                                   { }
 ;
 
@@ -95,6 +96,7 @@ exp:
 | exp MINUS exp         { $$ = $1 - $3; }
 | exp STAR exp          { $$ = $1 * $3; }
 | exp SLASH exp         { $$ = $1 / $3; }
+| exp PERCENT exp       { $$ = $1 % $3; }
 | exp GT  exp           { $$ = gt_($1,$3); }
 | exp GE exp            { $$ = ge_($1,$3); }
 | exp EE exp            { $$ = ee_($1,$3); }
@@ -114,7 +116,7 @@ lit:
 | MINUS "float"  { $$ = -$2; }
 | "string"       { $$ = $1; }
 | "bool"         { $$ = $1; }
-| "identifier"   { $$ = drv.get_symbol($1); }
+| "identifier"   { $$ = drv->get_symbol($1); }
 ;
 %%
 

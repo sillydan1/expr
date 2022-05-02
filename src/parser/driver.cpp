@@ -15,7 +15,7 @@ int driver::parse(const std::string &f) {
     file = f;
     location.initialize (&file);
     scan_begin();
-    yy::parser parse(*this);
+    yy::parser parse(this);
     parse.set_debug_level(trace_parsing);
     try {
         int res = parse();
@@ -33,4 +33,8 @@ auto driver::get_symbol(const std::string &identifier) -> symbol_value_t {
         throw std::out_of_range(identifier + " not found");
 #endif
     return environment.at(identifier);
+}
+
+void driver::set_symbol(const std::string &identifier, const symbol_value_t &value) {
+    result[identifier] = value;
 }

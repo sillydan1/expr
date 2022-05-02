@@ -97,7 +97,7 @@ id     [a-z_A-Z]([.ðđ€\(\)a-zA-Z_0-9]*[a-zA-Z_0-9]+)?
 int    [0-9]+[Ll]?
 flt    [0-9]+[.][0-9]+[fd]?
 bool   [Ff]alse|[Tt]rue
-str    \"(\\.|[^"\\])*\"
+str    \"(\\.|[^\\"])*\"
 blank  [ \t\r]
 accmod [Pp](ublic|rivate|rotected)
 type   int|long|float|double|string|bool|var|auto
@@ -109,7 +109,7 @@ type   int|long|float|double|string|bool|var|auto
 %%
 %{
   // A handy shortcut to the location held by the driver.
-  yy::location& loc = drv.location;
+  yy::location& loc = drv->location;
   // Code run each time yylex is called.
   loc.step();
 %}
@@ -120,6 +120,7 @@ type   int|long|float|double|string|bool|var|auto
 "+"        return yy::parser::make_PLUS   (loc);
 "*"        return yy::parser::make_STAR   (loc);
 "/"        return yy::parser::make_SLASH  (loc);
+"%"        return yy::parser::make_PERCENT(loc);
 "&&"       return yy::parser::make_AND    (loc);
 "||"       return yy::parser::make_OR     (loc);
 ">"        return yy::parser::make_GT     (loc);
@@ -178,15 +179,9 @@ void driver::scan_begin() {
     yy_flex_debug = trace_scanning;
     if(file.empty() || file == "-")
         yyin = stdin;
-    else {
+    else
         yy_scan_string(file.c_str());
-    }
-//    else if(!(yyin = fopen(file.c_str(), "r"))) {
-//        std::cerr << "cannot open " << file << ": " << strerror (errno) << '\n';
-//        exit(EXIT_FAILURE); // TODO: This is pretty aggressive, maybe just throw exception instead
-//    }
 }
 
 void driver::scan_end() {
-//    fclose(yyin);
 }

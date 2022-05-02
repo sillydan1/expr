@@ -4,6 +4,7 @@
 #include <map>
 #include <functional>
 #include <iostream>
+#include <sstream>
 
 using underlying_symbol_value_t = std::variant<int,float,bool,std::string>;
 struct symbol_value_t : public underlying_symbol_value_t {
@@ -14,6 +15,22 @@ struct symbol_value_t : public underlying_symbol_value_t {
     symbol_value_t& operator=(const T& t) {
         this->underlying_symbol_value_t::operator=(t);
         return *this;
+    }
+    symbol_value_t& interpret(const std::string& s) {
+        std::stringstream ss{s};
+        int i; float f; bool b;
+        if(ss >> i)
+            this->underlying_symbol_value_t::operator=(i);
+        else if(ss >> f)
+            this->underlying_symbol_value_t::operator=(f);
+        else if(ss >> b)
+            this->underlying_symbol_value_t::operator=(b);
+        else
+            this->underlying_symbol_value_t::operator=(s);
+        return *this;
+    }
+    symbol_value_t& operator<<=(const std::string& s) {
+        return interpret(s);
     }
 };
 
