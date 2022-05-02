@@ -3,6 +3,7 @@
 #include "config.h"
 
 int main (int argc, char *argv[]) {
+    using namespace expr;
     symbol_table_t env{};
     env["false_b"] = false;
     env["one_i"] = 1;

@@ -12,10 +12,10 @@
     #include <string>
     #include <symbol_table.h>
     #include <operations.h>
-    class interpreter;
+    namespace expr { class interpreter; }
 }
 
-%param { interpreter* drv }
+%param { expr::interpreter* drv }
 
 // Enable parser location tracking
 %locations
