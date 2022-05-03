@@ -7,7 +7,7 @@
 YY_DECL;
 
 namespace expr {
-    struct driver {
+    struct driver : public arithmetic_operator, boolean_operator, compare_operator {
         explicit driver(const symbol_table_t &env) : trace_parsing(false), trace_scanning(false), environment(env) {}
         virtual ~driver() = default;
 

@@ -93,21 +93,21 @@ statement:
 
 exp:
   lit                   { $$ = $1; }
-| exp PLUS exp          { $$ = $1 + $3; }
-| exp MINUS exp         { $$ = $1 - $3; }
-| exp STAR exp          { $$ = $1 * $3; }
-| exp SLASH exp         { $$ = $1 / $3; }
-| exp PERCENT exp       { $$ = $1 % $3; }
-| exp HAT exp           { $$ = pow($1,$3); }
-| exp GT  exp           { $$ = gt_($1,$3); }
-| exp GE exp            { $$ = ge_($1,$3); }
-| exp EE exp            { $$ = ee_($1,$3); }
-| exp NE exp            { $$ = ne_($1,$3); }
-| exp LE exp            { $$ = le_($1,$3); }
-| exp LT  exp           { $$ = lt_($1,$3); }
-| exp OR exp            { $$ = or_($1,$3); }
-| exp AND exp           { $$ = and_($1,$3); }
-| NOT exp               { $$ = not_($2); }
+| exp PLUS exp          { $$ = drv->add($1,$3); }
+| exp MINUS exp         { $$ = drv->sub($1,$3); }
+| exp STAR exp          { $$ = drv->mul($1,$3); }
+| exp SLASH exp         { $$ = drv->div($1,$3); }
+| exp PERCENT exp       { $$ = drv->mod($1,$3); }
+| exp HAT exp           { $$ = drv->pow($1,$3); }
+| exp GT  exp           { $$ = drv->gt($1,$3); }
+| exp GE exp            { $$ = drv->ge($1,$3); }
+| exp EE exp            { $$ = drv->ee($1,$3); }
+| exp NE exp            { $$ = drv->ne($1,$3); }
+| exp LE exp            { $$ = drv->le($1,$3); }
+| exp LT  exp           { $$ = drv->lt($1,$3); }
+| exp OR exp            { $$ = drv->_or($1,$3); }
+| exp AND exp           { $$ = drv->_and($1,$3); }
+| NOT exp               { $$ = drv->_not($2); }
 | LPAREN exp RPAREN     { $$ = $2; }
 ;
 
