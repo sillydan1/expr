@@ -5,7 +5,7 @@
 template<typename T1, typename T2>
 auto t_modulo(const T1&, const T2&) {
     std::ostringstream ss{};
-    ss << "Unable to multiply type " << typeid(T1).name() << " and " << typeid(T2).name();
+    ss << "Unable to modulo type " << typeid(T1).name() << " and " << typeid(T2).name();
     throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
