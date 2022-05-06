@@ -64,7 +64,7 @@
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
 %token <std::string> STRING "string"
-%nterm <symbol_value_t> lit exp
+%nterm <symbol_value_t> lit exp bin_op mono_op
 %printer { yyo << $$; } <*>;
 
 %left OR
@@ -93,7 +93,12 @@ statement:
 
 exp:
   lit                   { $$ = $1; }
-| exp PLUS exp          { $$ = drv->add($1,$3); }
+| bin_op                { $$ = $1; }
+| mono_op               { $$ = $1; }
+;
+
+bin_op:
+  exp PLUS exp          { $$ = drv->add($1,$3); }
 | exp MINUS exp         { $$ = drv->sub($1,$3); }
 | exp STAR exp          { $$ = drv->mul($1,$3); }
 | exp SLASH exp         { $$ = drv->div($1,$3); }
@@ -107,7 +112,10 @@ exp:
 | exp LT  exp           { $$ = drv->lt($1,$3); }
 | exp OR exp            { $$ = drv->_or($1,$3); }
 | exp AND exp           { $$ = drv->_and($1,$3); }
-| NOT exp               { $$ = drv->_not($2); }
+;
+
+mono_op:
+  NOT exp               { $$ = drv->_not($2); }
 | LPAREN exp RPAREN     { $$ = $2; }
 ;
 

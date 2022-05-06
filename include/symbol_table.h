@@ -42,4 +42,11 @@ symbol_table_t operator+(const symbol_table_t& a, const symbol_table_t& b);
 std::ostream& operator<<(std::ostream& os, const symbol_value_t& v);
 std::ostream& operator<<(std::ostream& os, const symbol_table_t& m);
 
+namespace expr {
+    using underlying_syntax_node_t = std::variant<symbol_value_t, std::string>;
+    struct syntax_node_t : public underlying_syntax_node_t {
+
+    };
+}
+
 #endif

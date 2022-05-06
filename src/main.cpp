@@ -18,7 +18,7 @@ int main (int argc, char *argv[]) {
             {"compile", 'c',      argument_requirement::NO_ARG, "compile expression instead of interpretation"},
     };
     auto cli_arguments = get_arguments(my_options, argc, argv);
-    if(cli_arguments["help"]) {
+    if(cli_arguments["help"] || !cli_arguments["expression"]) {
         std::cout
                 << "=================== Welcome to the " << PROJECT_NAME << " v" << PROJECT_VER << " demo ==================\n"
                 << "USAGE: " << argv[0] << " [OPTIONS]\n"
@@ -43,7 +43,12 @@ int main (int argc, char *argv[]) {
             drv = std::make_unique<expr::parser>(env);
         drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
         drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
-        return drv->parse(cli_arguments["expression"].as_string());
+        auto res = drv->parse(cli_arguments["expression"].as_string());
+        if(res != 0)
+            std::cout << drv->error;
+        else
+            std::cout << drv->result;
+        return res;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;
