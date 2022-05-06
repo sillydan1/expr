@@ -9,6 +9,7 @@ find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 CPMAddPackage("gh:sillydan1/overload#1.0.0")
 CPMAddPackage("gh:sillydan1/yatree@1.0.0")
+CPMAddPackage("gh:sillydan1/argvparse@1.2.2")
 BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
@@ -18,6 +19,7 @@ include_directories(${overload_SOURCE_DIR}/include)
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
         ${yatree_SOURCE_DIR}/include
+        ${argvparse_SOURCE_DIR}/include
         include
         src
 )
@@ -38,4 +40,4 @@ add_library(${PROJECT_NAME} SHARED
 add_executable(${PROJECT_NAME}_demo
         src/main.cpp
 )
-target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)
