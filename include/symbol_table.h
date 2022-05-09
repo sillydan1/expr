@@ -1,10 +1,13 @@
 #ifndef EXPR_SYMBOL_TABLE_H
 #define EXPR_SYMBOL_TABLE_H
+#include <utility>
 #include <variant>
 #include <map>
 #include <functional>
 #include <iostream>
 #include <sstream>
+#include <tree>
+#include "overload.h"
 
 using underlying_symbol_value_t = std::variant<int,float,bool,std::string>;
 struct symbol_value_t : public underlying_symbol_value_t {
@@ -43,10 +46,17 @@ std::ostream& operator<<(std::ostream& os, const symbol_value_t& v);
 std::ostream& operator<<(std::ostream& os, const symbol_table_t& m);
 
 namespace expr {
-    using underlying_syntax_node_t = std::variant<symbol_value_t, std::string>;
-    struct syntax_node_t : public underlying_syntax_node_t {
-
+    struct operator_t {
+        std::string operator_str;
+        explicit operator_t(std::string s) : operator_str{std::move(s)} {}
     };
+    struct root_t {};
+    using syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
+    using syntax_tree_t = tree<syntax_node_t>;
 }
+
+auto operator<<(std::ostream& o, const expr::operator_t& p) -> std::ostream&;
+auto operator<<(std::ostream& o, const expr::root_t& r) -> std::ostream&;
+auto operator<<(std::ostream& o, const expr::syntax_node_t& n) -> std::ostream&;
 
 #endif
