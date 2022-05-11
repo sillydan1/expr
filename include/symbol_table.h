@@ -15,7 +15,7 @@ struct symbol_value_t : public underlying_symbol_value_t {
     template<typename T>
     symbol_value_t(const T& x) : underlying_symbol_value_t(x) {}
     template<typename T>
-    symbol_value_t& operator=(const T& t) {
+    auto& operator=(const T& t) {
         this->underlying_symbol_value_t::operator=(t);
         return *this;
     }
@@ -45,18 +45,27 @@ symbol_table_t operator+(const symbol_table_t& a, const symbol_table_t& b);
 std::ostream& operator<<(std::ostream& os, const symbol_value_t& v);
 std::ostream& operator<<(std::ostream& os, const symbol_table_t& m);
 
-namespace expr {
-    struct operator_t {
-        std::string operator_str;
-        explicit operator_t(std::string s) : operator_str{std::move(s)} {}
-    };
-    struct root_t {};
-    using syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
-    using syntax_tree_t = tree<syntax_node_t>;
-}
+struct operator_t {
+    std::string operator_str;
+    explicit operator_t(std::string s) : operator_str{std::move(s)} {}
+};
+struct root_t {};
+// using syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
+using underlying_syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
+struct syntax_node_t : public underlying_syntax_node_t {
+    syntax_node_t() : underlying_syntax_node_t{root_t{}} {}
+    template<typename T>
+    syntax_node_t(const T& t) : underlying_syntax_node_t{t} {}
+    template<typename T>
+    auto& operator=(const T& t) {
+        this->underlying_syntax_node_t::operator=(t);
+        return *this;
+    }
+};
+using syntax_tree_t = tree<syntax_node_t>;
 
-auto operator<<(std::ostream& o, const expr::operator_t& p) -> std::ostream&;
-auto operator<<(std::ostream& o, const expr::root_t& r) -> std::ostream&;
-auto operator<<(std::ostream& o, const expr::syntax_node_t& n) -> std::ostream&;
+auto operator<<(std::ostream& o, const operator_t& p) -> std::ostream&;
+auto operator<<(std::ostream& o, const root_t& r) -> std::ostream&;
+auto operator<<(std::ostream& o, const syntax_node_t& n) -> std::ostream&;
 
 #endif

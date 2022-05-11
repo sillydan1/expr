@@ -64,8 +64,9 @@
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
 %token <std::string> STRING "string"
-%nterm <symbol_value_t> lit exp bin_op mono_op
-%printer { yyo << $$; } <*>;
+%nterm <syntax_tree_t> exp bin_op mono_op
+%nterm <symbol_value_t> lit
+%printer { /*yyo << $$;*/ } <*>;
 
 %left OR
 %left AND
@@ -76,7 +77,7 @@
 %start unit;
 unit:
   statements    { }
-| exp           { drv->expression_result = $1; }
+| exp           { drv->add_tree("expression_result", $1); }
 ;
 
 statements:
@@ -85,38 +86,38 @@ statements:
 ;
 
 statement:
-  "identifier" ASSIGN exp                          { drv->set_symbol($1, $3); }
-| "type" "identifier" ASSIGN exp                   { drv->set_symbol($2, $4); }
-| "access_modifier" "type" "identifier" ASSIGN exp { drv->set_symbol($3, $5); }
+  "identifier" ASSIGN exp                          { drv->add_tree($1, syntax_tree_t{root_t{}}.concat($3)); }
+| "type" "identifier" ASSIGN exp                   { drv->add_tree($2, syntax_tree_t{root_t{}}.concat($4)); }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv->add_tree($3, syntax_tree_t{root_t{}}.concat($5)); }
 | statement TERM                                   { }
 ;
 
 exp:
-  lit                   { $$ = $1; }
+  lit                   { $$ = syntax_tree_t{$1}; }
 | bin_op                { $$ = $1; }
 | mono_op               { $$ = $1; }
 ;
 
 bin_op:
-  exp PLUS exp          { $$ = drv->add($1,$3); }
-| exp MINUS exp         { $$ = drv->sub($1,$3); }
-| exp STAR exp          { $$ = drv->mul($1,$3); }
-| exp SLASH exp         { $$ = drv->div($1,$3); }
-| exp PERCENT exp       { $$ = drv->mod($1,$3); }
-| exp HAT exp           { $$ = drv->pow($1,$3); }
-| exp GT  exp           { $$ = drv->gt($1,$3); }
-| exp GE exp            { $$ = drv->ge($1,$3); }
-| exp EE exp            { $$ = drv->ee($1,$3); }
-| exp NE exp            { $$ = drv->ne($1,$3); }
-| exp LE exp            { $$ = drv->le($1,$3); }
-| exp LT  exp           { $$ = drv->lt($1,$3); }
-| exp OR exp            { $$ = drv->_or($1,$3); }
-| exp AND exp           { $$ = drv->_and($1,$3); }
+  exp PLUS exp          { $$ = syntax_tree_t{operator_t{"+"}}.concat($1).concat($3); }
+| exp MINUS exp         { $$ = syntax_tree_t{operator_t{"-"}}.concat($1).concat($3); }
+| exp STAR exp          { $$ = syntax_tree_t{operator_t{"*"}}.concat($1).concat($3); }
+| exp SLASH exp         { $$ = syntax_tree_t{operator_t{"/"}}.concat($1).concat($3); }
+| exp PERCENT exp       { $$ = syntax_tree_t{operator_t{"%"}}.concat($1).concat($3); }
+| exp HAT exp           { $$ = syntax_tree_t{operator_t{"^"}}.concat($1).concat($3); }
+| exp GT  exp           { $$ = syntax_tree_t{operator_t{">"}}.concat($1).concat($3); }
+| exp GE exp            { $$ = syntax_tree_t{operator_t{">="}}.concat($1).concat($3); }
+| exp EE exp            { $$ = syntax_tree_t{operator_t{"=="}}.concat($1).concat($3); }
+| exp NE exp            { $$ = syntax_tree_t{operator_t{"!="}}.concat($1).concat($3); }
+| exp LE exp            { $$ = syntax_tree_t{operator_t{"<="}}.concat($1).concat($3); }
+| exp LT  exp           { $$ = syntax_tree_t{operator_t{"<"}}.concat($1).concat($3); }
+| exp OR exp            { $$ = syntax_tree_t{operator_t{"||"}}.concat($1).concat($3); }
+| exp AND exp           { $$ = syntax_tree_t{operator_t{"&&"}}.concat($1).concat($3); }
 ;
 
 mono_op:
-  NOT exp               { $$ = drv->_not($2); }
-| LPAREN exp RPAREN     { $$ = $2; }
+  NOT exp               { $$ = syntax_tree_t{operator_t{"!"}}.concat($2); }
+| LPAREN exp RPAREN     { $$ = syntax_tree_t{operator_t{"()"}}.concat($2); }
 ;
 
 lit:

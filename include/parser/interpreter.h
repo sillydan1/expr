@@ -3,13 +3,14 @@
 #include "parser/driver.h"
 
 namespace expr {
-    struct interpreter : public driver {
+    struct interpreter : public driver, arithmetic_operator, boolean_operator, compare_operator {
         explicit interpreter(const symbol_table_t &env);
         ~interpreter() override = default;
 
         auto parse(const std::string &f) -> int override;
         auto get_symbol(const std::string& identifier) -> symbol_value_t override;
         void set_symbol(const std::string& identifier, const symbol_value_t& value) override;
+        void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
 
         auto add(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return a + b; };
         auto sub(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return a - b; };
@@ -28,6 +29,13 @@ namespace expr {
         auto ne(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return ne_(a,b); }
         auto le(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return le_(a,b); }
         auto lt(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return lt_(a,b); }
+
+        symbol_table_t result{};
+        symbol_value_t error{};
+        symbol_value_t expression_result{};
+
+    private:
+        const symbol_table_t &environment{};
     };
 }
 

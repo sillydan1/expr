@@ -28,9 +28,9 @@ std::ostream& operator<<(std::ostream& os, const symbol_table_t& m) {
     return os;
 }
 
-auto operator<<(std::ostream &o, const expr::operator_t &p) -> std::ostream & { return o << p.operator_str; }
-auto operator<<(std::ostream &o, const expr::root_t &r) -> std::ostream & { return o << "ROOT"; }
-auto operator<<(std::ostream &o, const expr::syntax_node_t &n) -> std::ostream & {
+auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream & { return o << p.operator_str; }
+auto operator<<(std::ostream &o, const root_t &r) -> std::ostream & { return o << "ROOT"; }
+auto operator<<(std::ostream &o, const syntax_node_t &n) -> std::ostream & {
     std::visit(overload(
             [&o](auto &&x) { o << x; }
     ), n);

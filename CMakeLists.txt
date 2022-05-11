@@ -8,8 +8,9 @@ set(CXX_STANDARD_REQUIRED ON)
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 CPMAddPackage("gh:sillydan1/overload#1.0.0")
-CPMAddPackage("gh:sillydan1/yatree@1.0.0")
+CPMAddPackage("gh:sillydan1/yatree@1.0.1")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.2")
+CPMAddPackage("gh:sillydan1/tinytimer@1.0.0")
 BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
@@ -20,6 +21,7 @@ include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
         ${yatree_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
+        ${tinytimer_SOURCE_DIR}/
         include
         src
 )

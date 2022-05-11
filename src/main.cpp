@@ -3,6 +3,19 @@
 #include "config.h"
 #include "parser/parser.h"
 #include <argvparse.h>
+#include <Timer.hpp>
+
+void print_thing(const syntax_tree_t& tree) {
+    if(tree.children.empty()) {
+        std::cout << tree.node << " ";
+        return;
+    }
+    std::cout << tree.node;
+    std::cout << "(";
+    for(auto& c : tree.children)
+        print_thing(c);
+    std::cout << ")";
+}
 
 int main (int argc, char *argv[]) {
     using namespace expr;
@@ -38,16 +51,18 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     try {
-        std::unique_ptr<driver> drv = std::make_unique<interpreter>(env);
-        if(cli_arguments["compile"])
-            drv = std::make_unique<expr::parser>(env);
+        std::unique_ptr<interpreter> drv = std::make_unique<interpreter>(env);
+        // if(cli_arguments["compile"])
+        //     drv = std::make_unique<expr::parser>(env);
         drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
         drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
+        Timer<int> t{}; t.start();
         auto res = drv->parse(cli_arguments["expression"].as_string());
         if(res != 0)
-            std::cout << drv->error;
+            std::cout << "error: " << drv->error;
         else
-            std::cout << drv->result;
+            std::cout << "result: " << drv->result;
+        std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
         return res;
     } catch(const std::exception& e) {
         std::cout << e.what() << std::endl;
