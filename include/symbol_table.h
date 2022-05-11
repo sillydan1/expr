@@ -79,5 +79,6 @@ auto operator<<(std::ostream& o, const symbol_reference_t& r) -> std::ostream&;
 auto operator<<(std::ostream& o, const c_symbol_reference_t& r) -> std::ostream&;
 auto operator<<(std::ostream& o, const syntax_node_t& n) -> std::ostream&;
 auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream&;
+auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
 
 #endif

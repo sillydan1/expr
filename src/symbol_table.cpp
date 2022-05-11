@@ -62,8 +62,22 @@ auto operator<<(std::ostream &o, const syntax_node_t &n) -> std::ostream & {
     ), n);
     return o;
 }
+void print_thing(std::ostream& o, const syntax_tree_t& tree) {
+    if(tree.children.empty()) {
+        o << tree.node << " ";
+        return;
+    }
+    o << tree.node;
+    o << "(";
+    for(auto& c : tree.children)
+        print_thing(o, c);
+    o << ")";
+}
 auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream& {
-    auto pipe_fn = [&o](const syntax_tree_t& t) { o << t.node; };
-    t.apply_dfs(pipe_fn);
+    print_thing(o, t);
     return o;
+}
+
+auto evaluate(const syntax_tree_t& tree) -> symbol_value_t {
+
 }

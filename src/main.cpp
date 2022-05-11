@@ -1,21 +1,8 @@
 #include <iostream>
 #include "parser/interpreter.h"
 #include "config.h"
-#include "parser/parser.h"
 #include <argvparse.h>
 #include <Timer.hpp>
-
-void print_thing(const syntax_tree_t& tree) {
-    if(tree.children.empty()) {
-        std::cout << tree.node << " ";
-        return;
-    }
-    std::cout << tree.node;
-    std::cout << "(";
-    for(auto& c : tree.children)
-        print_thing(c);
-    std::cout << ")";
-}
 
 int main (int argc, char *argv[]) {
     using namespace expr;

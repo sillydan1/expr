@@ -41,6 +41,6 @@ namespace expr {
     }
 
     void interpreter::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
-        
+        std::cout << identifier << ": " << tree << "\n";
     }
 }
