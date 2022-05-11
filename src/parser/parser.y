@@ -35,7 +35,6 @@
 %define api.token.prefix {TOK_}
 %token YYEOF 0
 %token
-  ASSIGN  ":="
   MINUS   "-"
   PLUS    "+"
   STAR    "*"
@@ -53,6 +52,7 @@
   NOT     "!"
   LPAREN  "("
   RPAREN  ")"
+  ASSIGN  ":="
   ACCMOD  "access_modifier"
   TYPE    "type"
   TERM    ";"
@@ -66,7 +66,7 @@
 %token <std::string> STRING "string"
 %nterm <syntax_tree_t> exp bin_op mono_op
 %nterm <symbol_value_t> lit
-%printer { /*yyo << $$;*/ } <*>;
+%printer { yyo << $$; } <*>;
 
 %left OR
 %left AND
@@ -86,9 +86,9 @@ statements:
 ;
 
 statement:
-  "identifier" ASSIGN exp                          { drv->add_tree($1, syntax_tree_t{root_t{}}.concat($3)); }
-| "type" "identifier" ASSIGN exp                   { drv->add_tree($2, syntax_tree_t{root_t{}}.concat($4)); }
-| "access_modifier" "type" "identifier" ASSIGN exp { drv->add_tree($3, syntax_tree_t{root_t{}}.concat($5)); }
+  "identifier" ASSIGN exp                          { drv->add_tree($1, syntax_tree_t{}.concat($3)); }
+| "type" "identifier" ASSIGN exp                   { drv->add_tree($2, syntax_tree_t{}.concat($4)); }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv->add_tree($3, syntax_tree_t{}.concat($5)); }
 | statement TERM                                   { }
 ;
 
@@ -99,25 +99,25 @@ exp:
 ;
 
 bin_op:
-  exp PLUS exp          { $$ = syntax_tree_t{operator_t{"+"}}.concat($1).concat($3); }
-| exp MINUS exp         { $$ = syntax_tree_t{operator_t{"-"}}.concat($1).concat($3); }
-| exp STAR exp          { $$ = syntax_tree_t{operator_t{"*"}}.concat($1).concat($3); }
-| exp SLASH exp         { $$ = syntax_tree_t{operator_t{"/"}}.concat($1).concat($3); }
-| exp PERCENT exp       { $$ = syntax_tree_t{operator_t{"%"}}.concat($1).concat($3); }
-| exp HAT exp           { $$ = syntax_tree_t{operator_t{"^"}}.concat($1).concat($3); }
-| exp GT  exp           { $$ = syntax_tree_t{operator_t{">"}}.concat($1).concat($3); }
-| exp GE exp            { $$ = syntax_tree_t{operator_t{">="}}.concat($1).concat($3); }
-| exp EE exp            { $$ = syntax_tree_t{operator_t{"=="}}.concat($1).concat($3); }
-| exp NE exp            { $$ = syntax_tree_t{operator_t{"!="}}.concat($1).concat($3); }
-| exp LE exp            { $$ = syntax_tree_t{operator_t{"<="}}.concat($1).concat($3); }
-| exp LT  exp           { $$ = syntax_tree_t{operator_t{"<"}}.concat($1).concat($3); }
-| exp OR exp            { $$ = syntax_tree_t{operator_t{"||"}}.concat($1).concat($3); }
-| exp AND exp           { $$ = syntax_tree_t{operator_t{"&&"}}.concat($1).concat($3); }
+  exp PLUS exp          { $$ = syntax_tree_t{operator_t{operator_type_t::plus}}.concat($1).concat($3); }
+| exp MINUS exp         { $$ = syntax_tree_t{operator_t{operator_type_t::minus}}.concat($1).concat($3); }
+| exp STAR exp          { $$ = syntax_tree_t{operator_t{operator_type_t::star}}.concat($1).concat($3); }
+| exp SLASH exp         { $$ = syntax_tree_t{operator_t{operator_type_t::slash}}.concat($1).concat($3); }
+| exp PERCENT exp       { $$ = syntax_tree_t{operator_t{operator_type_t::percent}}.concat($1).concat($3); }
+| exp HAT exp           { $$ = syntax_tree_t{operator_t{operator_type_t::hat}}.concat($1).concat($3); }
+| exp GT  exp           { $$ = syntax_tree_t{operator_t{operator_type_t::gt}}.concat($1).concat($3); }
+| exp GE exp            { $$ = syntax_tree_t{operator_t{operator_type_t::ge}}.concat($1).concat($3); }
+| exp EE exp            { $$ = syntax_tree_t{operator_t{operator_type_t::ee}}.concat($1).concat($3); }
+| exp NE exp            { $$ = syntax_tree_t{operator_t{operator_type_t::ne}}.concat($1).concat($3); }
+| exp LE exp            { $$ = syntax_tree_t{operator_t{operator_type_t::le}}.concat($1).concat($3); }
+| exp LT  exp           { $$ = syntax_tree_t{operator_t{operator_type_t::lt}}.concat($1).concat($3); }
+| exp OR exp            { $$ = syntax_tree_t{operator_t{operator_type_t::_or}}.concat($1).concat($3); }
+| exp AND exp           { $$ = syntax_tree_t{operator_t{operator_type_t::_and}}.concat($1).concat($3); }
 ;
 
 mono_op:
-  NOT exp               { $$ = syntax_tree_t{operator_t{"!"}}.concat($2); }
-| LPAREN exp RPAREN     { $$ = syntax_tree_t{operator_t{"()"}}.concat($2); }
+  NOT exp               { $$ = syntax_tree_t{operator_t{operator_type_t::_not}}.concat($2); }
+| LPAREN exp RPAREN     { $$ = syntax_tree_t{operator_t{operator_type_t::parentheses}}.concat($2); }
 ;
 
 lit:

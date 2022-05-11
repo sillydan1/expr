@@ -28,7 +28,27 @@ std::ostream& operator<<(std::ostream& os, const symbol_table_t& m) {
     return os;
 }
 
-auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream & { return o << p.operator_str; }
+auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream & {
+    switch(p.operator_type) {
+        case operator_type_t::minus:       return o << "+";
+        case operator_type_t::plus:        return o << "-";
+        case operator_type_t::star:        return o << "*";
+        case operator_type_t::slash:       return o << "/";
+        case operator_type_t::percent:     return o << "%";
+        case operator_type_t::hat:         return o << "^";
+        case operator_type_t::_and:        return o << "&&";
+        case operator_type_t::_or:         return o << "||";
+        case operator_type_t::_not:        return o << "!";
+        case operator_type_t::gt:          return o << ">";
+        case operator_type_t::ge:          return o << ">=";
+        case operator_type_t::ne:          return o << "!=";
+        case operator_type_t::ee:          return o << "==";
+        case operator_type_t::le:          return o << "<=";
+        case operator_type_t::lt:          return o << "<";
+        case operator_type_t::parentheses: return o << "()";
+        default: return o << "unknown";
+    }
+}
 auto operator<<(std::ostream &o, const root_t &r) -> std::ostream & { return o << "ROOT"; }
 auto operator<<(std::ostream &o, const syntax_node_t &n) -> std::ostream & {
     std::visit(overload(
@@ -36,3 +56,9 @@ auto operator<<(std::ostream &o, const syntax_node_t &n) -> std::ostream & {
     ), n);
     return o;
 }
+auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream& {
+    auto pipe_fn = [&o](const syntax_tree_t& t) { o << t.node; };
+    t.apply_dfs(pipe_fn);
+    return o;
+}
+

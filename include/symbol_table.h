@@ -45,9 +45,15 @@ symbol_table_t operator+(const symbol_table_t& a, const symbol_table_t& b);
 std::ostream& operator<<(std::ostream& os, const symbol_value_t& v);
 std::ostream& operator<<(std::ostream& os, const symbol_table_t& m);
 
+enum class operator_type_t {
+    minus, plus, star, slash, percent, hat,
+    _and, _or, _not,
+    gt, ge, ne, ee, le, lt,
+    parentheses
+};
 struct operator_t {
-    std::string operator_str;
-    explicit operator_t(std::string s) : operator_str{std::move(s)} {}
+    operator_type_t operator_type;
+    explicit operator_t(operator_type_t t) : operator_type{t} {}
 };
 struct root_t {};
 // using syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
@@ -67,5 +73,6 @@ using syntax_tree_t = tree<syntax_node_t>;
 auto operator<<(std::ostream& o, const operator_t& p) -> std::ostream&;
 auto operator<<(std::ostream& o, const root_t& r) -> std::ostream&;
 auto operator<<(std::ostream& o, const syntax_node_t& n) -> std::ostream&;
+auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream&;
 
 #endif
