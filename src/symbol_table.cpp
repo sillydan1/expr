@@ -49,7 +49,13 @@ auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream & {
         default: return o << "unknown";
     }
 }
-auto operator<<(std::ostream &o, const root_t &r) -> std::ostream & { return o << "ROOT"; }
+auto operator<<(std::ostream& o, const root_t &r) -> std::ostream & { return o << "ROOT"; }
+auto operator<<(std::ostream& o, const symbol_reference_t& r) -> std::ostream& {
+    return o << r->first << " :-> " << r->second;
+}
+auto operator<<(std::ostream& o, const c_symbol_reference_t& r) -> std::ostream& {
+    return o << r->first << " :-> " << r->second;
+}
 auto operator<<(std::ostream &o, const syntax_node_t &n) -> std::ostream & {
     std::visit(overload(
             [&o](auto &&x) { o << x; }
@@ -61,4 +67,3 @@ auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream& {
     t.apply_dfs(pipe_fn);
     return o;
 }
-

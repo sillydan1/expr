@@ -28,12 +28,12 @@ namespace expr {
         }
     }
 
-    auto interpreter::get_symbol(const std::string &identifier) -> symbol_value_t  {
+    auto interpreter::get_symbol(const std::string &identifier) -> syntax_tree_t {
 #ifndef NDEBUG
         if (!environment.contains(identifier))
             throw std::out_of_range(identifier + " not found");
 #endif
-        return environment.at(identifier);
+        return syntax_tree_t{environment.find(identifier)};
     }
 
     void interpreter::set_symbol(const std::string &identifier, const symbol_value_t &value) {

@@ -13,7 +13,7 @@ using underlying_symbol_value_t = std::variant<int,float,bool,std::string>;
 struct symbol_value_t : public underlying_symbol_value_t {
     symbol_value_t() = default;
     template<typename T>
-    symbol_value_t(const T& x) : underlying_symbol_value_t(x) {}
+    symbol_value_t(const T& x) : underlying_symbol_value_t{x} { }
     template<typename T>
     auto& operator=(const T& t) {
         this->underlying_symbol_value_t::operator=(t);
@@ -55,13 +55,16 @@ struct operator_t {
     operator_type_t operator_type;
     explicit operator_t(operator_type_t t) : operator_type{t} {}
 };
+using symbol_reference_t = symbol_table_t::iterator;
+using c_symbol_reference_t = symbol_table_t::const_iterator;
 struct root_t {};
-// using syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
-using underlying_syntax_node_t = std::variant<symbol_value_t, operator_t, root_t>;
+using underlying_syntax_node_t = std::variant<symbol_reference_t, c_symbol_reference_t, operator_t, root_t, symbol_value_t>;
 struct syntax_node_t : public underlying_syntax_node_t {
     syntax_node_t() : underlying_syntax_node_t{root_t{}} {}
     template<typename T>
     syntax_node_t(const T& t) : underlying_syntax_node_t{t} {}
+    syntax_node_t(symbol_reference_t r) : underlying_syntax_node_t{r} {}
+    syntax_node_t(c_symbol_reference_t r) : underlying_syntax_node_t{r} {}
     template<typename T>
     auto& operator=(const T& t) {
         this->underlying_syntax_node_t::operator=(t);
@@ -72,6 +75,8 @@ using syntax_tree_t = tree<syntax_node_t>;
 
 auto operator<<(std::ostream& o, const operator_t& p) -> std::ostream&;
 auto operator<<(std::ostream& o, const root_t& r) -> std::ostream&;
+auto operator<<(std::ostream& o, const symbol_reference_t& r) -> std::ostream&;
+auto operator<<(std::ostream& o, const c_symbol_reference_t& r) -> std::ostream&;
 auto operator<<(std::ostream& o, const syntax_node_t& n) -> std::ostream&;
 auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream&;
 

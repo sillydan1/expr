@@ -96,6 +96,7 @@ exp:
   lit                   { $$ = syntax_tree_t{$1}; }
 | bin_op                { $$ = $1; }
 | mono_op               { $$ = $1; }
+| "identifier"          { $$ = drv->get_symbol($1); }
 ;
 
 bin_op:
@@ -127,7 +128,6 @@ lit:
 | MINUS "float"  { $$ = -$2; }
 | "string"       { $$ = $1; }
 | "bool"         { $$ = $1; }
-| "identifier"   { $$ = drv->get_symbol($1); }
 ;
 %%
 

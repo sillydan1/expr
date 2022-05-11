@@ -7,7 +7,7 @@ namespace expr {
     public:
         explicit parser(const symbol_table_t &env) : driver{env} {}
         int parse(const std::string &f) override;
-        auto get_symbol(const std::string &identifier) -> symbol_value_t override;
+        auto get_symbol(const std::string &identifier) -> syntax_tree_t override;
         void set_symbol(const std::string &identifier, const symbol_value_t &value) override;
     };
 }
