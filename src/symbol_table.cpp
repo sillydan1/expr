@@ -56,7 +56,7 @@ auto operator<<(std::ostream& o, const symbol_reference_t& r) -> std::ostream& {
 auto operator<<(std::ostream& o, const c_symbol_reference_t& r) -> std::ostream& {
     return o << r->first << " :-> " << r->second;
 }
-auto operator<<(std::ostream &o, const syntax_node_t &n) -> std::ostream & {
+auto operator<<(std::ostream &o, const underlying_syntax_node_t& n) -> std::ostream & {
     std::visit(overload(
             [&o](auto &&x) { o << x; }
     ), n);
@@ -79,5 +79,5 @@ auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream& {
 }
 
 auto evaluate(const syntax_tree_t& tree) -> symbol_value_t {
-
+    return {};
 }

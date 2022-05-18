@@ -3,6 +3,7 @@
 #include "config.h"
 #include <argvparse.h>
 #include <Timer.hpp>
+#include <memory>
 
 int main (int argc, char *argv[]) {
     using namespace expr;
