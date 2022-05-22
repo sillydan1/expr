@@ -77,7 +77,3 @@ auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream& {
     print_thing(o, t);
     return o;
 }
-
-auto evaluate(const syntax_tree_t& tree) -> symbol_value_t {
-    return {};
-}

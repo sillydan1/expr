@@ -37,6 +37,7 @@ namespace expr {
     private:
         const symbol_table_t &environment{};
     };
+    auto evaluate(const syntax_tree_t& tree, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_value_t;
 }
 
 #endif
