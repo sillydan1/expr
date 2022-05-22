@@ -77,7 +77,7 @@
 %start unit;
 unit:
   statements    { }
-| exp           { drv->add_tree("expression_result", $1); }
+| exp           { drv->add_tree($1); }
 ;
 
 statements:

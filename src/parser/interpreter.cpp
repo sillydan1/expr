@@ -40,6 +40,10 @@ namespace expr {
         result[identifier] = value;
     }
 
+    void interpreter::add_tree(const syntax_tree_t& tree) {
+        expression_result = evaluate(tree, *this, *this, *this);
+    }
+
     void interpreter::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
         set_symbol(identifier, evaluate(tree, *this, *this, *this));
     }
