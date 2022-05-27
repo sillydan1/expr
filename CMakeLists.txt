@@ -29,7 +29,7 @@ add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
         src/parser/interpreter.cpp
-        src/parser/parser.cpp
+        src/parser/compiler.cpp
         src/symbol_table.cpp
         src/operations/add.cpp
         src/operations/subtract.cpp

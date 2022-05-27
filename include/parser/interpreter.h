@@ -1,5 +1,6 @@
 #ifndef EXPR_INTERPRETER_H
 #define EXPR_INTERPRETER_H
+#include "operations.h"
 #include "parser/driver.h"
 
 namespace expr {
@@ -9,7 +10,6 @@ namespace expr {
 
         auto parse(const std::string &f) -> int override;
         auto get_symbol(const std::string& identifier) -> syntax_tree_t override;
-        void set_symbol(const std::string& identifier, const symbol_value_t& value) override;
         void add_tree(const syntax_tree_t& tree) override;
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
 

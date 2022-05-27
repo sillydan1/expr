@@ -30,8 +30,8 @@ std::ostream& operator<<(std::ostream& os, const symbol_table_t& m) {
 
 auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream & {
     switch(p.operator_type) {
-        case operator_type_t::minus:       return o << "+";
-        case operator_type_t::plus:        return o << "-";
+        case operator_type_t::minus:       return o << "-";
+        case operator_type_t::plus:        return o << "+";
         case operator_type_t::star:        return o << "*";
         case operator_type_t::slash:       return o << "/";
         case operator_type_t::percent:     return o << "%";
@@ -62,18 +62,12 @@ auto operator<<(std::ostream &o, const underlying_syntax_node_t& n) -> std::ostr
     ), n);
     return o;
 }
-void print_thing(std::ostream& o, const syntax_tree_t& tree) {
-    if(tree.children.empty()) {
-        o << tree.node << " ";
-        return;
-    }
+auto operator<<(std::ostream& o, const syntax_tree_t& tree) -> std::ostream& {
+    if(tree.children.empty())
+        return o << tree.node << " ";
     o << tree.node;
-    o << "(";
+    o << "[";
     for(auto& c : tree.children)
-        print_thing(o, c);
-    o << ")";
-}
-auto operator<<(std::ostream& o, const syntax_tree_t& t) -> std::ostream& {
-    print_thing(o, t);
-    return o;
+        o << c;
+    return o << "]";
 }

@@ -3,7 +3,7 @@
 #include "parser.hpp"
 
 namespace expr {
-    interpreter::interpreter(const symbol_table_t& map) : environment{map}, driver{map} {
+    interpreter::interpreter(const symbol_table_t& map) : environment{map}, driver{} {
     }
 
     int interpreter::parse(const std::string &f) {
@@ -36,16 +36,12 @@ namespace expr {
         return syntax_tree_t{environment.find(identifier)};
     }
 
-    void interpreter::set_symbol(const std::string &identifier, const symbol_value_t &value) {
-        result[identifier] = value;
-    }
-
     void interpreter::add_tree(const syntax_tree_t& tree) {
         expression_result = evaluate(tree, *this, *this, *this);
     }
 
     void interpreter::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
-        set_symbol(identifier, evaluate(tree, *this, *this, *this));
+        result[identifier] = evaluate(tree, *this, *this, *this);
     }
 
     auto evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator) -> symbol_value_t {

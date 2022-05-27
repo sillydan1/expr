@@ -1,6 +1,7 @@
 #include <iostream>
 #include "parser/interpreter.h"
 #include "config.h"
+#include "parser/compiler.h"
 #include <argvparse.h>
 #include <Timer.hpp>
 #include <memory>
@@ -39,17 +40,27 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     try {
-        std::unique_ptr<interpreter> drv = std::make_unique<interpreter>(env);
-        // if(cli_arguments["compile"])
-        //     drv = std::make_unique<expr::parser>(env);
+        std::shared_ptr<driver> drv = std::make_shared<interpreter>(env);
+        if(cli_arguments["compile"])
+            drv = std::make_unique<compiler>(env);
         drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
         drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
-        Timer<int> t{}; t.start();
+        Timer<int> t{};
+        t.start();
         auto res = drv->parse(cli_arguments["expression"].as_string());
-        if(res != 0)
-            std::cout << "error: " << drv->error;
-        else
-            std::cout << "result: " << drv->result;
+        if(cli_arguments["compile"]) {
+            auto drv_c = std::dynamic_pointer_cast<compiler>(drv);
+            if(res != 0)
+                std::cout << "error: " << drv_c->error;
+            for(auto& tree : drv_c->trees)
+                std::cout << tree.first << ": " << tree.second << "\n";
+        } else {
+            auto drv_i = std::dynamic_pointer_cast<interpreter>(drv);
+            if (res != 0)
+                std::cout << "error: " << drv_i->error;
+            else
+                std::cout << "result: " << drv_i->result;
+        }
         std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
         return res;
     } catch(const std::exception& e) {

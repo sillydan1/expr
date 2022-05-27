@@ -30,13 +30,17 @@ try {                               // Errors are handled with exceptions
 }
 ```
 
-## Use CMake
+## Compilation Instructions
 This project is compiled through cmake, so you can simply configure the project and make it like so:
 ```shell
 mkdir bin && cd bin
 cmake ..
 make
 ```
+Note that because the flex/bison parser is generated at compile-time, your editor might complain about some invalid
+and/or incomplete types before you've called `make`. To fix this, simply call `make` once, and the `yy::parser` type should
+be generated for you.
+
 If you want to use the project in your own cmake project, simply include `expr` as a subdirectory and link
 with the `libexpr` library. The project is also tagged with release versions to be compatible with [cpm](https://github.com/cpm-cmake/CPM.cmake), 
 so if your project uses that, simply include the project like so:
