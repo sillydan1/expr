@@ -77,7 +77,7 @@ namespace expr {
                 [&v](const symbol_value_t& o){ v = o; },
                 [&](const root_t& r){ v = eval_wrapper(tree.children[0]); },
                 [](auto&&){ throw std::logic_error("operator type not recognized"); }
-        ), tree.node);
+        ), static_cast<const underlying_syntax_node_t&>(tree.node));
         return v;
     }
 }
