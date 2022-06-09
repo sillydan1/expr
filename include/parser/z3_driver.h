@@ -16,8 +16,10 @@ namespace expr {
 
         z3::context c{};
         z3::solver s;
+        symbol_table_t result{};
         void solve();
 
+        auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
         auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
         auto as_z3_expression(const symbol_reference_t& ref) -> z3::expr;
         auto as_z3_expression(const c_symbol_reference_t& ref) -> z3::expr;

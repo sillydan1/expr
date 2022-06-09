@@ -46,14 +46,25 @@ namespace expr {
             case z3::unknown: std::cout << "unknown\n"; break;
             case z3::sat:
                 auto m = s.get_model();
-                std::cout << m << "\n\n";
                 for(int i = 0; i < m.size(); i++) {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
-                    std::cout << xx.name().str() << " :-> " << interp.as_int64() << std::endl;
+                    result[xx.name().str()] = as_symbol_value(interp);
                 }
                 break;
         }
+    }
+
+    auto z3_driver::as_symbol_value(const z3::expr &e) -> symbol_value_t {
+        if(e.is_int())
+            return (int)e.as_int64();
+        if(e.is_fpa())
+            return (float)e.as_double();
+        if(e.is_bool())
+            return (bool)e;
+        if(e.is_string_value())
+            return e.get_string();
+        throw std::logic_error("uhh");
     }
 
     auto z3_driver::as_z3_expression(const symbol_value_t& val) -> z3::expr {

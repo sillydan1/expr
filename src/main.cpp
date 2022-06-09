@@ -70,7 +70,7 @@ int main (int argc, char *argv[]) {
         }
         if(cli_arguments["driver"].as_string() == "z3") {
             auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
-
+            std::cout << "result: " << drv_z->result;
         }
         std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
         return res;
