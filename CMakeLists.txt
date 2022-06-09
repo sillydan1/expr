@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.22)
 project(expr VERSION 1.3.2)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
@@ -11,6 +11,7 @@ CPMAddPackage("gh:sillydan1/overload#1.0.0")
 CPMAddPackage("gh:sillydan1/yatree@1.0.1")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.2")
 CPMAddPackage("gh:sillydan1/tinytimer@1.0.0")
+CPMAddPackage("gh:Z3Prover/z3#z3-4.8.17")
 BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
@@ -22,6 +23,7 @@ include_directories(
         ${yatree_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
         ${tinytimer_SOURCE_DIR}/
+        ${z3_SOURCE_DIR}/src/api
         include
         src
 )
@@ -30,6 +32,8 @@ add_library(${PROJECT_NAME} SHARED
         ${FLEX_expr_scanner_OUTPUTS}
         src/parser/interpreter.cpp
         src/parser/compiler.cpp
+        src/parser/z3_driver.cpp
+
         src/symbol_table.cpp
         src/operations/add.cpp
         src/operations/subtract.cpp
@@ -42,4 +46,5 @@ add_library(${PROJECT_NAME} SHARED
 add_executable(${PROJECT_NAME}_demo
         src/main.cpp
 )
+target_link_libraries(${PROJECT_NAME} libz3)
 target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)

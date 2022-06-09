@@ -2,6 +2,7 @@
 #include "parser/interpreter.h"
 #include "config.h"
 #include "parser/compiler.h"
+#include "parser/z3_driver.h"
 #include <argvparse.h>
 #include <Timer.hpp>
 #include <memory>
@@ -17,10 +18,10 @@ int main (int argc, char *argv[]) {
             {"expression", 'e',   argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
             {"parser-trace",'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
             {"scanner-trace",'s', argument_requirement::NO_ARG, "enable tracing for the scanner"},
-            {"compile", 'c',      argument_requirement::NO_ARG, "compile expression instead of interpretation"},
+            {"driver", 'd',       argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
     };
     auto cli_arguments = get_arguments(my_options, argc, argv);
-    if(cli_arguments["help"] || !cli_arguments["expression"]) {
+    if(cli_arguments["help"] || !cli_arguments["expression"] || !cli_arguments["driver"]) {
         std::cout
                 << "=================== Welcome to the " << PROJECT_NAME << " v" << PROJECT_VER << " demo ==================\n"
                 << "USAGE: " << argv[0] << " [OPTIONS]\n"
@@ -40,26 +41,36 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     try {
-        std::shared_ptr<driver> drv = std::make_shared<interpreter>(env);
-        if(cli_arguments["compile"])
-            drv = std::make_unique<compiler>(env);
+        std::shared_ptr<driver> drv{};
+        if(cli_arguments["driver"].as_string() == "compiler")
+            drv = std::make_shared<compiler>(env);
+        if(cli_arguments["driver"].as_string() == "interpreter")
+            drv = std::make_shared<interpreter>(env);
+        if(cli_arguments["driver"].as_string() == "z3")
+            drv = std::make_shared<z3_driver>(env);
+
         drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
         drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
         Timer<int> t{};
         t.start();
         auto res = drv->parse(cli_arguments["expression"].as_string());
-        if(cli_arguments["compile"]) {
+        if(res != 0) {
+            std::cout << "error: " << drv->error;
+            return res;
+        }
+
+        if(cli_arguments["driver"].as_string() == "compiler") {
             auto drv_c = std::dynamic_pointer_cast<compiler>(drv);
-            if(res != 0)
-                std::cout << "error: " << drv_c->error;
             for(auto& tree : drv_c->trees)
                 std::cout << tree.first << ": " << tree.second << "\n";
-        } else {
+        }
+        if(cli_arguments["driver"].as_string() == "interpreter") {
             auto drv_i = std::dynamic_pointer_cast<interpreter>(drv);
-            if (res != 0)
-                std::cout << "error: " << drv_i->error;
-            else
-                std::cout << "result: " << drv_i->result;
+            std::cout << "result: " << drv_i->result;
+        }
+        if(cli_arguments["driver"].as_string() == "z3") {
+            auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
+
         }
         std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
         return res;

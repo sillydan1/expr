@@ -32,13 +32,13 @@ namespace expr {
         auto lt(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return lt_(a,b); }
 
         symbol_table_t result{};
-        symbol_value_t error{};
         symbol_value_t expression_result{};
+
+        static auto evaluate(const syntax_tree_t& tree, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_value_t;
 
     protected:
         const symbol_table_t &environment{};
     };
-    auto evaluate(const syntax_tree_t& tree, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_value_t;
 }
 
 #endif

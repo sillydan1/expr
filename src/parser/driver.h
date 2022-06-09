@@ -19,6 +19,7 @@ namespace expr {
         void scan_begin();
         void scan_end();
 
+        std::string error;
         std::string file;
         bool trace_parsing;
         bool trace_scanning;

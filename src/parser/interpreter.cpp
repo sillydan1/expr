@@ -1,6 +1,8 @@
 #include "parser/interpreter.h"
 #include <utility>
 #include "parser.hpp"
+#include "parser/z3_driver.h"
+
 
 namespace expr {
     interpreter::interpreter(const symbol_table_t& map) : environment{map}, driver{} {
@@ -44,7 +46,7 @@ namespace expr {
         result[identifier] = evaluate(tree, *this, *this, *this);
     }
 
-    auto evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator) -> symbol_value_t {
+    auto interpreter::evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator) -> symbol_value_t {
         symbol_value_t v{};
         auto eval_wrapper = [&](const syntax_tree_t& t) { return evaluate(t, arith, boolean, comparator); };
         std::visit(overload(
