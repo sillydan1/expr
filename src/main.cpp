@@ -1,8 +1,8 @@
 #include <iostream>
-#include "parser/interpreter.h"
+#include "drivers/interpreter.h"
+#include "drivers/compiler.h"
+#include "drivers/z3_driver.h"
 #include "config.h"
-#include "parser/compiler.h"
-#include "parser/z3_driver.h"
 #include <argvparse.h>
 #include <Timer.hpp>
 #include <memory>

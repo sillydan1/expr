@@ -11,7 +11,11 @@ CPMAddPackage("gh:sillydan1/overload#1.0.0")
 CPMAddPackage("gh:sillydan1/yatree@1.0.1")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.2")
 CPMAddPackage("gh:sillydan1/tinytimer@1.0.0")
+# TODO: Add cmake option. z3 should be an opt-in feature
 CPMAddPackage("gh:Z3Prover/z3#z3-4.8.17")
+# TODO: Add cmake option. opensmt should be an opt-in feature
+# CPMAddPackage("gh:usi-verification-and-security/opensmt@2.3.2")
+
 BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
@@ -24,15 +28,16 @@ include_directories(
         ${argvparse_SOURCE_DIR}/include
         ${tinytimer_SOURCE_DIR}/
         ${z3_SOURCE_DIR}/src/api
+        ${opensmt_SOURCE_DIR}/
         include
         src
 )
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
-        src/parser/interpreter.cpp
-        src/parser/compiler.cpp
-        src/parser/z3_driver.cpp
+        src/drivers/interpreter.cpp
+        src/drivers/compiler.cpp
+        src/drivers/z3_driver.cpp
 
         src/symbol_table.cpp
         src/operations/add.cpp

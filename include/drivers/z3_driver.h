@@ -1,7 +1,7 @@
 #ifndef EXPR_Z3_DRIVER_H
 #define EXPR_Z3_DRIVER_H
 #include "operations.h"
-#include "parser/driver.h"
+#include "drivers/driver.h"
 #include <c++/z3++.h>
 
 namespace expr {
