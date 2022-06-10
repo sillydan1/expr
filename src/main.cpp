@@ -15,10 +15,11 @@ int main (int argc, char *argv[]) {
     env["two_f"] = 2.0f;
     env["hello_s"] = "Hello";
     std::vector<option_t> my_options = {
-            {"expression", 'e',   argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
-            {"parser-trace",'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
-            {"scanner-trace",'s', argument_requirement::NO_ARG, "enable tracing for the scanner"},
-            {"driver", 'd',       argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
+            {"expression", 'e',    argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
+            {"driver", 'd',        argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
+            {"environment", 'm',   argument_requirement::OPTIONAL_ARG, "provide an environment"},
+            {"parser-trace", 'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
+            {"scanner-trace", 's', argument_requirement::NO_ARG, "enable tracing for the scanner"},
     };
     auto cli_arguments = get_arguments(my_options, argc, argv);
     if(cli_arguments["help"] || !cli_arguments["expression"] || !cli_arguments["driver"]) {
@@ -41,6 +42,16 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     try {
+        if(cli_arguments["environment"]) {
+            interpreter i{{}};
+            auto res = i.parse(cli_arguments["environment"].as_string());
+            if(res != 0) {
+                std::cout << "error: " << i.error << std::endl;
+                return res;
+            }
+            env = i.result;
+        }
+
         std::shared_ptr<driver> drv{};
         if(cli_arguments["driver"].as_string() == "compiler")
             drv = std::make_shared<compiler>(env);
@@ -55,7 +66,7 @@ int main (int argc, char *argv[]) {
         t.start();
         auto res = drv->parse(cli_arguments["expression"].as_string());
         if(res != 0) {
-            std::cout << "error: " << drv->error;
+            std::cout << "error: " << drv->error << "\n";
             return res;
         }
 
@@ -66,11 +77,13 @@ int main (int argc, char *argv[]) {
         }
         if(cli_arguments["driver"].as_string() == "interpreter") {
             auto drv_i = std::dynamic_pointer_cast<interpreter>(drv);
-            std::cout << "result: " << drv_i->result;
+            if(!drv_i->result.empty())
+                std::cout << drv_i->result << "\n";
+            std::cout << "expression_result" << drv_i->expression_result << std::endl;
         }
         if(cli_arguments["driver"].as_string() == "z3") {
             auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
-            std::cout << "result: " << drv_z->result;
+            std::cout << "result: \n" << drv_z->result;
         }
         std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
         return res;

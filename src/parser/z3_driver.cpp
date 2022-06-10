@@ -58,7 +58,7 @@ namespace expr {
     auto z3_driver::as_symbol_value(const z3::expr &e) -> symbol_value_t {
         if(e.is_int())
             return (int)e.as_int64();
-        if(e.is_fpa())
+        if(e.is_real())
             return (float)e.as_double();
         if(e.is_bool())
             return (bool)e;
@@ -71,9 +71,9 @@ namespace expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(overload(
             [&v, this](const int& i)          { v = c.int_val(i); },
-            [&v, this](const float& f)        { v = c.fpa_val(f); },
+            [&v, this](const float& f)        { v = c.real_val(std::to_string(f).c_str()); },
             [&v, this](const bool& b)         { v = c.bool_val(b); },
-            [&v, this](const std::string& s)  { v = c.string_val(s); },
+            [&v, this](const std::string& sv) { v = c.string_val(sv); },
             [](auto&& x){ throw std::logic_error("unable to convert symbol value to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(val));
         return v;
@@ -82,10 +82,10 @@ namespace expr {
     auto z3_driver::as_z3_expression(const symbol_reference_t &ref) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(overload(
-                [&v, this, &ref](const int& i)          { v = c.int_const(ref->first.c_str()); },
-                [&v, this, &ref](const float& f)        { v = c.fpa_const<32>(ref->first.c_str()); },
-                [&v, this, &ref](const bool& b)         { v = c.bool_const(ref->first.c_str()); },
-                [&v, this, &ref](const std::string& s)  { v = c.string_const(ref->first.c_str()); },
+                [&v, this, &ref](const int& _)          { v = c.int_const(ref->first.c_str()); },
+                [&v, this, &ref](const float& _)        { v = c.real_const(ref->first.c_str()); },
+                [&v, this, &ref](const bool& _)         { v = c.bool_const(ref->first.c_str()); },
+                [&v, this, &ref](const std::string& _)  { v = c.string_const(ref->first.c_str()); },
                 [](auto&& x){ throw std::logic_error("unable to convert symbol value to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(ref->second));
         return v;
@@ -94,10 +94,10 @@ namespace expr {
     auto z3_driver::as_z3_expression(const c_symbol_reference_t &ref) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(overload(
-            [&v, this, &ref](const int& i)          { v = c.int_const(ref->first.c_str()); },
-            [&v, this, &ref](const float& f)        { v = c.fpa_const<32>(ref->first.c_str()); },
-            [&v, this, &ref](const bool& b)         { v = c.bool_const(ref->first.c_str()); },
-            [&v, this, &ref](const std::string& s)  { v = c.string_const(ref->first.c_str()); },
+            [&v, this, &ref](const int& _)          { v = c.int_const(ref->first.c_str()); },
+            [&v, this, &ref](const float& _)        { v = c.real_const(ref->first.c_str()); },
+            [&v, this, &ref](const bool& _)         { v = c.bool_const(ref->first.c_str()); },
+            [&v, this, &ref](const std::string& _)  { v = c.string_const(ref->first.c_str()); },
             [](auto&& x){ throw std::logic_error("unable to convert symbol value to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(ref->second));
         return v;
