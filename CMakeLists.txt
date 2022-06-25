@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.21)
 project(expr VERSION 1.3.2)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
