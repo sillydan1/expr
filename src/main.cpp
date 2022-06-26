@@ -15,30 +15,32 @@ int main (int argc, char *argv[]) {
     env["two_f"] = 2.0f;
     env["hello_s"] = "Hello";
     std::vector<option_t> my_options = {
-            {"expression", 'e',    argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
-            {"driver", 'd',        argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
-            {"environment", 'm',   argument_requirement::OPTIONAL_ARG, "provide an environment"},
-            {"parser-trace", 'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
-            {"scanner-trace", 's', argument_requirement::NO_ARG, "enable tracing for the scanner"},
+        {"expression", 'e',    argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
+        {"driver", 'd',        argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
+        {"environment", 'm',   argument_requirement::OPTIONAL_ARG, "provide an environment"},
+        {"parser-trace", 'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
+        {"scanner-trace", 's', argument_requirement::NO_ARG, "enable tracing for the scanner"},
     };
     auto cli_arguments = get_arguments(my_options, argc, argv);
     if(cli_arguments["help"] || !cli_arguments["expression"] || !cli_arguments["driver"]) {
         std::cout
-                << "=================== Welcome to the " << PROJECT_NAME << " v" << PROJECT_VER << " demo ==================\n"
-                << "USAGE: " << argv[0] << " [OPTIONS]\n"
-                << "\n"
-                << "For this demo, a simple environment has been provided. (see below)\n"
-                << "You can use these variables on the right-hand-side of your expressions\n"
-                << "like so: 'a := one + 30'. Variable assignments are done atomically, so\n"
-                << "statements like these: 'a := 2 ; b := a + 1' will not compile, because\n"
-                << "the variable 'a' is not defined before AFTER all assignments have been\n"
-                << "evaluated and performed.\n"
-                << "PROVIDED ENVIRONMENT:\n"
-                << env
-                << "\n"
-                << "OPTIONS:\n"
-                << my_options
-                << "======================================================================\n";
+            << "=================== Welcome to the " << PROJECT_NAME << " v" << PROJECT_VER << " demo ==================\n"
+            << "USAGE: " << argv[0] << " [OPTIONS]\n"
+            << "\n"
+            << "For this demo, a simple environment has been provided. (see below)\n"
+            << "You can use these variables on the right-hand-side of your expressions\n"
+            << "Another sentence in my help message"
+            << "like so: 'a := one + 30'. Variable assignments are done atomically, so\n"
+            << "statements lie these: 'a := 2 ; b := a + 1' will not compile, because\n"
+            << "Another thing"
+            << "the variable 'a' is not defined before AFTER all assignments have been\n"
+            << "evaluated and performed.\n"
+            << "PROVIDED ENVIRONMENT:\n"
+            << env
+            << "\n"
+            << "OPTIONS:\n"
+            << my_options
+            << "======================================================================\n";
         return 0;
     }
     try {
