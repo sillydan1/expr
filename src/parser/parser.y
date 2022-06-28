@@ -29,7 +29,7 @@
 
 // Include the driver
 %code {
-    #include "parser/driver.h"
+    #include "drivers/driver.h"
 }
 
 %define api.token.prefix {TOK_}
