@@ -2,6 +2,7 @@
 #define EXPR_INTERPRETER_H
 #include "operations.h"
 #include "drivers/driver.h"
+#include "compiler.h"
 
 namespace expr {
     struct interpreter : public driver, arithmetic_operator, boolean_operator, compare_operator {
@@ -35,6 +36,7 @@ namespace expr {
         symbol_value_t expression_result{};
 
         static auto evaluate(const syntax_tree_t& tree, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_value_t;
+        static auto evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_table_t;
 
     protected:
         const symbol_table_t &environment{};

@@ -77,4 +77,11 @@ namespace expr {
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
         return v;
     }
+
+    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator &arith, expr::boolean_operator &boolean, expr::compare_operator &comparator) -> symbol_table_t {
+        symbol_table_t result{};
+        for(auto& tree : symbol_tree_map)
+             result[tree.first] = evaluate(tree.second, arith, boolean, comparator);
+        return result;
+    }
 }

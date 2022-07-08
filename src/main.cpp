@@ -76,12 +76,16 @@ int main (int argc, char *argv[]) {
             auto drv_c = std::dynamic_pointer_cast<compiler>(drv);
             for(auto& tree : drv_c->trees)
                 std::cout << tree.first << ": " << tree.second << "\n";
+            std::cout << "\n";
+            interpreter i{drv_c->get_environment()};
+            auto eval = [&i](const compiler::compiled_expr_collection_t& t){return interpreter::evaluate(t,i,i,i);};
+            std::cout << eval(drv_c->trees) << "\n";
         }
         if(cli_arguments["driver"].as_string() == "interpreter") {
             auto drv_i = std::dynamic_pointer_cast<interpreter>(drv);
             if(!drv_i->result.empty())
                 std::cout << drv_i->result << "\n";
-            std::cout << "expression_result" << drv_i->expression_result << std::endl;
+            std::cout << "expression_result: " << drv_i->expression_result << std::endl;
         }
         if(cli_arguments["driver"].as_string() == "z3") {
             auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
