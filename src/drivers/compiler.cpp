@@ -4,9 +4,11 @@ namespace expr {
     int compiler::parse(const std::string& f) {
         if (f.empty()) {
 #ifdef DEFAULT_EXPRESSION_VALUE
-            expression_result = DEFAULT_EXPRESSION_VALUE;
+            if(!std::string(DEFAULT_EXPRESSION_VALUE).empty())
+                return parse(DEFAULT_EXPRESSION_VALUE);
 #endif
-            return 0;
+            error = "empty expression and no DEFAULT_EXPRESSION_VALUE";
+            return 1;
         }
         file = f;
         location.initialize(&file);
