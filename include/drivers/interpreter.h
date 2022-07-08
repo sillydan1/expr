@@ -14,7 +14,7 @@ namespace expr {
         void add_tree(const syntax_tree_t& tree) override;
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
 
-        auto add(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return a + b; };
+        auto add(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return ::operator+(a,b); };
         auto sub(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return a - b; };
         auto mul(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return a * b; };
         auto div(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return a / b; };

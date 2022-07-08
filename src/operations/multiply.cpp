@@ -1,6 +1,7 @@
 #include "operations/multiply.h"
 #include "operations/util.h"
 #include <sstream>
+using namespace expr;
 
 template<typename T1, typename T2>
 auto t_multiply(const T1&, const T2&) {

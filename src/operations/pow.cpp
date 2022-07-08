@@ -2,6 +2,7 @@
 #include "operations/util.h"
 #include <sstream>
 #include <cmath>
+using namespace expr;
 
 template<typename T1, typename T2>
 auto t_pow(const T1&, const T2&) {
