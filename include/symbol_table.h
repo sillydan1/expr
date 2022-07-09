@@ -102,7 +102,7 @@ namespace expr {
 namespace std {
     template<>
     struct hash<expr::symbol_value_t> {
-        auto operator()(const expr::symbol_value_t& v) -> size_t {
+        auto operator()(const expr::symbol_value_t& v) const -> size_t {
             size_t result{};
             std::visit(ya::overload(
                 [&result](const int& v){result = std::hash<int>{}(v);},
@@ -115,7 +115,7 @@ namespace std {
     };
     template<>
     struct hash<expr::symbol_table_t> {
-        auto operator()(const expr::symbol_table_t& v) -> size_t {
+        auto operator()(const expr::symbol_table_t& v) const -> size_t {
             size_t result{};
             for(auto& symbol : v) {
                 result = ya::hash_combine(result, symbol.first);
