@@ -4,7 +4,7 @@
 #include "drivers/z3_driver.h"
 #include "config.h"
 #include <argvparse.h>
-#include <Timer.hpp>
+#include <timer>
 #include <memory>
 
 int main (int argc, char *argv[]) {
@@ -64,8 +64,7 @@ int main (int argc, char *argv[]) {
 
         drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
         drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
-        Timer<int> t{};
-        t.start();
+        ya::timer<int> t{};
         auto res = drv->parse(cli_arguments["expression"].as_string());
         if(res != 0) {
             std::cout << "error: " << drv->error << "\n";

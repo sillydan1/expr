@@ -7,10 +7,11 @@ set(CXX_STANDARD_REQUIRED ON)
 
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
-CPMAddPackage("gh:sillydan1/overload#1.0.0")
-CPMAddPackage("gh:sillydan1/yatree@1.0.1")
+CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
+CPMAddPackage("gh:yalibs/yatree@1.0.1")
+CPMAddPackage("gh:yalibs/yatimer@1.0.0")
+CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.2")
-CPMAddPackage("gh:sillydan1/tinytimer@1.0.0")
 # TODO: Add cmake option. z3 should be an opt-in feature
 CPMAddPackage("gh:Z3Prover/z3#z3-4.8.17")
 # TODO: Add cmake option. opensmt should be an opt-in feature
@@ -24,9 +25,11 @@ set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUI
 include_directories(${overload_SOURCE_DIR}/include)
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
+        ${yaoverload_SOURCE_DIR}/include
         ${yatree_SOURCE_DIR}/include
+        ${yatimer_SOURCE_DIR}/include
+        ${yahashcombine_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
-        ${tinytimer_SOURCE_DIR}/
         ${z3_SOURCE_DIR}/src/api
         ${opensmt_SOURCE_DIR}/
         include
