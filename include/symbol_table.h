@@ -8,7 +8,7 @@
 #include <sstream>
 #include <tree>
 #include <hashcombine>
-#include "overload.h"
+#include <overload>
 
 namespace expr {
     using underlying_symbol_value_t = std::variant<int, float, bool, std::string>;
@@ -104,7 +104,7 @@ namespace std {
     struct hash<expr::symbol_value_t> {
         auto operator()(const expr::symbol_value_t& v) -> size_t {
             size_t result{};
-            std::visit(overload(
+            std::visit(ya::overload(
                 [&result](const int& v){result = std::hash<int>{}(v);},
                 [&result](const float& v){result = std::hash<float>{}(v);},
                 [&result](const bool& v){result = std::hash<bool>{}(v);},

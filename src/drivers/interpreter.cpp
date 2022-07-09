@@ -2,7 +2,6 @@
 #include <utility>
 #include "parser.hpp"
 
-
 namespace expr {
     interpreter::interpreter(const symbol_table_t& map) : environment{map}, driver{} {
     }
@@ -48,7 +47,7 @@ namespace expr {
     auto interpreter::evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator) -> symbol_value_t {
         symbol_value_t v{};
         auto eval_wrapper = [&](const syntax_tree_t& t) { return evaluate(t, arith, boolean, comparator); };
-        std::visit(overload(
+        std::visit(ya::overload(
                 [&v](const symbol_reference_t& r){ v = r->second; },
                 [&v](const c_symbol_reference_t& r){ v = r->second; },
                 [&](const operator_t& o) {

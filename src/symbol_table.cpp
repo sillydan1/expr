@@ -1,5 +1,5 @@
 #include "symbol_table.h"
-#include <overload.h>
+#include <overload>
 
 namespace expr {
     symbol_table_t &symbol_table_t::operator+=(const symbol_table_t &other) {
@@ -16,7 +16,7 @@ namespace expr {
     }
 
     std::ostream &operator<<(std::ostream &os, const symbol_value_t &v) {
-        std::visit(overload{
+        std::visit(ya::overload{
                            [&os](const bool &b) { os << std::boolalpha << b << " " << typeid(b).name(); },
                            [&os](const std::string &s) { os << "\"" << s << "\" s"; },
                            [&os](auto &&v) { os << v << " " << typeid(v).name(); }},
@@ -80,7 +80,7 @@ namespace expr {
     }
 
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream & {
-        std::visit(overload(
+        std::visit(ya::overload(
                 [&o](auto &&x) { o << x; }
         ), n);
         return o;

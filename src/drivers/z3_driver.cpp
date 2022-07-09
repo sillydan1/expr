@@ -69,7 +69,7 @@ namespace expr {
 
     auto z3_driver::as_z3_expression(const symbol_value_t& val) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
-        std::visit(overload(
+        std::visit(ya::overload(
             [&v, this](const int& i)          { v = c.int_val(i); },
             [&v, this](const float& f)        { v = c.real_val(std::to_string(f).c_str()); },
             [&v, this](const bool& b)         { v = c.bool_val(b); },
@@ -81,7 +81,7 @@ namespace expr {
 
     auto z3_driver::as_z3_expression(const symbol_reference_t &ref) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
-        std::visit(overload(
+        std::visit(ya::overload(
                 [&v, this, &ref](const int& _)          { v = c.int_const(ref->first.c_str()); },
                 [&v, this, &ref](const float& _)        { v = c.real_const(ref->first.c_str()); },
                 [&v, this, &ref](const bool& _)         { v = c.bool_const(ref->first.c_str()); },
@@ -93,7 +93,7 @@ namespace expr {
 
     auto z3_driver::as_z3_expression(const c_symbol_reference_t &ref) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
-        std::visit(overload(
+        std::visit(ya::overload(
             [&v, this, &ref](const int& _)          { v = c.int_const(ref->first.c_str()); },
             [&v, this, &ref](const float& _)        { v = c.real_const(ref->first.c_str()); },
             [&v, this, &ref](const bool& _)         { v = c.bool_const(ref->first.c_str()); },
@@ -105,7 +105,7 @@ namespace expr {
 
     auto z3_driver::as_z3_expression(const syntax_tree_t &tree) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
-        std::visit(overload(
+        std::visit(ya::overload(
                 [&v,this](const symbol_reference_t& r) { v = as_z3_expression(r); },
                 [&v,this](const c_symbol_reference_t& r) { v = as_z3_expression(r); },
                 [&](const operator_t& o) {
