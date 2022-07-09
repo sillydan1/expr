@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <tree>
+#include <hashcombine>
 #include "overload.h"
 
 namespace expr {
@@ -96,6 +97,33 @@ namespace expr {
     auto operator<<(std::ostream &o, const c_symbol_reference_t &r) -> std::ostream &;
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream &;
     auto operator<<(std::ostream &o, const syntax_tree_t &t) -> std::ostream &;
+}
+
+namespace std {
+    template<>
+    struct hash<expr::symbol_value_t> {
+        auto operator()(const expr::symbol_value_t& v) -> size_t {
+            size_t result{};
+            std::visit(overload(
+                [&result](const int& v){result = std::hash<int>{}(v);},
+                [&result](const float& v){result = std::hash<float>{}(v);},
+                [&result](const bool& v){result = std::hash<bool>{}(v);},
+                [&result](const std::string& v){result = std::hash<std::string>{}(v);}
+            ), v);
+            return result;
+        }
+    };
+    template<>
+    struct hash<expr::symbol_table_t> {
+        auto operator()(const expr::symbol_table_t& v) -> size_t {
+            size_t result{};
+            for(auto& symbol : v) {
+                result = ya::hash_combine(result, symbol.first);
+                result = ya::hash_combine(result, symbol.second);
+            }
+            return result;
+        }
+    };
 }
 
 #endif
