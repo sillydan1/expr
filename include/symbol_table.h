@@ -48,6 +48,7 @@ namespace expr {
     using underlying_symbol_table_t = std::map<std::string, symbol_value_t>;
     struct symbol_table_t : public underlying_symbol_table_t {
         symbol_table_t &operator+=(const symbol_table_t &);
+        auto is_overlapping(const symbol_table_t& other) -> bool;
     };
 
     symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b);

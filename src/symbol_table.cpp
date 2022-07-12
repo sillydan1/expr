@@ -8,6 +8,10 @@ namespace expr {
         return *this;
     }
 
+    auto symbol_table_t::is_overlapping(const symbol_table_t &other) -> bool {
+        return std::any_of(other.begin(), other.end(), [this](const auto& value){ return this->find(value.first) != this->end(); });
+    }
+
     symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b) {
         symbol_table_t r{};
         r += a;
