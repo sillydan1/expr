@@ -57,11 +57,11 @@ namespace expr {
 
     auto z3_driver::as_symbol_value(const z3::expr &e) -> symbol_value_t {
         if(e.is_int())
-            return (int)e.as_int64();
+            return (int) e.as_int64();
         if(e.is_real())
-            return (float)e.as_double();
+            return (float) e.as_double();
         if(e.is_bool())
-            return (bool)e;
+            return e.bool_value() == 1; // bool_value() is -1/1 🙄
         if(e.is_string_value())
             return e.get_string();
         throw std::logic_error("uhh");
