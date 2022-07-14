@@ -59,7 +59,8 @@ namespace expr {
                         case operator_type_t::percent:  v = arith.mod(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
                         case operator_type_t::hat:      v = arith.pow(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
                         case operator_type_t::_and: v = boolean._and(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::_or:  v = boolean._or(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
+                        case operator_type_t::_or:  v = boolean._or(eval_wrapper(tree.children[0]),  eval_wrapper(tree.children[1])); break;
+                        case operator_type_t::_xor: v = boolean._xor(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
                         case operator_type_t::_not: v = boolean._not(eval_wrapper(tree.children[0])); break;
                         case operator_type_t::gt: v = comparator.gt(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
                         case operator_type_t::ge: v = comparator.ge(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;

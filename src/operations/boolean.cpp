@@ -17,6 +17,13 @@ auto t_or(const T1&, const T2&) {
     throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
+template<typename T1, typename T2>
+auto t_xor(const T1&, const T2&) {
+    std::ostringstream ss{};
+    ss << "Unable to XOR types " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
+    return nullptr; // Must return something
+}
 template<typename T1>
 auto t_not(const T1&) {
     std::ostringstream ss{};
@@ -76,6 +83,10 @@ auto t_or(const bool& a, const bool& b) {
     return a || b;
 }
 template<>
+auto t_xor(const bool& a, const bool& b) {
+    return a != b;
+}
+template<>
 auto t_not(const bool& a) {
     return !a;
 }
@@ -129,6 +140,11 @@ symbol_value_t or_(const symbol_value_t& a, const symbol_value_t& b) {
 }
 symbol_value_t operator||(const symbol_value_t& a, const symbol_value_t& b) {
     return and_(a,b);
+}
+symbol_value_t xor_(const symbol_value_t& a, const symbol_value_t& b) {
+    symbol_value_t res{};
+    FUNC_IMPL(a, t_xor, b, res);
+    return res;
 }
 symbol_value_t not_(const symbol_value_t& a) {
     symbol_value_t res{};

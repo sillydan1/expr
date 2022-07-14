@@ -118,6 +118,7 @@ namespace expr {
                         case operator_type_t::hat:      v = z3::pw(as_z3_expression(tree.children[0]), as_z3_expression(tree.children[1])); break;
                         case operator_type_t::_and: v = as_z3_expression(tree.children[0]) && as_z3_expression(tree.children[1]); break;
                         case operator_type_t::_or:  v = as_z3_expression(tree.children[0]) || as_z3_expression(tree.children[1]); break;
+                        case operator_type_t::_xor: v = as_z3_expression(tree.children[0]) xor as_z3_expression(tree.children[1]); break;
                         case operator_type_t::_not: v =!as_z3_expression(tree.children[0]); break;
                         case operator_type_t::gt: v = (as_z3_expression(tree.children[0]) > as_z3_expression(tree.children[1])); break;
                         case operator_type_t::ge: v = (as_z3_expression(tree.children[0]) >= as_z3_expression(tree.children[1])); break;

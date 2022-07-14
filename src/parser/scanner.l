@@ -124,6 +124,7 @@ type   int|long|float|double|string|bool|var|auto
 "^"        return yy::parser::make_HAT    (loc);
 "&&"       return yy::parser::make_AND    (loc);
 "||"       return yy::parser::make_OR     (loc);
+"^^"       return yy::parser::make_XOR    (loc);
 ">"        return yy::parser::make_GT     (loc);
 ">="       return yy::parser::make_GE     (loc);
 "=="       return yy::parser::make_EE     (loc);

@@ -3,6 +3,7 @@
 #include "symbol_table.h"
 expr::symbol_value_t and_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
 expr::symbol_value_t or_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
+expr::symbol_value_t xor_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
 expr::symbol_value_t not_(const expr::symbol_value_t& a);
 expr::symbol_value_t gt_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
 expr::symbol_value_t ge_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);

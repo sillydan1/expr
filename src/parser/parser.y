@@ -43,6 +43,7 @@
   HAT     "^"
   AND     "&&"
   OR      "||"
+  XOR     "^^"
   GT      ">"
   GE      ">="
   EE      "=="
@@ -68,6 +69,7 @@
 %nterm <expr::symbol_value_t> lit
 %printer { yyo << $$; } <*>;
 
+%left XOR
 %left OR
 %left AND
 %left GT GE EE NE LE LT
@@ -113,6 +115,7 @@ bin_op:
 | exp LE exp            { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::le}}.concat($1).concat($3); }
 | exp LT  exp           { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::lt}}.concat($1).concat($3); }
 | exp OR exp            { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_or}}.concat($1).concat($3); }
+| exp XOR exp           { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_xor}}.concat($1).concat($3); }
 | exp AND exp           { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_and}}.concat($1).concat($3); }
 ;
 
