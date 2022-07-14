@@ -12,6 +12,15 @@ namespace expr {
         return std::any_of(other.begin(), other.end(), [this](const auto& value){ return this->find(value.first) != this->end(); });
     }
 
+    auto symbol_table_t::is_overlapping_and_not_idempotent(const symbol_table_t &other) -> bool {
+        auto comparator = [this](const auto& value){
+            if(this->find(value.first) != this->end())
+                return this->operator[](value.first) != value.second;
+            return false;
+        };
+        return std::any_of(other.begin(), other.end(), comparator);
+    }
+
     symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b) {
         symbol_table_t r{};
         r += a;

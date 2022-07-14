@@ -49,6 +49,7 @@ namespace expr {
     struct symbol_table_t : public underlying_symbol_table_t {
         symbol_table_t &operator+=(const symbol_table_t &);
         auto is_overlapping(const symbol_table_t& other) -> bool;
+        auto is_overlapping_and_not_idempotent(const symbol_table_t& other) -> bool;
     };
 
     symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b);
