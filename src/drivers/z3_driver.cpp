@@ -1,8 +1,23 @@
 #include "drivers/z3_driver.h"
+#include <c++/z3++.h>
 
 namespace expr {
-    z3_driver::z3_driver(const symbol_table_t& map) : environment{map}, c{}, s{c}, driver{} {
+    struct z3_driver::impl {
+        z3::context c{};
+        z3::solver s;
+        auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
+        auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
+        auto as_z3_expression(const symbol_reference_t& ref) -> z3::expr;
+        auto as_z3_expression(const c_symbol_reference_t& ref) -> z3::expr;
+        auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
+        void solve();
+        impl() : c{}, s{c} {}
+    };
+
+    z3_driver::z3_driver(const symbol_table_t& map) : environment{map}, pimpl{std::make_unique<z3_driver::impl>()}, driver{} {
     }
+
+    z3_driver::~z3_driver() {}
 
     int z3_driver::parse(const std::string &f) {
         if (f.empty())
@@ -31,9 +46,9 @@ namespace expr {
     }
 
     void z3_driver::add_tree(const syntax_tree_t& tree) {
-        s.add(as_z3_expression(tree)); // Note: Only accepts boolean expressions (will throw if not)
+        pimpl->s.add(pimpl->as_z3_expression(tree)); // Note: Only accepts boolean expressions (will throw if not)
         solve();
-        s = z3::solver{c};
+        pimpl->s = z3::solver{pimpl->c};
     }
 
     void z3_driver::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
@@ -41,21 +56,21 @@ namespace expr {
     }
 
     void z3_driver::solve() {
-        switch (s.check()) {
+        switch (pimpl->s.check()) {
             case z3::unsat:   std::cout << "unsat\n"; break;
             case z3::unknown: std::cout << "unknown\n"; break;
             case z3::sat:
-                auto m = s.get_model();
+                auto m = pimpl->s.get_model();
                 for(int i = 0; i < m.size(); i++) {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
-                    result[xx.name().str()] = as_symbol_value(interp);
+                    result[xx.name().str()] = pimpl->as_symbol_value(interp);
                 }
                 break;
         }
     }
 
-    auto z3_driver::as_symbol_value(const z3::expr &e) -> symbol_value_t {
+    auto z3_driver::impl::as_symbol_value(const z3::expr &e) -> symbol_value_t {
         if(e.is_int())
             return (int) e.as_int64();
         if(e.is_real())
@@ -67,7 +82,7 @@ namespace expr {
         throw std::logic_error("uhh");
     }
 
-    auto z3_driver::as_z3_expression(const symbol_value_t& val) -> z3::expr {
+    auto z3_driver::impl::as_z3_expression(const symbol_value_t& val) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(ya::overload(
             [&v, this](const int& i)          { v = c.int_val(i); },
@@ -79,7 +94,7 @@ namespace expr {
         return v;
     }
 
-    auto z3_driver::as_z3_expression(const symbol_reference_t &ref) -> z3::expr {
+    auto z3_driver::impl::as_z3_expression(const symbol_reference_t &ref) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(ya::overload(
                 [&v, this, &ref](const int& _)          { v = c.int_const(ref->first.c_str()); },
@@ -91,7 +106,7 @@ namespace expr {
         return v;
     }
 
-    auto z3_driver::as_z3_expression(const c_symbol_reference_t &ref) -> z3::expr {
+    auto z3_driver::impl::as_z3_expression(const c_symbol_reference_t &ref) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(ya::overload(
             [&v, this, &ref](const int& _)          { v = c.int_const(ref->first.c_str()); },
@@ -103,7 +118,7 @@ namespace expr {
         return v;
     }
 
-    auto z3_driver::as_z3_expression(const syntax_tree_t &tree) -> z3::expr {
+    auto z3_driver::impl::as_z3_expression(const syntax_tree_t &tree) -> z3::expr {
         z3::expr v = c.int_val(0); // placeholder value
         std::visit(ya::overload(
                 [&v,this](const symbol_reference_t& r) { v = as_z3_expression(r); },
