@@ -85,6 +85,8 @@ namespace expr {
                 return o << "||";
             case operator_type_t::_xor:
                 return o << "xor";
+            case operator_type_t::_implies:
+                return o << "=>";
             case operator_type_t::_not:
                 return o << "!";
             case operator_type_t::gt:

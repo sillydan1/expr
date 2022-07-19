@@ -44,6 +44,7 @@ namespace expr {
         virtual auto _and(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t = 0;
         virtual auto _or(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t = 0;
         virtual auto _xor(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t = 0;
+        virtual auto _implies(const symbol_value_t& a, const symbol_value_t& b) -> symbol_value_t = 0;
     };
     struct compare_operator {
         virtual auto gt(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t = 0;

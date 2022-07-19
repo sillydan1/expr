@@ -95,6 +95,13 @@ auto t_lt(const T1&, const T2&) {
     throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
+template<typename T1, typename T2>
+auto t_implies(const T1&, const T2&) {
+    std::ostringstream ss{};
+    ss << "Unable to imply (->) types " << typeid(T1).name() << " and " << typeid(T2).name();
+    throw std::domain_error(ss.str());
+    return nullptr; // Must return something
+}
 
 template<>
 auto t_and(const bool& a, const bool& b) {
@@ -111,6 +118,11 @@ auto t_xor(const bool& a, const bool& b) {
 template<>
 auto t_not(const bool& a) {
     return !a;
+}
+template<>
+auto t_implies(const bool& a, const bool& b) {
+    if(a) return b;
+    return true;
 }
 
 auto t_gt(const int& a, const int& b) {return a > b;}
@@ -204,5 +216,10 @@ symbol_value_t le_(const symbol_value_t& a, const symbol_value_t& b) {
 symbol_value_t lt_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_lt, b, res);
+    return res;
+}
+symbol_value_t implies_(const symbol_value_t& a, const symbol_value_t& b) {
+    symbol_value_t res{};
+    FUNC_IMPL(a, t_implies, b, res);
     return res;
 }
