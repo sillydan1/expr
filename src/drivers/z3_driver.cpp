@@ -74,12 +74,12 @@ namespace expr {
     }
 
     void z3_driver::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
-        std::cout << "z3_driver ignoring simple declaration" << std::endl;
+        std::cout << "z3_driver ignoring declaration\n";
     }
 
     void z3_driver::solve() {
         switch (pimpl->s.check()) {
-            case z3::unsat:   std::cout << "unsat\n"; break;
+            case z3::unsat:   std::cout << "unsat\n"; break; // TODO: Maybe throw exception, or add "unsat" to error...
             case z3::unknown: std::cout << "unknown\n"; break;
             case z3::sat:
                 auto m = pimpl->s.get_model();
@@ -98,10 +98,10 @@ namespace expr {
         if(e.is_real())
             return (float) e.as_double();
         if(e.is_bool())
-            return e.bool_value() == 1; // bool_value() is -1/1 🙄
+            return e.bool_value() == 1; // bool_value() is -1/1
         if(e.is_string_value())
             return e.get_string();
-        throw std::logic_error("uhh");
+        throw std::logic_error("invalid z3::expr value - unable to convert to expr::symbol_value_t");
     }
 
     auto z3_driver::impl::as_z3_expression(const symbol_value_t& val) -> z3::expr {
@@ -123,7 +123,7 @@ namespace expr {
                 [&v, this, &ref](const float& _)        { v = c.real_const(ref->first.c_str()); },
                 [&v, this, &ref](const bool& _)         { v = c.bool_const(ref->first.c_str()); },
                 [&v, this, &ref](const std::string& _)  { v = c.string_const(ref->first.c_str()); },
-                [](auto&& x){ throw std::logic_error("unable to convert symbol value to z3::expr"); }
+                [](auto&& x){ throw std::logic_error("unable to convert symbol reference to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(ref->second));
         return v;
     }
@@ -135,7 +135,7 @@ namespace expr {
             [&v, this, &ref](const float& _)        { v = c.real_const(ref->first.c_str()); },
             [&v, this, &ref](const bool& _)         { v = c.bool_const(ref->first.c_str()); },
             [&v, this, &ref](const std::string& _)  { v = c.string_const(ref->first.c_str()); },
-            [](auto&& x){ throw std::logic_error("unable to convert symbol value to z3::expr"); }
+            [](auto&& x){ throw std::logic_error("unable to convert const symbol reference to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(ref->second));
         return v;
     }
@@ -168,7 +168,7 @@ namespace expr {
                 },
                 [&v,this](const symbol_value_t& o){ v = as_z3_expression(o); },
                 [&](const root_t& r){ v = as_z3_expression(tree.children[0]); },
-                [](auto&&){ throw std::logic_error("operator type not recognized"); }
+                [](auto&&){ throw std::logic_error("tree node type not recognized"); }
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
         return v;
     }
