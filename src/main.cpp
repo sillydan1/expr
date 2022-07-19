@@ -57,10 +57,17 @@ int main (int argc, char *argv[]) {
         std::shared_ptr<driver> drv{};
         if(cli_arguments["driver"].as_string() == "compiler")
             drv = std::make_shared<compiler>(env);
-        if(cli_arguments["driver"].as_string() == "interpreter")
+        else if(cli_arguments["driver"].as_string() == "interpreter")
             drv = std::make_shared<interpreter>(env);
-        if(cli_arguments["driver"].as_string() == "z3")
+#ifdef ENABLE_Z3
+        else if(cli_arguments["driver"].as_string() == "z3")
             drv = std::make_shared<z3_driver>(env);
+#endif
+        else {
+            std::cerr << "no such driver available " << cli_arguments["driver"].as_string()
+                      << " please check your spelling and compilation flags" << std::endl;
+            return 1;
+        }
 
         drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
         drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
@@ -86,10 +93,12 @@ int main (int argc, char *argv[]) {
                 std::cout << drv_i->result << "\n";
             std::cout << "expression_result: " << drv_i->expression_result << std::endl;
         }
+#ifdef ENABLE_Z3
         if(cli_arguments["driver"].as_string() == "z3") {
             auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
             std::cout << "result: \n" << drv_z->result;
         }
+#endif
         std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
         return res;
     } catch(const std::exception& e) {

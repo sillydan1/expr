@@ -5,6 +5,10 @@ configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 
+# OPTIONS
+option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
+
+# DEPENDENCIES
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
@@ -12,10 +16,9 @@ CPMAddPackage("gh:yalibs/yatree@1.0.1")
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.2")
-# TODO: Add cmake option. z3 should be an opt-in feature
-CPMAddPackage("gh:Z3Prover/z3#z3-4.8.17")
-# TODO: Add cmake option. opensmt should be an opt-in feature
-# CPMAddPackage("gh:usi-verification-and-security/opensmt@2.3.2")
+if(ENABLE_Z3)
+    CPMAddPackage("gh:Z3Prover/z3#z3-4.8.17")
+endif()
 
 BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
@@ -31,16 +34,13 @@ include_directories(
         ${yahashcombine_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
         ${z3_SOURCE_DIR}/src/api
-        ${opensmt_SOURCE_DIR}/
         include
-        src
-)
+        src)
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_scanner_OUTPUTS}
         src/drivers/interpreter.cpp
         src/drivers/compiler.cpp
-        src/drivers/z3_driver.cpp
 
         src/symbol_table.cpp
         src/operations/add.cpp
@@ -49,10 +49,12 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/divide.cpp
         src/operations/modulo.cpp
         src/operations/pow.cpp
-        src/operations/boolean.cpp
-)
-add_executable(${PROJECT_NAME}_demo
-        src/main.cpp
-)
-target_link_libraries(${PROJECT_NAME} libz3)
+        src/operations/boolean.cpp)
+if(ENABLE_Z3)
+    target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
+    target_link_libraries(${PROJECT_NAME} libz3)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
+endif()
+
+add_executable(${PROJECT_NAME}_demo src/main.cpp)
 target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)

@@ -1,4 +1,5 @@
 #ifndef EXPR_Z3_DRIVER_H
+#ifdef ENABLE_Z3
 #define EXPR_Z3_DRIVER_H
 #include "operations.h"
 #include "drivers/driver.h"
@@ -24,4 +25,5 @@ namespace expr {
 
 }
 
+#endif //ENABLE_Z3
 #endif //EXPR_Z3_DRIVER_H
