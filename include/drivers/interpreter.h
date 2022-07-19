@@ -47,6 +47,7 @@ namespace expr {
         auto _and(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return and_(a,b); }
         auto _or(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return or_(a,b); }
         auto _xor(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return xor_(a,b); }
+        auto _implies(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return implies_(a,b); }
 
         auto gt(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return gt_(a,b); }
         auto ge(const symbol_value_t &a, const symbol_value_t &b) -> symbol_value_t override { return ge_(a,b); }

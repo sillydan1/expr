@@ -66,6 +66,7 @@
   AND     "&&"
   OR      "||"
   XOR     "^^"
+  IMPLIES "=>"
   GT      ">"
   GE      ">="
   EE      "=="
@@ -96,6 +97,7 @@
 %left AND
 %left GT GE EE NE LE LT
 %left PLUS MINUS STAR SLASH PERCENT HAT
+%left IMPLIES
 %precedence LPAREN NOT
 %%
 %start unit;
@@ -138,6 +140,7 @@ bin_op:
 | exp LT  exp           { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::lt}}.concat($1).concat($3); }
 | exp OR exp            { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_or}}.concat($1).concat($3); }
 | exp XOR exp           { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_xor}}.concat($1).concat($3); }
+| exp IMPLIES exp       { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_implies}}.concat($1).concat($3); }
 | exp AND exp           { $$ = expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::_and}}.concat($1).concat($3); }
 ;
 

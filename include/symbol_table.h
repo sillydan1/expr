@@ -80,7 +80,7 @@ namespace expr {
 
     enum class operator_type_t {
         minus, plus, star, slash, percent, hat,
-        _and, _or, _xor, _not,
+        _and, _or, _xor, _not, _implies,
         gt, ge, ne, ee, le, lt,
         parentheses
     };
