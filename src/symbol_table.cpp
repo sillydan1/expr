@@ -132,5 +132,24 @@ namespace expr {
             o << c;
         return o << "]";
     }
+}
 
+auto std::hash<expr::symbol_value_t>::operator()(const expr::symbol_value_t& v) const -> size_t {
+    size_t result{};
+    std::visit(ya::overload(
+            [&result](const int& v){result = std::hash<int>{}(v);},
+            [&result](const float& v){result = std::hash<float>{}(v);},
+            [&result](const bool& v){result = std::hash<bool>{}(v);},
+            [&result](const std::string& v){result = std::hash<std::string>{}(v);}
+    ), static_cast<const expr::underlying_symbol_value_t&>(v));
+    return result;
+}
+
+auto std::hash<expr::symbol_table_t>::operator()(const expr::symbol_table_t& v) const -> size_t {
+    size_t result{};
+    for(auto& symbol : v) {
+        result = ya::hash_combine(result, symbol.first);
+        result = ya::hash_combine(result, symbol.second);
+    }
+    return result;
 }
