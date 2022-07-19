@@ -98,7 +98,7 @@ auto t_lt(const T1&, const T2&) {
 template<typename T1, typename T2>
 auto t_implies(const T1&, const T2&) {
     std::ostringstream ss{};
-    ss << "Unable to imply (->) types " << typeid(T1).name() << " and " << typeid(T2).name();
+    ss << "Unable to imply (=>) types " << typeid(T1).name() << " and " << typeid(T2).name();
     throw std::domain_error(ss.str());
     return nullptr; // Must return something
 }
