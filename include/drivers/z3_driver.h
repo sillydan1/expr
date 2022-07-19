@@ -20,9 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_UTIL_H
-#define EXPR_UTIL_H
-#include <overload>
-#define FUNC_IMPL(a, func, b, res) std::visit(ya::overload{[&b,&res](auto&& x){std::visit(ya::overload{[&x,&res](auto&& y){res = func(x,y);}}, static_cast<underlying_symbol_value_t>(b));}}, static_cast<underlying_symbol_value_t>(a))
-#define MONOFUNC_IMPL(a, func, res) std::visit(ya::overload{[&res](auto&& x){ res = func(x); }}, static_cast<underlying_symbol_value_t>(a))
-#endif //EXPR_UTIL_H
+#ifndef EXPR_Z3_DRIVER_H
+#ifdef ENABLE_Z3
+#define EXPR_Z3_DRIVER_H
+#include "operations.h"
+#include "drivers/driver.h"
+
+namespace expr {
+    struct z3_driver : public driver {
+        struct impl;
+        explicit z3_driver(const symbol_table_t &env);
+        ~z3_driver() override;
+
+        auto parse(const std::string &f) -> int override;
+        auto get_symbol(const std::string& identifier) -> syntax_tree_t override;
+        void add_tree(const syntax_tree_t& tree) override;
+        void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
+
+        symbol_table_t result{};
+    protected:
+        const symbol_table_t& environment{};
+        std::unique_ptr<impl> pimpl;
+
+        void solve();
+    };
+
+}
+
+#endif //ENABLE_Z3
+#endif //EXPR_Z3_DRIVER_H

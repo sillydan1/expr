@@ -20,9 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_UTIL_H
-#define EXPR_UTIL_H
-#include <overload>
-#define FUNC_IMPL(a, func, b, res) std::visit(ya::overload{[&b,&res](auto&& x){std::visit(ya::overload{[&x,&res](auto&& y){res = func(x,y);}}, static_cast<underlying_symbol_value_t>(b));}}, static_cast<underlying_symbol_value_t>(a))
-#define MONOFUNC_IMPL(a, func, res) std::visit(ya::overload{[&res](auto&& x){ res = func(x); }}, static_cast<underlying_symbol_value_t>(a))
-#endif //EXPR_UTIL_H
+#ifndef EXPR_DRIVER_H
+#define EXPR_DRIVER_H
+#include <string>
+#include "symbol_table.h"
+#include "parser.hpp"
+#define YY_DECL yy::parser::symbol_type yylex (expr::driver* drv)
+YY_DECL;
+
+namespace expr {
+    struct driver {
+        explicit driver() : trace_parsing(false), trace_scanning(false) {}
+        virtual ~driver() = default;
+
+        virtual int parse(const std::string &f) = 0;
+        virtual auto get_symbol(const std::string &identifier) -> syntax_tree_t = 0;
+        virtual void add_tree(const syntax_tree_t& tree) = 0;
+        virtual void add_tree(const std::string& identifier, const syntax_tree_t& tree) = 0;
+
+        void scan_begin();
+        void scan_end();
+
+        std::string error;
+        std::string file;
+        bool trace_parsing;
+        bool trace_scanning;
+        yy::location location;
+    };
+}
+
+#endif //EXPR_DRIVER_H

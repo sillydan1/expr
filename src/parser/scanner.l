@@ -1,3 +1,25 @@
+/* MIT License
+ *
+ * Copyright (c) 2022 Asger Gitz-Johansen
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 %{
 #include <cerrno>
 #include <climits>
@@ -5,7 +27,7 @@
 #include <cstring> // strerror
 #include <string>
 #include <sstream>
-#include "parser/driver.h"
+#include "drivers/driver.h"
 #include "parser.hpp"
 %}
 
@@ -121,8 +143,10 @@ type   int|long|float|double|string|bool|var|auto
 "*"        return yy::parser::make_STAR   (loc);
 "/"        return yy::parser::make_SLASH  (loc);
 "%"        return yy::parser::make_PERCENT(loc);
+"^"        return yy::parser::make_HAT    (loc);
 "&&"       return yy::parser::make_AND    (loc);
 "||"       return yy::parser::make_OR     (loc);
+"^^"       return yy::parser::make_XOR    (loc);
 ">"        return yy::parser::make_GT     (loc);
 ">="       return yy::parser::make_GE     (loc);
 "=="       return yy::parser::make_EE     (loc);
@@ -175,7 +199,7 @@ yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type
     return yy::parser::make_BOOL(b, loc);
 }
 
-void driver::scan_begin() {
+void expr::driver::scan_begin() {
     yy_flex_debug = trace_scanning;
     if(file.empty() || file == "-")
         yyin = stdin;
@@ -183,5 +207,5 @@ void driver::scan_begin() {
         yy_scan_string(file.c_str());
 }
 
-void driver::scan_end() {
+void expr::driver::scan_end() {
 }

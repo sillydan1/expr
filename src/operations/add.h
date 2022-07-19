@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_UTIL_H
-#define EXPR_UTIL_H
-#include <overload>
-#define FUNC_IMPL(a, func, b, res) std::visit(ya::overload{[&b,&res](auto&& x){std::visit(ya::overload{[&x,&res](auto&& y){res = func(x,y);}}, static_cast<underlying_symbol_value_t>(b));}}, static_cast<underlying_symbol_value_t>(a))
-#define MONOFUNC_IMPL(a, func, res) std::visit(ya::overload{[&res](auto&& x){ res = func(x); }}, static_cast<underlying_symbol_value_t>(a))
-#endif //EXPR_UTIL_H
+#ifndef EXPR_ADD_H
+#define EXPR_ADD_H
+#include "symbol_table.h"
+expr::symbol_value_t add(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
+expr::symbol_value_t operator+(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
+#endif //EXPR_ADD_H
