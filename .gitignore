@@ -40,3 +40,4 @@ bin
 # emacs editor things
 .emacs*
 
+.DS_Store
