@@ -27,17 +27,21 @@ namespace expr {
     struct z3_driver::impl {
         z3::context c{};
         z3::solver s;
+        const symbol_table_t& known;
+        const symbol_table_t& unknown;
         auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
         auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
         auto as_z3_expression(const symbol_reference_t& ref) -> z3::expr;
         auto as_z3_expression(const c_symbol_reference_t& ref) -> z3::expr;
         auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
         void solve();
-        impl() : c{}, s{c} {}
+        impl(const symbol_table_t& known, const symbol_table_t& unknown) : c{}, s{c}, known{known}, unknown{unknown} {}
     };
 
-    z3_driver::z3_driver(const symbol_table_t& map) : environment{map}, pimpl{std::make_unique<z3_driver::impl>()}, driver{} {
-    }
+    z3_driver::z3_driver(const symbol_table_t& known_env,
+                         const symbol_table_t& unknown_env)
+                         : pimpl{std::make_unique<z3_driver::impl>(known_env,unknown_env)}, driver{}
+                         {}
 
     z3_driver::~z3_driver() {}
 
@@ -60,11 +64,12 @@ namespace expr {
     }
 
     auto z3_driver::get_symbol(const std::string &identifier) -> syntax_tree_t {
-#ifndef NDEBUG
-        if (!environment.contains(identifier))
-            throw std::out_of_range(identifier + " not found");
-#endif
-        return syntax_tree_t{environment.find(identifier)};
+        if (!pimpl->known.contains(identifier)) {
+            if(!pimpl->unknown.contains(identifier))
+                throw std::out_of_range(identifier + " not found");
+            return syntax_tree_t{pimpl->unknown.find(identifier)};
+        }
+        return syntax_tree_t{pimpl->known.at(identifier)};
     }
 
     void z3_driver::add_tree(const syntax_tree_t& tree) {

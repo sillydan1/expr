@@ -29,7 +29,7 @@
 namespace expr {
     struct z3_driver : public driver {
         struct impl;
-        explicit z3_driver(const symbol_table_t &env);
+        z3_driver(const symbol_table_t& known_env, const symbol_table_t& unknown_env);
         ~z3_driver() override;
 
         auto parse(const std::string &f) -> int override;
@@ -39,7 +39,6 @@ namespace expr {
 
         symbol_table_t result{};
     protected:
-        const symbol_table_t& environment{};
         std::unique_ptr<impl> pimpl;
 
         void solve();
