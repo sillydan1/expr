@@ -57,6 +57,9 @@ namespace expr {
             int res = parse();
             scan_end();
             return res;
+        } catch (std::domain_error& e) {
+            error = e.what();
+            return 2;
         } catch (std::exception &e) {
             error = e.what();
             return 1;
@@ -84,7 +87,7 @@ namespace expr {
 
     void z3_driver::solve() {
         switch (pimpl->s.check()) {
-            case z3::unsat: throw std::logic_error("unsat");
+            case z3::unsat: throw std::domain_error("unsat");
             case z3::unknown: throw std::logic_error("unknown");
             case z3::sat:
                 auto m = pimpl->s.get_model();
