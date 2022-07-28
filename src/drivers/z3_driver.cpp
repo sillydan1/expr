@@ -84,8 +84,8 @@ namespace expr {
 
     void z3_driver::solve() {
         switch (pimpl->s.check()) {
-            case z3::unsat:   std::cout << "unsat\n"; break; // TODO: Maybe throw exception, or add "unsat" to error...
-            case z3::unknown: std::cout << "unknown\n"; break;
+            case z3::unsat: throw std::logic_error("unsat");
+            case z3::unknown: throw std::logic_error("unknown");
             case z3::sat:
                 auto m = pimpl->s.get_model();
                 for(int i = 0; i < m.size(); i++) {
