@@ -78,7 +78,6 @@ namespace expr {
     void z3_driver::add_tree(const syntax_tree_t& tree) {
         pimpl->s.add(pimpl->as_z3_expression(tree)); // Note: Only accepts boolean expressions (will throw if not)
         solve();
-        pimpl->s = z3::solver{pimpl->c};
     }
 
     void z3_driver::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
@@ -87,10 +86,11 @@ namespace expr {
 
     void z3_driver::solve() {
         switch (pimpl->s.check()) {
-            case z3::unsat: throw std::domain_error("unsat");
-            case z3::unknown: throw std::logic_error("unknown");
+            case z3::unsat: pimpl->s.reset(); throw std::domain_error("unsat");
+            case z3::unknown: pimpl->s.reset(); throw std::logic_error("unknown");
             case z3::sat:
                 auto m = pimpl->s.get_model();
+                pimpl->s.reset();
                 for(int i = 0; i < m.size(); i++) {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
