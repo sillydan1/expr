@@ -40,6 +40,7 @@ int main (int argc, char *argv[]) {
         {"expression", 'e',    argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
         {"driver", 'd',        argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
         {"environment", 'm',   argument_requirement::OPTIONAL_ARG, "provide an environment"},
+        {"unknown-environment", 'u',   argument_requirement::REQUIRE_ARG, "provide an environment of unknown variables (z3 driver only)"},
         {"parser-trace", 'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
         {"scanner-trace", 's', argument_requirement::NO_ARG, "enable tracing for the scanner"},
     };
@@ -75,6 +76,16 @@ int main (int argc, char *argv[]) {
             }
             env = i.result;
         }
+        symbol_table_t unknowns{};
+        if(cli_arguments["unknown-environment"]) {
+            interpreter i{{}};
+            auto res = i.parse(cli_arguments["unknown-environment"].as_string());
+            if(res != 0) {
+                std::cout << "error: " << i.error << std::endl;
+                return res;
+            }
+            unknowns = i.result;
+        }
 
         std::shared_ptr<driver> drv{};
         if(cli_arguments["driver"].as_string() == "compiler")
@@ -83,7 +94,7 @@ int main (int argc, char *argv[]) {
             drv = std::make_shared<interpreter>(env);
 #ifdef ENABLE_Z3
         else if(cli_arguments["driver"].as_string() == "z3")
-            drv = std::make_shared<z3_driver>(env);
+            drv = std::make_shared<z3_driver>(env,unknowns);
 #endif
         else {
             std::cerr << "no such driver available " << cli_arguments["driver"].as_string()

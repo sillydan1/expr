@@ -27,17 +27,21 @@ namespace expr {
     struct z3_driver::impl {
         z3::context c{};
         z3::solver s;
+        const symbol_table_t& known;
+        const symbol_table_t& unknown;
         auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
         auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
         auto as_z3_expression(const symbol_reference_t& ref) -> z3::expr;
         auto as_z3_expression(const c_symbol_reference_t& ref) -> z3::expr;
         auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
         void solve();
-        impl() : c{}, s{c} {}
+        impl(const symbol_table_t& known, const symbol_table_t& unknown) : c{}, s{c}, known{known}, unknown{unknown} {}
     };
 
-    z3_driver::z3_driver(const symbol_table_t& map) : environment{map}, pimpl{std::make_unique<z3_driver::impl>()}, driver{} {
-    }
+    z3_driver::z3_driver(const symbol_table_t& known_env,
+                         const symbol_table_t& unknown_env)
+                         : pimpl{std::make_unique<z3_driver::impl>(known_env,unknown_env)}, driver{}
+                         {}
 
     z3_driver::~z3_driver() {}
 
@@ -53,6 +57,9 @@ namespace expr {
             int res = parse();
             scan_end();
             return res;
+        } catch (std::domain_error& e) {
+            error = e.what();
+            return 2;
         } catch (std::exception &e) {
             error = e.what();
             return 1;
@@ -60,17 +67,17 @@ namespace expr {
     }
 
     auto z3_driver::get_symbol(const std::string &identifier) -> syntax_tree_t {
-#ifndef NDEBUG
-        if (!environment.contains(identifier))
-            throw std::out_of_range(identifier + " not found");
-#endif
-        return syntax_tree_t{environment.find(identifier)};
+        if (!pimpl->known.contains(identifier)) {
+            if(!pimpl->unknown.contains(identifier))
+                throw std::out_of_range(identifier + " not found");
+            return syntax_tree_t{pimpl->unknown.find(identifier)};
+        }
+        return syntax_tree_t{pimpl->known.at(identifier)};
     }
 
     void z3_driver::add_tree(const syntax_tree_t& tree) {
         pimpl->s.add(pimpl->as_z3_expression(tree)); // Note: Only accepts boolean expressions (will throw if not)
         solve();
-        pimpl->s = z3::solver{pimpl->c};
     }
 
     void z3_driver::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
@@ -79,10 +86,11 @@ namespace expr {
 
     void z3_driver::solve() {
         switch (pimpl->s.check()) {
-            case z3::unsat:   std::cout << "unsat\n"; break; // TODO: Maybe throw exception, or add "unsat" to error...
-            case z3::unknown: std::cout << "unknown\n"; break;
+            case z3::unsat: pimpl->s.reset(); throw std::domain_error("unsat");
+            case z3::unknown: pimpl->s.reset(); throw std::logic_error("unknown");
             case z3::sat:
                 auto m = pimpl->s.get_model();
+                pimpl->s.reset();
                 for(int i = 0; i < m.size(); i++) {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
