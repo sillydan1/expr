@@ -24,10 +24,29 @@
 #include <overload>
 
 namespace expr {
-    symbol_table_t &symbol_table_t::operator+=(const symbol_table_t &other) {
+    auto symbol_table_t::operator+=(const symbol_table_t &other) -> symbol_table_t& {
+        return put(other);
+    }
+
+    auto symbol_table_t::put(const symbol_table_t &other) -> symbol_table_t & {
         for (auto &e: other)
             this->insert_or_assign(e.first, e.second);
         return *this;
+    }
+
+    auto symbol_table_t::operator*=(const symbol_table_t &other) -> symbol_table_t & {
+        return overwrite_elements(other);
+    }
+
+    auto symbol_table_t::overwrite_elements(const symbol_table_t &other) -> symbol_table_t & {
+        for (auto &e: other)
+            if(contains(e.first))
+                this->insert_or_assign(e.first, e.second);
+        return *this;
+    }
+
+    auto symbol_table_t::is_completely_overlapping(const symbol_table_t &other) -> bool {
+        return std::all_of(other.begin(), other.end(), [this](const auto& value){ return this->find(value.first) != this->end(); });
     }
 
     auto symbol_table_t::is_overlapping(const symbol_table_t &other) -> bool {
