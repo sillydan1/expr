@@ -30,8 +30,6 @@ set(CXX_STANDARD_REQUIRED ON)
 option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
 
 # DEPENDENCIES
-find_package(FLEX REQUIRED)
-find_package(BISON REQUIRED)
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
 CPMAddPackage("gh:yalibs/yatree@1.0.1")
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
@@ -41,14 +39,27 @@ if(ENABLE_Z3)
     CPMAddPackage("gh:Z3Prover/z3#z3-4.8.17")
 endif()
 
-BISON_TARGET(expr_parser src/parser/parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
-FLEX_TARGET(expr_scanner src/parser/scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
-ADD_FLEX_BISON_DEPENDENCY(expr_scanner expr_parser)
-
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
-include_directories(${overload_SOURCE_DIR}/include)
+find_package(FLEX REQUIRED)
+find_package(BISON REQUIRED)
+
+add_custom_command(OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/lex.l
+        COMMAND m4
+        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/lex -I ${PROJECT_SOURCE_DIR}/src/parser -P ${PROJECT_SOURCE_DIR}/src/parser/lex/scanner.l > ${CMAKE_CURRENT_BINARY_DIR}/lex.l
+        VERBATIM)
+add_custom_command(OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
+        COMMAND m4
+        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/yacc -I ${PROJECT_SOURCE_DIR}/src/parser -P ${PROJECT_SOURCE_DIR}/src/parser/yacc/parser.y > ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
+        VERBATIM)
+
+BISON_TARGET(expr_parser ${CMAKE_CURRENT_BINARY_DIR}/yacc.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
+FLEX_TARGET(expr_lexer ${CMAKE_CURRENT_BINARY_DIR}/lex.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
+ADD_FLEX_BISON_DEPENDENCY(expr_lexer expr_parser)
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/src
         ${yaoverload_SOURCE_DIR}/include
         ${yatree_SOURCE_DIR}/include
         ${yatimer_SOURCE_DIR}/include
@@ -59,7 +70,7 @@ include_directories(
         src)
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
-        ${FLEX_expr_scanner_OUTPUTS}
+        ${FLEX_expr_lexer_OUTPUTS}
         src/drivers/interpreter.cpp
         src/drivers/compiler.cpp
 
@@ -71,6 +82,7 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/modulo.cpp
         src/operations/pow.cpp
         src/operations/boolean.cpp)
+
 if(ENABLE_Z3)
     target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
     target_link_libraries(${PROJECT_NAME} libz3)
