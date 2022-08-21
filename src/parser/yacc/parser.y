@@ -1,6 +1,6 @@
 m4_changequote()
 /*
-m4_include(mit.license)
+m4_include(../mit.license)
 */
 
 m4_include(skeleton.y)

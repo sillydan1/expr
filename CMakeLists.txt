@@ -46,12 +46,12 @@ find_package(BISON REQUIRED)
 add_custom_command(OUTPUT
         ${CMAKE_CURRENT_BINARY_DIR}/lex.l
         COMMAND m4
-        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/lex -I ${PROJECT_SOURCE_DIR}/src/parser -P ${PROJECT_SOURCE_DIR}/src/parser/lex/scanner.l > ${CMAKE_CURRENT_BINARY_DIR}/lex.l
+        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/lex -P ${PROJECT_SOURCE_DIR}/src/parser/lex/scanner.l > ${CMAKE_CURRENT_BINARY_DIR}/lex.l
         VERBATIM)
 add_custom_command(OUTPUT
         ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
         COMMAND m4
-        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/yacc -I ${PROJECT_SOURCE_DIR}/src/parser -P ${PROJECT_SOURCE_DIR}/src/parser/yacc/parser.y > ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
+        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/yacc -P ${PROJECT_SOURCE_DIR}/src/parser/yacc/parser.y > ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
         VERBATIM)
 
 BISON_TARGET(expr_parser ${CMAKE_CURRENT_BINARY_DIR}/yacc.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
