@@ -1,17 +1,6 @@
 m4_changequote()
 
 %{
-#include <cerrno>
-#include <climits>
-#include <cstdlib>
-#include <cstring> // strerror
-#include <string>
-#include <sstream>
-#include "drivers/driver.h"
-#include "parser.hpp"
-%}
-
-%{
 #if defined __clang__
 # define CLANG_VERSION (__clang_major__ * 100 + __clang_minor__)
 #endif

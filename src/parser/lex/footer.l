@@ -27,14 +27,3 @@ yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type
     std::istringstream(s) >> std::boolalpha >> b;
     return yy::parser::make_BOOL(b, loc);
 }
-
-void expr::driver::scan_begin() {
-    yy_flex_debug = trace_scanning;
-    if(file.empty() || file == "-")
-        yyin = stdin;
-    else
-        yy_scan_string(file.c_str());
-}
-
-void expr::driver::scan_end() {
-}

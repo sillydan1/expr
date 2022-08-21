@@ -3,8 +3,8 @@ m4_changequote()
 m4_include(../mit.license)
 */
 
+m4_include(includes.l)
 m4_include(skeleton.l)
-
 m4_include(tokens.l)
 
 %{
@@ -25,3 +25,4 @@ m4_include(lexer.l)
 %%
 
 m4_include(footer.l)
+m4_include(expr_driver_footer.l)
