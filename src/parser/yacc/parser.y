@@ -2,10 +2,9 @@ m4_changequote()
 /*
 m4_include(../mit.license)
 */
-
 m4_include(skeleton.y)
-
 m4_include(tokens.y)
+m4_include(token_types.y)
 
 %%
 %start unit;

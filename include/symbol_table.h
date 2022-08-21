@@ -136,4 +136,17 @@ namespace std {
     };
 }
 
+#ifndef BINOP_CTOR
+#define BINOP_CTOR(op,arg1,arg2) expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::op}}.concat(arg1).concat(arg2)
+#endif
+#ifndef IDENT_CTOR
+#define IDENT_CTOR(arg1) drv->get_symbol(arg1);
+#endif
+#ifndef MONOOP_CTOR
+#define MONOOP_CTOR(op,arg1) expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::op}}.concat(arg1)
+#endif
+#ifndef LIT_CTOR
+#define LIT_CTOR(arg1) expr::syntax_tree_t{arg1}
+#endif
+
 #endif

@@ -34,7 +34,6 @@ m4_changequote()
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
 %token <std::string> STRING "string"
-%nterm <expr::syntax_tree_t> exp bin_op mono_op lit
 %printer { yyo << $$; } <*>;
 
 %left XOR
