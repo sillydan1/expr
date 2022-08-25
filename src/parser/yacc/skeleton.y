@@ -31,7 +31,7 @@ m4_changequote()
 // Include the driver
 %code {
     #include "drivers/driver.h"
-    void yy::parser::error (const location_type& l, const std::string& m) {
+    void PARSER_NS ::parser::error (const location_type& l, const std::string& m) {
       std::cerr << l << ": " << m << '\n';
     }
 }

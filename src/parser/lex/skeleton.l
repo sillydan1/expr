@@ -75,8 +75,8 @@ m4_changequote()
 
 %{
   // A number symbol corresponding to the value in provided string.
-  yy::parser::symbol_type make_NUMBER(const std::string &s, const yy::parser::location_type& loc);
-  yy::parser::symbol_type make_FLOAT(const std::string &s, const yy::parser::location_type& loc);
-  yy::parser::symbol_type make_STRING(const std::string &s, const yy::parser::location_type& loc);
-  yy::parser::symbol_type make_BOOL(std::string s, const yy::parser::location_type& loc);
+  PARSER_NS ::parser::symbol_type make_NUMBER(const std::string &s, const PARSER_NS ::parser::location_type& loc);
+  PARSER_NS ::parser::symbol_type make_FLOAT(const std::string &s, const PARSER_NS ::parser::location_type& loc);
+  PARSER_NS ::parser::symbol_type make_STRING(const std::string &s, const PARSER_NS ::parser::location_type& loc);
+  PARSER_NS ::parser::symbol_type make_BOOL(std::string s, const PARSER_NS ::parser::location_type& loc);
 %}
