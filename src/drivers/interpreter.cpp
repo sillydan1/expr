@@ -59,19 +59,27 @@ namespace expr {
     }
 
     void interpreter::add_tree(const syntax_tree_t& tree) {
-        expression_result = evaluate(tree, *this, *this, *this);
+        expression_result = evaluate(tree);
     }
 
     void interpreter::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
-        result[identifier] = evaluate(tree, *this, *this, *this);
+        result[identifier] = evaluate(tree);
     }
 
-    auto interpreter::evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator) -> symbol_value_t {
+    auto interpreter::evaluate(const syntax_tree_t& tree) -> symbol_value_t {
+        return evaluate(tree, *this, *this, *this, environment);
+    }
+
+    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& trees) -> symbol_table_t {
+        return evaluate(trees, *this, *this, *this, environment);
+    }
+
+    auto interpreter::evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator, const symbol_table_t& symbols) -> symbol_value_t {
         symbol_value_t v{};
-        auto eval_wrapper = [&](const syntax_tree_t& t) { return evaluate(t, arith, boolean, comparator); };
+        auto eval_wrapper = [&](const syntax_tree_t& t) { return evaluate(t, arith, boolean, comparator, symbols); };
         std::visit(ya::overload(
-                [&v](const symbol_reference_t& r){ v = r->second; },
-                [&v](const c_symbol_reference_t& r){ v = r->second; },
+                [&](const symbol_reference_t& r){ v = symbols.at(r->first); },   // TODO: Should we look up every time? If so, what is the point of storing an iterator in the ast?
+                [&](const c_symbol_reference_t& r){ v = symbols.at(r->first); }, // TODO: Should we look up every time? If so, what is the point of storing an iterator in the ast?
                 [&](const operator_t& o) {
                     switch (o.operator_type) {
                         case operator_type_t::minus:    v = arith.sub(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
@@ -104,10 +112,10 @@ namespace expr {
         return v;
     }
 
-    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator &arith, expr::boolean_operator &boolean, expr::compare_operator &comparator) -> symbol_table_t {
+    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator &arith, expr::boolean_operator &boolean, expr::compare_operator &comparator, const symbol_table_t& symbols) -> symbol_table_t {
         symbol_table_t result{};
         for(auto& tree : symbol_tree_map)
-             result[tree.first] = evaluate(tree.second, arith, boolean, comparator);
+             result[tree.first] = evaluate(tree.second, arith, boolean, comparator, symbols);
         return result;
     }
 }

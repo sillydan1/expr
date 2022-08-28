@@ -59,8 +59,10 @@ namespace expr {
         symbol_table_t result{};
         symbol_value_t expression_result{};
 
-        static auto evaluate(const syntax_tree_t& tree, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_value_t;
-        static auto evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator) -> symbol_table_t;
+        auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
+        auto evaluate(const compiler::compiled_expr_collection_t& tree) -> symbol_table_t;
+        static auto evaluate(const syntax_tree_t& tree, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator, const symbol_table_t& symbols) -> symbol_value_t;
+        static auto evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator& arith, expr::boolean_operator& boolean, expr::compare_operator& comparator, const symbol_table_t& symbols) -> symbol_table_t;
 
     protected:
         const symbol_table_t &environment{};
