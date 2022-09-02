@@ -50,6 +50,22 @@ namespace expr {
         }
     }
 
+    auto interpreter::interpret_declarations(const std::string &f) -> symbol_table_t {
+        result = {};
+        auto res = parse(f);
+        if(res != 0)
+            throw std::logic_error(error);
+        return result;
+    }
+
+    auto interpreter::interpret_expression(const std::string &f) -> symbol_value_t {
+        expression_result = {};
+        auto res = parse(f);
+        if(res != 0)
+            throw std::logic_error(error);
+        return expression_result;
+    }
+
     auto interpreter::get_symbol(const std::string &identifier) -> syntax_tree_t {
 #ifndef NDEBUG
         if (!environment.contains(identifier))

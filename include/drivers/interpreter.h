@@ -32,6 +32,8 @@ namespace expr {
         ~interpreter() override = default;
 
         auto parse(const std::string &f) -> int override;
+        auto interpret_declarations(const std::string& f) -> symbol_table_t;
+        auto interpret_expression(const std::string& f) -> symbol_value_t;
         auto get_symbol(const std::string& identifier) -> syntax_tree_t override;
         void add_tree(const syntax_tree_t& tree) override;
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
