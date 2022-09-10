@@ -83,55 +83,54 @@ namespace expr {
     }
 
     auto interpreter::evaluate(const syntax_tree_t& tree) -> symbol_value_t {
-        return evaluate(tree, *this, *this, *this, environment);
+        return evaluate(tree, *this, environment);
     }
 
     auto interpreter::evaluate(const compiler::compiled_expr_collection_t& trees) -> symbol_table_t {
-        return evaluate(trees, *this, *this, *this, environment);
+        return evaluate(trees, *this, environment);
     }
 
-    auto interpreter::evaluate(const syntax_tree_t& tree, arithmetic_operator& arith, boolean_operator& boolean, compare_operator& comparator, const symbol_table_t& symbols) -> symbol_value_t {
+    auto interpreter::evaluate(const syntax_tree_t& tree, const interpreter& op, const symbol_table_t& symbols) -> symbol_value_t {
         symbol_value_t v{};
-        auto eval_wrapper = [&](const syntax_tree_t& t) { return evaluate(t, arith, boolean, comparator, symbols); };
         std::visit(ya::overload(
                 [&](const symbol_reference_t& r){ v = symbols.at(r->first); },   // TODO: Should we look up every time? If so, what is the point of storing an iterator in the ast?
                 [&](const c_symbol_reference_t& r){ v = symbols.at(r->first); }, // TODO: Should we look up every time? If so, what is the point of storing an iterator in the ast?
                 [&](const operator_t& o) {
                     switch (o.operator_type) {
-                        case operator_type_t::minus:    v = arith.sub(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::plus:     v = arith.add(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::star:     v = arith.mul(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::slash:    v = arith.div(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::percent:  v = arith.mod(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::hat:      v = arith.pow(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::_and: v = boolean._and(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::_or:  v = boolean._or(eval_wrapper(tree.children[0]),  eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::_xor: v = boolean._xor(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::_not: v = boolean._not(eval_wrapper(tree.children[0])); break;
-                        case operator_type_t::_implies: v = boolean._implies(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::gt: v = comparator.gt(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::ge: v = comparator.ge(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::ne: v = comparator.ne(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::ee: v = comparator.ee(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::le: v = comparator.le(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::lt: v = comparator.lt(eval_wrapper(tree.children[0]), eval_wrapper(tree.children[1])); break;
-                        case operator_type_t::parentheses: v = eval_wrapper(tree.children[0]); break;
+                        case operator_type_t::minus:    v = op.sub(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::plus:     v = op.add(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::star:     v = op.mul(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::slash:    v = op.div(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::percent:  v = op.mod(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::hat:      v = op.pow(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::_and: v = op._and(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::_or:  v = op._or(evaluate(tree.children[0], op, symbols),  evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::_xor: v = op._xor(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::_not: v = op._not(evaluate(tree.children[0], op, symbols)); break;
+                        case operator_type_t::_implies: v = op._implies(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::gt: v = op.gt(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::ge: v = op.ge(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::ne: v = op.ne(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::ee: v = op.ee(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::le: v = op.le(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::lt: v = op.lt(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
+                        case operator_type_t::parentheses: v = evaluate(tree.children[0], op, symbols); break;
                     }
                 },
                 [&v](const symbol_value_t& o){ v = o; },
                 [&](const root_t& r){
                     if(!tree.children.empty())
-                        v = eval_wrapper(tree.children[0]);
+                        v = evaluate(tree.children[0], op, symbols);
                 },
                 [](auto&&){ throw std::logic_error("operator type not recognized"); }
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
         return v;
     }
 
-    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, expr::arithmetic_operator &arith, expr::boolean_operator &boolean, expr::compare_operator &comparator, const symbol_table_t& symbols) -> symbol_table_t {
+    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, const interpreter& op, const symbol_table_t& symbols) -> symbol_table_t {
         symbol_table_t result{};
         for(auto& tree : symbol_tree_map)
-             result[tree.first] = evaluate(tree.second, arith, boolean, comparator, symbols);
+             result[tree.first] = evaluate(tree.second, op, symbols);
         return result;
     }
 }
