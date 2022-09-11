@@ -47,11 +47,9 @@ namespace expr {
         }
     }
     auto compiler::get_symbol(const std::string& identifier) -> syntax_tree_t {
-#ifndef NDEBUG
-        if (!environment.contains(identifier))
+        if (!contains(identifier))
             throw std::out_of_range(identifier + " not found");
-#endif
-        return syntax_tree_t{environment.find(identifier)};
+        return syntax_tree_t{identifier_t{identifier}};
     }
     void compiler::add_tree(const syntax_tree_t& tree) {
         trees["expression_result"] = (tree);

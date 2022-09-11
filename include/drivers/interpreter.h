@@ -28,7 +28,7 @@
 
 namespace expr {
     struct interpreter : public driver, arithmetic_operator, boolean_operator, compare_operator {
-        explicit interpreter(const symbol_table_t &env);
+        interpreter(std::initializer_list<symbol_table_ref_t> environments);
         ~interpreter() override = default;
 
         auto parse(const std::string &f) -> int override;
@@ -63,11 +63,6 @@ namespace expr {
 
         auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
         auto evaluate(const compiler::compiled_expr_collection_t& tree) -> symbol_table_t;
-        static auto evaluate(const syntax_tree_t& tree, const interpreter& op, const symbol_table_t& symbols) -> symbol_value_t;
-        static auto evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, const interpreter& op, const symbol_table_t& symbols) -> symbol_table_t;
-
-    protected:
-        const symbol_table_t &environment{};
     };
 }
 

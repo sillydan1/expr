@@ -29,14 +29,28 @@
 YY_DECL;
 
 namespace expr {
+    using symbol_table_ref_t = std::reference_wrapper<const expr::symbol_table_t>;
+    using symbol_table_ref_collection_t = std::vector<std::reference_wrapper<const expr::symbol_table_t>>;
     struct driver {
-        explicit driver() : trace_parsing(false), trace_scanning(false) {}
+        driver(std::initializer_list<symbol_table_ref_t> environments)
+         : trace_parsing(false), trace_scanning(false), environments{environments} {}
         virtual ~driver() = default;
 
         virtual int parse(const std::string &f) = 0;
         virtual auto get_symbol(const std::string &identifier) -> syntax_tree_t = 0;
         virtual void add_tree(const syntax_tree_t& tree) = 0;
         virtual void add_tree(const std::string& identifier, const syntax_tree_t& tree) = 0;
+        auto contains(const std::string& identifier) const -> bool {
+            return find(identifier) != end;
+        }
+        auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator {
+            for(auto& env : environments) {
+                auto env_it = env.get().find(identifier);
+                if(env_it != env.get().end())
+                    return env_it;
+            }
+            return end;
+        }
 
         void scan_begin();
         void scan_end();
@@ -46,6 +60,9 @@ namespace expr {
         bool trace_parsing;
         bool trace_scanning;
         yy::location location;
+    protected:
+        expr::symbol_table_t::const_iterator end{};
+        symbol_table_ref_collection_t environments;
     };
 }
 

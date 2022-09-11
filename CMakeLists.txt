@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 cmake_minimum_required(VERSION 3.21)
+# to generate a changelog, use: (python3 -m pip install git-changelog)
+# $ git-changelog -s conventional . -o CHANGELOG.MD
 project(expr VERSION 1.7.0)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)

@@ -127,14 +127,12 @@ namespace expr {
         }
     }
 
-    auto operator<<(std::ostream &o, const root_t &r) -> std::ostream & { return o << "ROOT"; }
-
-    auto operator<<(std::ostream &o, const symbol_reference_t &r) -> std::ostream & {
-        return o << r->first << " :-> " << r->second;
+    auto operator<<(std::ostream &o, const root_t &r) -> std::ostream & {
+        return o << "ROOT";
     }
 
-    auto operator<<(std::ostream &o, const c_symbol_reference_t &r) -> std::ostream & {
-        return o << r->first << " :-> " << r->second;
+    auto operator<<(std::ostream& o, const identifier_t& r) -> std::ostream& {
+        return o << r.ident;
     }
 
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream & {

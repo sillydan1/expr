@@ -25,8 +25,7 @@
 #include "parser.hpp"
 
 namespace expr {
-    interpreter::interpreter(const symbol_table_t& map) : environment{map}, driver{} {
-    }
+    interpreter::interpreter(std::initializer_list<symbol_table_ref_t> environments) : driver{environments} {}
 
     int interpreter::parse(const std::string &f) {
         if (f.empty()) {
@@ -67,11 +66,9 @@ namespace expr {
     }
 
     auto interpreter::get_symbol(const std::string &identifier) -> syntax_tree_t {
-#ifndef NDEBUG
-        if (!environment.contains(identifier))
+        if (!contains(identifier))
             throw std::out_of_range(identifier + " not found");
-#endif
-        return syntax_tree_t{environment.find(identifier)};
+        return syntax_tree_t{identifier_t{identifier}};
     }
 
     void interpreter::add_tree(const syntax_tree_t& tree) {
@@ -83,54 +80,50 @@ namespace expr {
     }
 
     auto interpreter::evaluate(const syntax_tree_t& tree) -> symbol_value_t {
-        return evaluate(tree, *this, environment);
-    }
-
-    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& trees) -> symbol_table_t {
-        return evaluate(trees, *this, environment);
-    }
-
-    auto interpreter::evaluate(const syntax_tree_t& tree, const interpreter& op, const symbol_table_t& symbols) -> symbol_value_t {
         symbol_value_t v{};
         std::visit(ya::overload(
-                [&](const symbol_reference_t& r){ v = symbols.at(r->first); },   // TODO: Should we look up every time? If so, what is the point of storing an iterator in the ast?
-                [&](const c_symbol_reference_t& r){ v = symbols.at(r->first); }, // TODO: Should we look up every time? If so, what is the point of storing an iterator in the ast?
+                [&](const identifier_t& r){
+                    auto s = find(r.ident);
+                    if(s == end)
+                        throw std::out_of_range("not found: " + r.ident);
+                    v = s->second;
+                },
                 [&](const operator_t& o) {
                     switch (o.operator_type) {
-                        case operator_type_t::minus:    v = op.sub(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::plus:     v = op.add(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::star:     v = op.mul(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::slash:    v = op.div(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::percent:  v = op.mod(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::hat:      v = op.pow(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::_and: v = op._and(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::_or:  v = op._or(evaluate(tree.children[0], op, symbols),  evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::_xor: v = op._xor(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::_not: v = op._not(evaluate(tree.children[0], op, symbols)); break;
-                        case operator_type_t::_implies: v = op._implies(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::gt: v = op.gt(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::ge: v = op.ge(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::ne: v = op.ne(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::ee: v = op.ee(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::le: v = op.le(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::lt: v = op.lt(evaluate(tree.children[0], op, symbols), evaluate(tree.children[1], op, symbols)); break;
-                        case operator_type_t::parentheses: v = evaluate(tree.children[0], op, symbols); break;
+                        case operator_type_t::minus:    v = sub(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::plus:     v = add(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::star:     v = mul(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::slash:    v = div(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::percent:  v = mod(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::hat:      v = pow(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::_and: v = _and(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::_or:  v = _or(evaluate(tree.children[0]),  evaluate(tree.children[1])); break;
+                        case operator_type_t::_xor: v = _xor(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::_not: v = _not(evaluate(tree.children[0])); break;
+                        case operator_type_t::_implies: v = _implies(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::gt: v = gt(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::ge: v = ge(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::ne: v = ne(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::ee: v = ee(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::le: v = le(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::lt: v = lt(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
+                        case operator_type_t::parentheses: v = evaluate(tree.children[0]); break;
                     }
                 },
                 [&v](const symbol_value_t& o){ v = o; },
                 [&](const root_t& r){
                     if(!tree.children.empty())
-                        v = evaluate(tree.children[0], op, symbols);
+                        v = evaluate(tree.children[0]);
                 },
                 [](auto&&){ throw std::logic_error("operator type not recognized"); }
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
         return v;
     }
 
-    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& symbol_tree_map, const interpreter& op, const symbol_table_t& symbols) -> symbol_table_t {
-        symbol_table_t result{};
-        for(auto& tree : symbol_tree_map)
-             result[tree.first] = evaluate(tree.second, op, symbols);
-        return result;
+    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& trees) -> symbol_table_t {
+        symbol_table_t res{};
+        for(auto& tree : trees)
+            res[tree.first] = evaluate(tree.second);
+        return res;
     }
 }

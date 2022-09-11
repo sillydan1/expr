@@ -95,20 +95,17 @@ namespace expr {
         explicit operator_t(operator_type_t t) : operator_type{t} {}
     };
 
-    using symbol_reference_t = symbol_table_t::iterator;
-    using c_symbol_reference_t = symbol_table_t::const_iterator;
+    struct identifier_t {
+        std::string ident;
+    };
     struct root_t {};
 
-    using underlying_syntax_node_t = std::variant<symbol_reference_t, c_symbol_reference_t, operator_t, root_t, symbol_value_t>;
+    using underlying_syntax_node_t = std::variant<identifier_t, operator_t, root_t, symbol_value_t>;
     struct syntax_node_t : public underlying_syntax_node_t {
         syntax_node_t() : underlying_syntax_node_t{root_t{}} {}
 
         template<typename T>
         syntax_node_t(const T &t) : underlying_syntax_node_t{t} {}
-
-        syntax_node_t(symbol_reference_t r) : underlying_syntax_node_t{r} {}
-
-        syntax_node_t(c_symbol_reference_t r) : underlying_syntax_node_t{r} {}
 
         template<typename T>
         auto &operator=(const T &t) {
@@ -121,8 +118,7 @@ namespace expr {
 
     auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream &;
     auto operator<<(std::ostream &o, const root_t &r) -> std::ostream &;
-    auto operator<<(std::ostream &o, const symbol_reference_t &r) -> std::ostream &;
-    auto operator<<(std::ostream &o, const c_symbol_reference_t &r) -> std::ostream &;
+    auto operator<<(std::ostream &o, const identifier_t &r) -> std::ostream &;
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream &;
     auto operator<<(std::ostream &o, const syntax_tree_t &t) -> std::ostream &;
 }
