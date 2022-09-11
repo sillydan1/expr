@@ -2,7 +2,9 @@ m4_changequote()
 /*
 m4_include(../mit.license)
 */
+m4_define(PARSER_NS, yy)
 m4_include(skeleton.y)
+%define api.prefix {PARSER_NS}
 m4_include(tokens.y)
 m4_include(token_types.y)
 

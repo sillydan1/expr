@@ -2,7 +2,7 @@ m4_changequote()
 /*
 m4_include(../mit.license)
 */
-
+m4_define(PARSER_NS, yy)
 m4_include(includes.l)
 m4_include(skeleton.l)
 m4_include(tokens.l)
