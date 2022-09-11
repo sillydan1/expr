@@ -25,10 +25,10 @@
 #define EXPR_Z3_DRIVER_H
 #include "operations.h"
 #include "drivers/driver.h"
+#include <c++/z3++.h>
 
 namespace expr {
     struct z3_driver : public driver {
-        struct impl;
         z3_driver(const symbol_table_t& known_env, const symbol_table_t& unknown_env);
         ~z3_driver() override;
 
@@ -37,13 +37,19 @@ namespace expr {
         void add_tree(const syntax_tree_t& tree) override;
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
 
+        auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
+        auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
+        auto as_z3_expression(const identifier_t& ref) -> z3::expr;
+        auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
+
         symbol_table_t result{};
     protected:
-        std::unique_ptr<impl> pimpl;
-
+        z3::context c{};
+        z3::solver s;
+        const symbol_table_t& known;
+        const symbol_table_t& unknown;
         void solve();
     };
-
 }
 
 #endif //ENABLE_Z3

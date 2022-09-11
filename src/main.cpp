@@ -89,9 +89,9 @@ int main (int argc, char *argv[]) {
 
         std::shared_ptr<driver> drv{};
         if(cli_arguments["driver"].as_string() == "compiler")
-            drv = std::make_shared<compiler>(env);
+            drv = std::make_shared<compiler>(std::initializer_list<std::reference_wrapper<const expr::symbol_table_t>>{env});
         else if(cli_arguments["driver"].as_string() == "interpreter")
-            drv = std::make_shared<interpreter>(env);
+            drv = std::make_shared<interpreter>(std::initializer_list<std::reference_wrapper<const expr::symbol_table_t>>{env});
 #ifdef ENABLE_Z3
         else if(cli_arguments["driver"].as_string() == "z3")
             drv = std::make_shared<z3_driver>(env,unknowns);
@@ -116,7 +116,7 @@ int main (int argc, char *argv[]) {
             for(auto& tree : drv_c->trees)
                 std::cout << tree.first << ": " << tree.second << "\n";
             std::cout << "\n";
-            interpreter i{drv_c->get_environment()};
+            interpreter i{{env}};
             std::cout << i.evaluate(drv_c->trees) << "\n";
         }
         if(cli_arguments["driver"].as_string() == "interpreter") {
