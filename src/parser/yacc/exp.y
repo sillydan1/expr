@@ -38,4 +38,5 @@ lit:
 | "string"              { $$ = LIT_CTOR ($1);   }
 | "bool"                { $$ = LIT_CTOR ($1);   }
 | "identifier"          { $$ = IDENT_CTOR ($1); }
+| "clk"                 { $$ = LIT_CTOR ($1);   }
 ;

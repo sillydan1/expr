@@ -127,37 +127,67 @@ auto t_implies(const bool& a, const bool& b) {
 
 auto t_gt(const int& a, const int& b) {return a > b;}
 auto t_gt(const int& a, const float& b) {return a > b;}
+auto t_gt(const int& a, const expr::clock_t& b) {return a > b.time_units;}
 auto t_gt(const float& a, const int& b) {return a > b;}
 auto t_gt(const float& a, const float& b) {return a > b;}
+auto t_gt(const float& a, const expr::clock_t& b) {return a > b.time_units;}
+auto t_gt(const expr::clock_t& a, const expr::clock_t& b) {return a.time_units > b.time_units;}
+auto t_gt(const expr::clock_t& a, const int& b) {return a.time_units > b;}
+auto t_gt(const expr::clock_t& a, const float& b) {return a.time_units > b;}
 
 auto t_ge(const int& a, const int& b) {return a >= b;}
 auto t_ge(const int& a, const float& b) {return a >= b;}
+auto t_ge(const int& a, const expr::clock_t& b) {return a >= b.time_units;}
 auto t_ge(const float& a, const int& b) {return a >= b;}
 auto t_ge(const float& a, const float& b) {return a >= b;}
+auto t_ge(const float& a, const expr::clock_t& b) {return a >= b.time_units;}
+auto t_ge(const expr::clock_t& a, const expr::clock_t& b) {return a.time_units >= b.time_units;}
+auto t_ge(const expr::clock_t& a, const int& b) {return a.time_units >= b;}
+auto t_ge(const expr::clock_t& a, const float& b) {return a.time_units >= b;}
 
 auto t_ee(const bool& a, const bool& b) {return a == b;}
 auto t_ee(const int& a, const int& b) {return a == b;}
 auto t_ee(const int& a, const float& b) {return a == b;}
+auto t_ee(const int& a, const expr::clock_t& b) {return a == b.time_units;}
 auto t_ee(const float& a, const int& b) {return a == b;}
 auto t_ee(const float& a, const float& b) {return a == b;}
+auto t_ee(const float& a, const expr::clock_t& b) {return a == b.time_units;}
+auto t_ee(const expr::clock_t& a, const expr::clock_t& b) {return a.time_units == b.time_units;}
+auto t_ee(const expr::clock_t& a, const int& b) {return a.time_units == b;}
+auto t_ee(const expr::clock_t& a, const float& b) {return a.time_units == b;}
 auto t_ee(const std::string& a, const std::string& b) {return a == b;}
 
 auto t_ne(const bool& a, const bool& b) {return a != b;}
 auto t_ne(const int& a, const int& b) {return a != b;}
 auto t_ne(const int& a, const float& b) {return a != b;}
+auto t_ne(const int& a, const expr::clock_t& b) {return a != b.time_units;}
 auto t_ne(const float& a, const int& b) {return a != b;}
 auto t_ne(const float& a, const float& b) {return a != b;}
+auto t_ne(const float& a, const expr::clock_t& b) {return a != b.time_units;}
+auto t_ne(const expr::clock_t& a, const expr::clock_t& b) {return a.time_units != b.time_units;}
+auto t_ne(const expr::clock_t& a, const int& b) {return a.time_units != b;}
+auto t_ne(const expr::clock_t& a, const float& b) {return a.time_units != b;}
 auto t_ne(const std::string& a, const std::string& b) {return a != b;}
 
 auto t_lt(const int& a, const int& b) {return a < b;}
 auto t_lt(const int& a, const float& b) {return a < b;}
+auto t_lt(const int& a, const expr::clock_t& b) {return a < b.time_units;}
 auto t_lt(const float& a, const int& b) {return a < b;}
 auto t_lt(const float& a, const float& b) {return a < b;}
+auto t_lt(const float& a, const expr::clock_t& b) {return a < b.time_units;}
+auto t_lt(const expr::clock_t& a, const expr::clock_t& b) {return a.time_units < b.time_units;}
+auto t_lt(const expr::clock_t& a, const int& b) {return a.time_units < b;}
+auto t_lt(const expr::clock_t& a, const float& b) {return a.time_units < b;}
 
 auto t_le(const int& a, const int& b) {return a <= b;}
 auto t_le(const int& a, const float& b) {return a <= b;}
+auto t_le(const int& a, const expr::clock_t& b) {return a <= b.time_units;}
 auto t_le(const float& a, const int& b) {return a <= b;}
 auto t_le(const float& a, const float& b) {return a <= b;}
+auto t_le(const float& a, const expr::clock_t& b) {return a <= b.time_units;}
+auto t_le(const expr::clock_t& a, const expr::clock_t& b) {return a.time_units <= b.time_units;}
+auto t_le(const expr::clock_t& a, const int& b) {return a.time_units <= b;}
+auto t_le(const expr::clock_t& a, const float& b) {return a.time_units <= b;}
 
 symbol_value_t and_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};

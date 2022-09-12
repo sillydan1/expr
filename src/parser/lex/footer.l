@@ -27,3 +27,12 @@ PARSER_NS ::parser::symbol_type make_BOOL(std::string s, const PARSER_NS ::parse
     std::istringstream(s) >> std::boolalpha >> b;
     return PARSER_NS ::parser::make_BOOL(b, loc);
 }
+
+PARSER_NS ::parser::symbol_type make_CLOCK(const std::string &s, const PARSER_NS ::parser::location_type& loc) {
+    try {
+        auto c = expr::stoclk(s.c_str());
+        return PARSER_NS ::parser::make_CLOCK(c, loc);
+    } catch(std::out_of_range& e) {
+        throw PARSER_NS ::parser::syntax_error (loc, "clock value is out of range: " + s);
+    }
+}

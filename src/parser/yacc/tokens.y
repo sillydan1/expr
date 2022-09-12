@@ -33,6 +33,7 @@ m4_changequote()
 %token <int> NUMBER "number"
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
+%token <expr::clock_t> CLOCK "clk"
 %token <std::string> STRING "string"
 %printer { yyo << $$; } <*>;
 

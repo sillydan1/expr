@@ -44,6 +44,21 @@ template<> auto t_multiply(const int& x, const float& y) {
 template<> auto t_multiply(const float& x, const float& y) {
     return x * y;
 }
+template<> auto t_multiply(const expr::clock_t& x, const expr::clock_t& y) {
+    return expr::clock_t{x.time_units * y.time_units};
+}
+template<> auto t_multiply(const expr::clock_t& x, const float& y) {
+    return x.time_units * y;
+}
+template<> auto t_multiply(const expr::clock_t& x, const int& y) {
+    return expr::clock_t{x.time_units * y};
+}
+template<> auto t_multiply(const int& x, const expr::clock_t& y) {
+    return (int)(x * y.time_units);
+}
+template<> auto t_multiply(const float& x, const expr::clock_t& y) {
+    return x * y.time_units;
+}
 
 symbol_value_t multiply(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};

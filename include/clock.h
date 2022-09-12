@@ -20,36 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "operations/multiply.h"
-#include "operations/util.h"
-#include <sstream>
-using namespace expr;
+#ifndef EXPR_CLOCK_H
+#define EXPR_CLOCK_H
+#include <ostream>
 
-template<typename T1, typename T2>
-auto t_modulo(const T1&, const T2&) {
-    std::ostringstream ss{};
-    ss << "Unable to modulo type " << typeid(T1).name() << " and " << typeid(T2).name();
-    throw std::domain_error(ss.str());
-    return nullptr; // Must return something
-}
-template<> auto t_modulo(const int& x, const int& y) {
-    return x % y;
-}
-template<> auto t_modulo(const expr::clock_t& x, const int& y) {
-    return (int)(x.time_units % y);
-}
-template<> auto t_modulo(const expr::clock_t& x, const expr::clock_t& y) {
-    return expr::clock_t{x.time_units % y.time_units};
-}
-template<> auto t_modulo(const int& x, const expr::clock_t& y) {
-    return expr::clock_t{x % y.time_units};
+namespace expr {
+    struct clock_t {
+        unsigned int time_units = 0;
+        void reset();
+        void delay(unsigned int delta);
+        auto operator+=(const unsigned int& delta) -> clock_t&;
+        auto operator==(const clock_t& o) const -> bool;
+        auto operator!=(const clock_t& o) const -> bool;
+    };
+
+    auto operator"" _ms(unsigned long long val) -> clock_t;
+    auto operator<<(std::ostream& o, const clock_t& c) -> std::ostream&;
+    auto stoclk(const char* str) -> clock_t;
 }
 
-symbol_value_t modulo(const symbol_value_t& a, const symbol_value_t& b) {
-    symbol_value_t res{};
-    FUNC_IMPL(a, t_modulo, b, res);
-    return res;
-}
-symbol_value_t operator%(const symbol_value_t& a, const symbol_value_t& b) {
-    return modulo(a,b);
-}
+#endif //EXPR_CLOCK_H

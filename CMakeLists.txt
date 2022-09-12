@@ -76,6 +76,7 @@ add_library(${PROJECT_NAME} SHARED
         src/drivers/interpreter.cpp
         src/drivers/compiler.cpp
 
+        src/clock.cpp
         src/symbol_table.cpp
         src/operations/add.cpp
         src/operations/subtract.cpp

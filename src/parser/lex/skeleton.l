@@ -79,4 +79,5 @@ m4_changequote()
   PARSER_NS ::parser::symbol_type make_FLOAT(const std::string &s, const PARSER_NS ::parser::location_type& loc);
   PARSER_NS ::parser::symbol_type make_STRING(const std::string &s, const PARSER_NS ::parser::location_type& loc);
   PARSER_NS ::parser::symbol_type make_BOOL(std::string s, const PARSER_NS ::parser::location_type& loc);
+  PARSER_NS ::parser::symbol_type make_CLOCK(const std::string& s, const PARSER_NS ::parser::location_type& loc);
 %}

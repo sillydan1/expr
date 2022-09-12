@@ -20,36 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "operations/multiply.h"
-#include "operations/util.h"
-#include <sstream>
-using namespace expr;
+#include "clock.h"
+#include <iostream>
 
-template<typename T1, typename T2>
-auto t_modulo(const T1&, const T2&) {
-    std::ostringstream ss{};
-    ss << "Unable to modulo type " << typeid(T1).name() << " and " << typeid(T2).name();
-    throw std::domain_error(ss.str());
-    return nullptr; // Must return something
-}
-template<> auto t_modulo(const int& x, const int& y) {
-    return x % y;
-}
-template<> auto t_modulo(const expr::clock_t& x, const int& y) {
-    return (int)(x.time_units % y);
-}
-template<> auto t_modulo(const expr::clock_t& x, const expr::clock_t& y) {
-    return expr::clock_t{x.time_units % y.time_units};
-}
-template<> auto t_modulo(const int& x, const expr::clock_t& y) {
-    return expr::clock_t{x % y.time_units};
-}
+namespace expr {
+    void clock_t::reset() {
+        time_units = 0;
+    }
+    void clock_t::delay(unsigned int delta) {
+        time_units += delta;
+    }
+    auto clock_t::operator+=(const unsigned int& delta) -> clock_t& {
+        delay(delta);
+        return *this;
+    }
+    auto clock_t::operator==(const clock_t& o) const -> bool {
+        return time_units == o.time_units;
+    }
+    auto clock_t::operator!=(const clock_t& o) const -> bool {
+        return !(*this == o);
+    }
 
-symbol_value_t modulo(const symbol_value_t& a, const symbol_value_t& b) {
-    symbol_value_t res{};
-    FUNC_IMPL(a, t_modulo, b, res);
-    return res;
-}
-symbol_value_t operator%(const symbol_value_t& a, const symbol_value_t& b) {
-    return modulo(a,b);
+    auto operator"" _ms(unsigned long long val) -> clock_t {
+        clock_t v{}; v.time_units = val;
+        return v;
+    }
+
+    auto operator<<(std::ostream& o, const clock_t& c) -> std::ostream& {
+        return o << c.time_units;
+    }
+
+    auto stoclk(const char* str) -> clock_t {
+        std::string s{str};
+        auto loc = s.find( "_ms", 0 );
+        if(loc == std::string::npos)
+            throw std::invalid_argument("not a clock_t value "+s);
+        auto i = std::stoi(s.substr(0, loc));
+        clock_t c{};
+        c.time_units = i;
+        return c;
+    }
 }

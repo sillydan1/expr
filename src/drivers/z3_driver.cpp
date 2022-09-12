@@ -98,6 +98,7 @@ namespace expr {
             [this](const float& f)        { return c.real_val(std::to_string(f).c_str()); },
             [this](const bool& b)         { return c.bool_val(b); },
             [this](const std::string& sv) { return c.string_val(sv); },
+            [this](const expr::clock_t& v){ return c.int_val(v.time_units); },
             [](auto&& x){ throw std::logic_error("unable to convert symbol value to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(val));
     }
@@ -109,6 +110,7 @@ namespace expr {
                 [this, &ref](const float& _)        { return c.real_const(ref.ident.c_str()); },
                 [this, &ref](const bool& _)         { return c.bool_const(ref.ident.c_str()); },
                 [this, &ref](const std::string& _)  { return c.string_const(ref.ident.c_str()); },
+                [this, &ref](const expr::clock_t& _){ return c.int_const(ref.ident.c_str()); },
                 [](auto&& x){ throw std::logic_error("unable to convert symbol reference to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(it->second));
     }

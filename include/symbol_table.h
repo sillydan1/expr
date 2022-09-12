@@ -31,9 +31,10 @@
 #include <tree>
 #include <hashcombine>
 #include <overload>
+#include "clock.h"
 
 namespace expr {
-    using underlying_symbol_value_t = std::variant<int, float, bool, std::string>;
+    using underlying_symbol_value_t = std::variant<int, float, bool, std::string, clock_t>;
     struct symbol_value_t : public underlying_symbol_value_t {
         symbol_value_t() = default;
 
@@ -76,11 +77,12 @@ namespace expr {
         auto is_overlapping(const symbol_table_t& other) -> bool;
         auto is_overlapping_and_not_idempotent(const symbol_table_t& other) -> bool;
         auto is_completely_overlapping(const symbol_table_t& other) -> bool;
+        void delay(unsigned int time_units);
     };
 
-    symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b);
-    std::ostream &operator<<(std::ostream &os, const symbol_value_t &v);
-    std::ostream &operator<<(std::ostream &os, const symbol_table_t &m);
+    auto operator+(const symbol_table_t &a, const symbol_table_t &b) -> symbol_table_t;
+    auto operator<<(std::ostream &os, const symbol_value_t &v) -> std::ostream&;
+    auto operator<<(std::ostream &os, const symbol_table_t &m) -> std::ostream&;
 
     enum class operator_type_t {
         minus, plus, star, slash, percent, hat,

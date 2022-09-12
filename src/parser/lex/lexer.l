@@ -31,6 +31,7 @@ m4_changequote()
 {int}      return make_NUMBER(yytext, loc);
 {flt}      return make_FLOAT(yytext, loc);
 {str}      return make_STRING(yytext, loc);
+{clk}      return make_CLOCK(yytext, loc);
 {bool}     return make_BOOL(yytext, loc);
 {id}       return PARSER_NS ::parser::make_IDENTIFIER (yytext, loc);
 .          { throw PARSER_NS ::parser::syntax_error(loc, "invalid character: " + std::string(yytext)); }

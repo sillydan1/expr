@@ -52,6 +52,31 @@ template<> auto t_divide(const float& x, const float& y) {
         throw std::domain_error("Cannot divide with zero or INT_MIN / -1");
     return x / y;
 }
+template<> auto t_divide(const expr::clock_t& x, const expr::clock_t& y) {
+    if(y.time_units == 0)
+        throw std::domain_error("Cannot divide with zero or INT_MIN / -1");
+    return expr::clock_t{x.time_units / y.time_units};
+}
+template<> auto t_divide(const int& x, const expr::clock_t& y) {
+    if(y.time_units == 0)
+        throw std::domain_error("Cannot divide with zero or INT_MIN / -1");
+    return (int)(x / y.time_units);
+}
+template<> auto t_divide(const expr::clock_t& x, const int& y) {
+    if(y == 0)
+        throw std::domain_error("Cannot divide with zero or INT_MIN / -1");
+    return expr::clock_t{x.time_units / y};
+}
+template<> auto t_divide(const float& x, const expr::clock_t& y) {
+    if(y.time_units == 0)
+        throw std::domain_error("Cannot divide with zero or INT_MIN / -1");
+    return x / y.time_units;
+}
+template<> auto t_divide(const expr::clock_t& x, const float& y) {
+    if(y == 0.0f)
+        throw std::domain_error("Cannot divide with zero or INT_MIN / -1");
+    return x.time_units / y;
+}
 
 symbol_value_t divide(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};

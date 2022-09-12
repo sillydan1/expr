@@ -44,6 +44,21 @@ template<> auto t_subtract(const int& x, const float& y) {
 template<> auto t_subtract(const float& x, const float& y) {
     return x - y;
 }
+template<> auto t_subtract(const expr::clock_t& x, const expr::clock_t& y) {
+    return expr::clock_t{x.time_units - y.time_units};
+}
+template<> auto t_subtract(const expr::clock_t& x, const int& y) {
+    return expr::clock_t{x.time_units - y};
+}
+template<> auto t_subtract(const int& x, const expr::clock_t& y) {
+    return (int)(x - y.time_units);
+}
+template<> auto t_subtract(const expr::clock_t& x, const float& y) {
+    return expr::clock_t{x.time_units - (int)y};
+}
+template<> auto t_subtract(const float& x, const expr::clock_t& y) {
+    return x - y.time_units;
+}
 
 symbol_value_t subtract(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};

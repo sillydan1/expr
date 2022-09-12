@@ -62,6 +62,13 @@ namespace expr {
         return std::any_of(other.begin(), other.end(), comparator);
     }
 
+    void symbol_table_t::delay(unsigned int time_units) {
+        for(auto& e : *this)
+            std::visit(ya::overload(
+                    [&time_units](clock_t& v){ v.delay(time_units); },
+                    [](auto&&){}), e.second);
+    }
+
     symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b) {
         symbol_table_t r{};
         r += a;
@@ -73,6 +80,7 @@ namespace expr {
         std::visit(ya::overload{
                            [&os](const bool &b) { os << std::boolalpha << b << " " << typeid(b).name(); },
                            [&os](const std::string &s) { os << "\"" << s << "\" s"; },
+                           [&os](const expr::clock_t &s) { os << "\"" << s << "\" c"; },
                            [&os](auto &&v) { os << v << " " << typeid(v).name(); }},
                    static_cast<const underlying_symbol_value_t &>(v));
         return os;
@@ -159,7 +167,8 @@ auto std::hash<expr::symbol_value_t>::operator()(const expr::symbol_value_t& v) 
             [&result](const int& v){result = std::hash<int>{}(v);},
             [&result](const float& v){result = std::hash<float>{}(v);},
             [&result](const bool& v){result = std::hash<bool>{}(v);},
-            [&result](const std::string& v){result = std::hash<std::string>{}(v);}
+            [&result](const std::string& v){result = std::hash<std::string>{}(v);},
+            [&result](const expr::clock_t& c){result = std::hash<unsigned int>{}(c.time_units);}
     ), static_cast<const expr::underlying_symbol_value_t&>(v));
     return result;
 }
