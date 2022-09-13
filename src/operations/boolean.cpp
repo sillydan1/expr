@@ -223,30 +223,48 @@ symbol_value_t gt_(const symbol_value_t& a, const symbol_value_t& b) {
     FUNC_IMPL(a, t_gt, b, res);
     return res;
 }
+symbol_value_t operator>(const symbol_value_t& a, const symbol_value_t& b) {
+    return gt_(a,b);
+}
 symbol_value_t ge_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_ge, b, res);
     return res;
+}
+symbol_value_t operator>=(const symbol_value_t& a, const symbol_value_t& b) {
+    return ge_(a,b);
 }
 symbol_value_t ee_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_ee, b, res);
     return res;
 }
+symbol_value_t operator==(const symbol_value_t& a, const symbol_value_t& b) {
+    return ee_(a,b);
+}
 symbol_value_t ne_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_ne, b, res);
     return res;
+}
+symbol_value_t operator!=(const symbol_value_t& a, const symbol_value_t& b) {
+    return ne_(a,b);
 }
 symbol_value_t le_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_le, b, res);
     return res;
 }
+symbol_value_t operator<=(const symbol_value_t& a, const symbol_value_t& b) {
+    return le_(a,b);
+}
 symbol_value_t lt_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_lt, b, res);
     return res;
+}
+symbol_value_t operator<(const symbol_value_t& a, const symbol_value_t& b) {
+    return lt_(a,b);
 }
 symbol_value_t implies_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
