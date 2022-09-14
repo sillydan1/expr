@@ -104,6 +104,8 @@ namespace expr {
     }
 
     auto z3_driver::as_z3_expression(const identifier_t& ref) -> z3::expr {
+        if(known.contains(ref.ident))
+            return as_z3_expression(known.at(ref.ident));
         auto it = find(ref.ident);
         return std::visit(ya::overload(
                 [this, &ref](const int& _)          { return c.int_const(ref.ident.c_str()); },
