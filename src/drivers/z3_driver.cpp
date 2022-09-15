@@ -24,7 +24,9 @@
 
 namespace expr {
     z3_driver::z3_driver(const symbol_table_t& known_env, const symbol_table_t& unknown_env)
-     : driver{{known_env, unknown_env}}, c{}, s{c}, known{known_env}, unknown{unknown_env} {}
+    // TODO: delay_identifier should be randomly generated
+     : driver{{known_env, unknown_env}}, c{}, s{c},
+       delay_identifier{"d"}, delay_amount{0_ms}, known{known_env}, unknown{unknown_env} {}
 
     z3_driver::~z3_driver() = default;
 
@@ -74,7 +76,10 @@ namespace expr {
                 for(int i = 0; i < m.size(); i++) {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
-                    result[xx.name().str()] = as_symbol_value(interp);
+                    if(xx.name().str() == delay_identifier)
+                        delay_amount = as_symbol_value(interp);
+                    else
+                        result[xx.name().str()] = as_symbol_value(interp);
                 }
                 break;
         }
@@ -105,7 +110,10 @@ namespace expr {
 
     auto z3_driver::as_z3_expression(const identifier_t& ref) -> z3::expr {
         if(known.contains(ref.ident))
-            return as_z3_expression(known.at(ref.ident));
+            return std::visit(ya::overload(
+                    [this,&ref](const expr::clock_t& v) { return as_z3_expression(known.at(ref.ident)) + c.int_const(delay_identifier.c_str()); },
+                    [this,&ref](auto&& x) { return as_z3_expression(known.at(ref.ident)); }
+                    ), static_cast<const underlying_symbol_value_t&>(known.at(ref.ident)));
         auto it = find(ref.ident);
         return std::visit(ya::overload(
                 [this, &ref](const int& _)          { return c.int_const(ref.ident.c_str()); },
@@ -146,5 +154,9 @@ namespace expr {
                 [&](const root_t& r){ return as_z3_expression(tree.children[0]); },
                 [](auto&&){ throw std::logic_error("tree node type not recognized"); }
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
+    }
+
+    auto z3_driver::get_delay_amount() const -> symbol_value_t {
+        return delay_amount;
     }
 }

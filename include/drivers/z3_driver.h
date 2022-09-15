@@ -42,10 +42,14 @@ namespace expr {
         auto as_z3_expression(const identifier_t& ref) -> z3::expr;
         auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
 
+        auto get_delay_amount() const -> symbol_value_t;
+
         symbol_table_t result{};
     protected:
         z3::context c{};
         z3::solver s;
+        std::string delay_identifier;
+        symbol_value_t delay_amount;
         const symbol_table_t& known;
         const symbol_table_t& unknown;
         void solve();
