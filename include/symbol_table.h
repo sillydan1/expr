@@ -77,7 +77,13 @@ namespace expr {
         auto is_overlapping(const symbol_table_t& other) -> bool;
         auto is_overlapping_and_not_idempotent(const symbol_table_t& other) -> bool;
         auto is_completely_overlapping(const symbol_table_t& other) -> bool;
-        void delay(unsigned int time_units);
+        void delay();
+        void delay_but_dont_reset_amount();
+        void delay(const expr::symbol_value_t& time_units);
+        void set_delay_amount(const expr::symbol_value_t& time_units);
+        auto get_delay_amount() const -> std::optional<expr::symbol_value_t>;
+    private:
+        std::optional<expr::symbol_value_t> delay_amount{};
     };
 
     auto operator+(const symbol_table_t &a, const symbol_table_t &b) -> symbol_table_t;

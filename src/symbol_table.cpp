@@ -31,6 +31,8 @@ namespace expr {
     auto symbol_table_t::put(const symbol_table_t &other) -> symbol_table_t & {
         for (auto &e: other)
             this->insert_or_assign(e.first, e.second);
+        if(other.delay_amount.has_value())
+            delay(other.delay_amount.value());
         return *this;
     }
 
@@ -42,6 +44,8 @@ namespace expr {
         for (auto &e: other)
             if(contains(e.first))
                 this->insert_or_assign(e.first, e.second);
+        if(other.delay_amount.has_value())
+            delay(other.delay_amount.value());
         return *this;
     }
 
@@ -62,11 +66,34 @@ namespace expr {
         return std::any_of(other.begin(), other.end(), comparator);
     }
 
-    void symbol_table_t::delay(unsigned int time_units) {
+    void symbol_table_t::delay() {
+        delay_but_dont_reset_amount();
+        delay_amount = {};
+    }
+
+    void symbol_table_t::delay_but_dont_reset_amount() {
+        if(delay_amount.has_value())
+            delay(delay_amount.value());
+    }
+
+    void symbol_table_t::delay(const expr::symbol_value_t& time_units) {
+        auto tu = std::visit(ya::overload(
+                [](const int& i) -> long{ return i; },
+                [](const clock_t& c) -> long { return c.time_units; },
+                [](auto&& v) -> long{ throw std::logic_error(std::string{"cannot delay with a symbol_value of type: "} + typeid(v).name()); }
+        ), time_units);
         for(auto& e : *this)
             std::visit(ya::overload(
-                    [&time_units](clock_t& v){ v.delay(time_units); },
+                    [&tu](clock_t& v){ v.delay(tu); },
                     [](auto&&){}), e.second);
+    }
+
+    void symbol_table_t::set_delay_amount(const expr::symbol_value_t& time_units) {
+        delay_amount = {time_units};
+    }
+
+    auto symbol_table_t::get_delay_amount() const -> std::optional<expr::symbol_value_t> {
+        return delay_amount;
     }
 
     symbol_table_t operator+(const symbol_table_t &a, const symbol_table_t &b) {
@@ -76,19 +103,20 @@ namespace expr {
         return r;
     }
 
-    std::ostream &operator<<(std::ostream &os, const symbol_value_t &v) {
-        std::visit(ya::overload{
-                           [&os](const bool &b) { os << std::boolalpha << b << " " << typeid(b).name(); },
-                           [&os](const std::string &s) { os << "\"" << s << "\" s"; },
-                           [&os](const expr::clock_t &s) { os << "\"" << s << "\" c"; },
-                           [&os](auto &&v) { os << v << " " << typeid(v).name(); }},
-                   static_cast<const underlying_symbol_value_t &>(v));
-        return os;
+    auto operator<<(std::ostream &os, const symbol_value_t &v) -> std::ostream& {
+        return std::visit(ya::overload{
+                           [&os](const bool &b) -> std::ostream& { return os << std::boolalpha << b << " " << typeid(b).name(); },
+                           [&os](const std::string &s) -> std::ostream& { return os << "\"" << s << "\" s"; },
+                           [&os](const expr::clock_t &s) -> std::ostream& { return os << "" << s << " c"; },
+                           [&os](auto &&v) -> std::ostream& { return os << v << " " << typeid(v).name(); }
+                           }, static_cast<const underlying_symbol_value_t &>(v));
     }
 
-    std::ostream &operator<<(std::ostream &os, const symbol_table_t &m) {
+    auto operator<<(std::ostream &os, const symbol_table_t &m) -> std::ostream& {
         for (auto &v: m)
             os << v.first << " :-> " << v.second << "\n";
+        if(m.get_delay_amount().has_value())
+            os << "delay_amount :-> " << m.get_delay_amount().value();
         return os;
     }
 
@@ -144,10 +172,7 @@ namespace expr {
     }
 
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream & {
-        std::visit(ya::overload(
-                [&o](auto &&x) { o << x; }
-        ), n);
-        return o;
+        return std::visit(ya::overload([&o](auto &&x) -> std::ostream& { return o << x; }), n);
     }
 
     auto operator<<(std::ostream &o, const syntax_tree_t &tree) -> std::ostream & {
@@ -162,15 +187,13 @@ namespace expr {
 }
 
 auto std::hash<expr::symbol_value_t>::operator()(const expr::symbol_value_t& v) const -> size_t {
-    size_t result{};
-    std::visit(ya::overload(
-            [&result](const int& v){result = std::hash<int>{}(v);},
-            [&result](const float& v){result = std::hash<float>{}(v);},
-            [&result](const bool& v){result = std::hash<bool>{}(v);},
-            [&result](const std::string& v){result = std::hash<std::string>{}(v);},
-            [&result](const expr::clock_t& c){result = std::hash<unsigned int>{}(c.time_units);}
+    return std::visit(ya::overload(
+            [](const int& v){ return std::hash<int>{}(v); },
+            [](const float& v){ return std::hash<float>{}(v); },
+            [](const bool& v){ return std::hash<bool>{}(v); },
+            [](const std::string& v){ return std::hash<std::string>{}(v); },
+            [](const expr::clock_t& c){ return std::hash<unsigned int>{}(c.time_units); }
     ), static_cast<const expr::underlying_symbol_value_t&>(v));
-    return result;
 }
 
 auto std::hash<expr::symbol_table_t>::operator()(const expr::symbol_table_t& v) const -> size_t {
@@ -179,5 +202,7 @@ auto std::hash<expr::symbol_table_t>::operator()(const expr::symbol_table_t& v) 
         result = ya::hash_combine(result, symbol.first);
         result = ya::hash_combine(result, symbol.second);
     }
+    if(v.get_delay_amount().has_value())
+        result = ya::hash_combine(result, v.get_delay_amount().value());
     return result;
 }

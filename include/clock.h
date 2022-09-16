@@ -29,14 +29,17 @@ namespace expr {
         unsigned int time_units = 0;
         void reset();
         void delay(unsigned int delta);
+        void delay(long delta);
+        void delay(int delta);
         auto operator+=(const unsigned int& delta) -> clock_t&;
         auto operator==(const clock_t& o) const -> bool;
         auto operator!=(const clock_t& o) const -> bool;
+        auto operator=(const clock_t& o) -> clock_t&;
+        auto operator=(const int& o) -> clock_t&;
     };
-
-    auto operator"" _ms(unsigned long long val) -> clock_t;
-    auto operator<<(std::ostream& o, const clock_t& c) -> std::ostream&;
     auto stoclk(const char* str) -> clock_t;
+    auto operator<<(std::ostream& o, const expr::clock_t& c) -> std::ostream&;
 }
+auto operator"" _ms(unsigned long long val) -> expr::clock_t;
 
 #endif //EXPR_CLOCK_H

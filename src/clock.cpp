@@ -21,13 +21,19 @@
  * SOFTWARE.
  */
 #include "clock.h"
-#include <iostream>
+#include <ostream>
 
 namespace expr {
     void clock_t::reset() {
         time_units = 0;
     }
+    void clock_t::delay(int delta) {
+        time_units += delta;
+    }
     void clock_t::delay(unsigned int delta) {
+        time_units += delta;
+    }
+    void clock_t::delay(long delta) {
         time_units += delta;
     }
     auto clock_t::operator+=(const unsigned int& delta) -> clock_t& {
@@ -40,16 +46,14 @@ namespace expr {
     auto clock_t::operator!=(const clock_t& o) const -> bool {
         return !(*this == o);
     }
-
-    auto operator"" _ms(unsigned long long val) -> clock_t {
-        clock_t v{}; v.time_units = val;
-        return v;
+    auto clock_t::operator=(const expr::clock_t& o) -> clock_t& = default;
+    auto clock_t::operator=(const int& o) -> clock_t& {
+        time_units = o;
+        return *this;
     }
-
-    auto operator<<(std::ostream& o, const clock_t& c) -> std::ostream& {
+    auto operator<<(std::ostream& o, const expr::clock_t& c) -> std::ostream& {
         return o << c.time_units;
     }
-
     auto stoclk(const char* str) -> clock_t {
         std::string s{str};
         auto loc = s.find( "_ms", 0 );
@@ -60,4 +64,8 @@ namespace expr {
         c.time_units = i;
         return c;
     }
+}
+auto operator"" _ms(unsigned long long val) -> expr::clock_t {
+    expr::clock_t v{}; v.time_units = val;
+    return v;
 }

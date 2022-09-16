@@ -26,7 +26,7 @@ namespace expr {
     z3_driver::z3_driver(const symbol_table_t& known_env, const symbol_table_t& unknown_env)
     // TODO: delay_identifier should be randomly generated
      : driver{{known_env, unknown_env}}, c{}, s{c},
-       delay_identifier{"d"}, delay_amount{0_ms}, known{known_env}, unknown{unknown_env} {}
+       delay_identifier{"d"}, known{known_env}, unknown{unknown_env} {}
 
     z3_driver::~z3_driver() = default;
 
@@ -77,11 +77,10 @@ namespace expr {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
                     if(xx.name().str() == delay_identifier)
-                        delay_amount = as_symbol_value(interp);
+                        result.set_delay_amount(as_symbol_value(interp));
                     else
                         result[xx.name().str()] = as_symbol_value(interp);
                 }
-                break;
         }
     }
 
@@ -154,9 +153,5 @@ namespace expr {
                 [&](const root_t& r){ return as_z3_expression(tree.children[0]); },
                 [](auto&&){ throw std::logic_error("tree node type not recognized"); }
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
-    }
-
-    auto z3_driver::get_delay_amount() const -> symbol_value_t {
-        return delay_amount;
     }
 }

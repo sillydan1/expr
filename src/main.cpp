@@ -129,7 +129,9 @@ int main (int argc, char *argv[]) {
         if(cli_arguments["driver"].as_string() == "z3") {
             auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
             std::cout << "result: \n" << drv_z->result;
-            std::cout << "delay_amount: " << drv_z->get_delay_amount();
+
+            std::cout << "\n==========\n";
+            std::cout << "env + result: \n" << (env + drv_z->result);
         }
 #endif
         std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
