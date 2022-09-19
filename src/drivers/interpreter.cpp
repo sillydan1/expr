@@ -89,25 +89,26 @@ namespace expr {
                 },
                 [&](const operator_t& o) {
                     switch (o.operator_type) {
-                        case operator_type_t::minus:    return sub(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::plus:     return add(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::star:     return mul(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::slash:    return div(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::percent:  return mod(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::hat:      return pow(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::_and: return _and(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::_or:  return _or(evaluate(tree.children[0]),  evaluate(tree.children[1])); break;
-                        case operator_type_t::_xor: return _xor(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::_not: return _not(evaluate(tree.children[0])); break;
-                        case operator_type_t::_implies: return _implies(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::gt: return gt(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::ge: return ge(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::ne: return ne(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::ee: return ee(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::le: return le(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::lt: return lt(evaluate(tree.children[0]), evaluate(tree.children[1])); break;
-                        case operator_type_t::parentheses: return evaluate(tree.children[0]); break;
+                        case operator_type_t::minus:    return sub(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::plus:     return add(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::star:     return mul(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::slash:    return div(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::percent:  return mod(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::hat:      return pow(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::_and: return _and(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::_or:  return _or(evaluate(tree.children[0]),  evaluate(tree.children[1]));
+                        case operator_type_t::_xor: return _xor(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::_not: return _not(evaluate(tree.children[0]));
+                        case operator_type_t::_implies: return _implies(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::gt: return gt(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::ge: return ge(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::ne: return ne(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::ee: return ee(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::le: return le(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::lt: return lt(evaluate(tree.children[0]), evaluate(tree.children[1]));
+                        case operator_type_t::parentheses: return evaluate(tree.children[0]);
                     }
+                    throw std::logic_error("unsupported operator type");
                 },
                 [](const symbol_value_t& o){ return o; },
                 [&](const root_t& r){
