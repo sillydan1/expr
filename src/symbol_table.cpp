@@ -81,11 +81,11 @@ namespace expr {
                 [](const int& i) -> long{ return i; },
                 [](const clock_t& c) -> long { return c.time_units; },
                 [](auto&& v) -> long{ throw std::logic_error(std::string{"cannot delay with a symbol_value of type: "} + typeid(v).name()); }
-        ), time_units);
+        ), static_cast<const underlying_symbol_value_t&>(time_units));
         for(auto& e : *this)
             std::visit(ya::overload(
                     [&tu](clock_t& v){ v.delay(tu); },
-                    [](auto&&){}), e.second);
+                    [](auto&&){}), static_cast<const underlying_symbol_value_t&>(e.second));
     }
 
     void symbol_table_t::set_delay_amount(const expr::symbol_value_t& time_units) {
