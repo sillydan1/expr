@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v2.0.0](https://github.com/sillydan1/expr/releases/tag/v2.0.0) - 2022-09-19
+
+<small>[Compare with v1.7.0](https://github.com/sillydan1/expr/compare/v1.7.0...v2.0.0)</small>
+
+### Bug Fixes
+- Warning about not returning at the end of a non-void function ([4e6ea47](https://github.com/sillydan1/expr/commit/4e6ea4726767f3e4895a49bb9e10782d62552922) by Asger Gitz-Johansen).
+- Mingw pipeline ([de346ee](https://github.com/sillydan1/expr/commit/de346eee8bd1c0acc6f8b74ad5509a0b126c567a) by Asger Gitz-Johansen).
+- Fixing gcc-related compilation issues ([859f8f3](https://github.com/sillydan1/expr/commit/859f8f34dc9395dc56bdd60c58845344237876e6) by Asger Gitz-Johansen).
+- Symbol_table_t now contains delay information ([6ef9e08](https://github.com/sillydan1/expr/commit/6ef9e0834a417f22e21afb6de4a71cfe169dbd4b) by Asger Gitz-Johansen).
+- Z3 bug where known variables were interpreted as "known" ([f3430b0](https://github.com/sillydan1/expr/commit/f3430b02d4030abf171a9fa98849ceda00fdaf84) by Asger Gitz-Johansen).
+- Move driver.h into include directory ([43ecd13](https://github.com/sillydan1/expr/commit/43ecd13525c835ff66b79a443aa92f6b6cb920ec) by Asger Gitz-Johansen).
+- Fixed identifier bug in the z3_driver ([f2e6fbd](https://github.com/sillydan1/expr/commit/f2e6fbd6360f57afee0010abe7757a531819493e) by Asger Gitz-Johansen).
+
+### Code Refactoring
+- Identifiers are now stored as a string instead of a iterator ([c6dae37](https://github.com/sillydan1/expr/commit/c6dae37fd241ac53401dd7cd0087c866f881f0cd) by Asger Gitz-Johansen).
+
+### Features
+- Add special case in z3_driver for clocks ([92806fa](https://github.com/sillydan1/expr/commit/92806fade71e1b5de012c331a5a2219e40442d45) by Asger Gitz-Johansen).
+- Add c++ comparator operators for symbol_value_t ([29cbe74](https://github.com/sillydan1/expr/commit/29cbe74d2a36401c207ec3a495221b7b445e0e3b) by Asger Gitz-Johansen).
+- Add support for delayable clock types ([a6aae17](https://github.com/sillydan1/expr/commit/a6aae172e3e1dac98b68ea6896be67c5a1feaab3) by Asger Gitz-Johansen).
+
+
 ## [v1.7.0](https://github.com/sillydan1/expr/releases/tag/v1.7.0) - 2022-09-11
 
 <small>[Compare with v1.6.0](https://github.com/sillydan1/expr/compare/v1.6.0...v1.7.0)</small>
