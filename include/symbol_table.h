@@ -31,6 +31,7 @@
 #include <tree>
 #include <hashcombine>
 #include <overload>
+#include <optional>
 #include "clock.h"
 
 namespace expr {

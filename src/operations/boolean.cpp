@@ -194,16 +194,10 @@ symbol_value_t and_(const symbol_value_t& a, const symbol_value_t& b) {
     FUNC_IMPL(a, t_and, b, res);
     return res;
 }
-symbol_value_t operator&&(const symbol_value_t& a, const symbol_value_t& b) {
-    return and_(a,b);
-}
 symbol_value_t or_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};
     FUNC_IMPL(a, t_or, b, res);
     return res;
-}
-symbol_value_t operator||(const symbol_value_t& a, const symbol_value_t& b) {
-    return and_(a,b);
 }
 symbol_value_t xor_(const symbol_value_t& a, const symbol_value_t& b) {
     symbol_value_t res{};

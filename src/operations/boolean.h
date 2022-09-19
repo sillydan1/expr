@@ -23,26 +23,27 @@
 #ifndef EXPR_BOOLEAN_H
 #define EXPR_BOOLEAN_H
 #include "symbol_table.h"
-expr::symbol_value_t and_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t or_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t xor_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t not_(const expr::symbol_value_t& a);
-expr::symbol_value_t gt_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t ge_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t ee_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t ne_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t le_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t lt_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
-expr::symbol_value_t implies_(const expr::symbol_value_t& a, const expr::symbol_value_t& b);
+auto and_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto or_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto xor_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto not_(const expr::symbol_value_t& a) -> expr::symbol_value_t;
+auto gt_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto ge_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto ee_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto ne_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto le_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto lt_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+auto implies_(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 
-auto operator&&(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
-auto operator||(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 auto operator>(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 auto operator>=(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 auto operator<(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 auto operator<=(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 auto operator==(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 auto operator!=(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+/// These operators are disabled because gcc are getting confused with them
+//auto operator&&(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
+//auto operator||(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 //auto operator^(const expr::symbol_value_t& a, const expr::symbol_value_t& b) -> expr::symbol_value_t;
 //auto operator!(const expr::symbol_value_t& a) -> expr::symbol_value_t;
 #endif //EXPR_BOOLEAN_H
