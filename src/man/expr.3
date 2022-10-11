@@ -1,0 +1,33 @@
+.TH expr 3 2022-10-11 "version v2.1.0" expr
+
+.SH NAME
+expr \- a variable environment manipulation expression parser written in C++20 with flex and bison.
+
+.SH DESCRIPTION
+TODO: Write this
+.B expr
+is a library enabling c/c++ applications to ... perform actions
+TODO: Describe the expr syntax
+TODO: Describe the expr types and how to use them
+
+.SH DRIVERS
+.B expr
+provides a series of expression drivers with slightly different use cases:
+\fIcompiler\fR, \fIinterpreter\fR, \fItree_interpreter\fR and \fIz3\fR.
+The \fIcompiler\fR driver can compile a string, or list of strings into a binary format based on
+an abstract syntax tree (AST) structure.
+The \fIinterpreter\fR and \fItree_interpreter\fR drivers can accept either the binary AST format,
+or an expression string and returns a modified \fBsymbol table\fR based on the interpreted expression.
+The \fIz3\fR driver is a special driver, using the Z3 sat solver to check if the provided expression
+string (must be a boolean expression) is satisfiable, and then generate a \fBsymbol table\fR that contains
+the variable assignments required to force the expression to \fRtrue\fR.
+
+Note that the \fIz3\fR driver might not be available if not explicitly told to be compiled with the rest of the library.
+
+The \fItree_*\fR driver variants operate on trees of \fBsymbol tables\fR to provide scopes with variable shadowing.
+
+.SH AUTHOR
+Asger Gitz\-Johansen <asger.gitz@hotmail.com>.
+
+.SH SEE ALSO
+expr_demo(1), aaltitoad(3)
