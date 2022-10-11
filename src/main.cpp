@@ -38,7 +38,7 @@ int main (int argc, char *argv[]) {
     env["hello_s"] = "Hello";
     std::vector<option_t> my_options = {
         {"expression", 'e',    argument_requirement::REQUIRE_ARG, "(required) provide the expression to process"},
-        {"driver", 'd',        argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, compiler]"},
+        {"driver", 'd',        argument_requirement::REQUIRE_ARG, "(required) determine which driver to use [z3, interpreter, tree_interpreter, compiler]"},
         {"environment", 'm',   argument_requirement::OPTIONAL_ARG, "provide an environment"},
         {"unknown-environment", 'u',   argument_requirement::REQUIRE_ARG, "provide an environment of unknown variables (z3 driver only)"},
         {"parser-trace", 'p',  argument_requirement::NO_ARG, "enable tracing for the parser"},
