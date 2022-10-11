@@ -20,31 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_INTERPRETER_H
-#define EXPR_INTERPRETER_H
-#include "operations.h"
-#include "drivers/driver.h"
-#include "compiler.h"
-#include "generic_symbol_operator.h"
+#ifndef EXPR_TREE_DRIVER_H
+#define EXPR_TREE_DRIVER_H
+#include "driver.h"
 
 namespace expr {
-    struct interpreter : public driver, generic_symbol_operator {
-        interpreter(std::initializer_list<symbol_table_ref_t> environments);
-        ~interpreter() override = default;
-
-        auto parse(const std::string &f) -> int override;
-        auto interpret_declarations(const std::string& f) -> symbol_table_t;
-        auto interpret_expression(const std::string& f) -> symbol_value_t;
-        auto get_symbol(const std::string& identifier) -> syntax_tree_t override;
-        void add_tree(const syntax_tree_t& tree) override;
-        void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
-
-        symbol_table_t result{};
-        symbol_value_t expression_result{};
-
-        auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
-        auto evaluate(const compiler::compiled_expr_collection_t& tree) -> symbol_table_t;
+    struct tree_driver : public driver {
+        tree_driver(const symbol_table_tree_t::_left_df_iterator& it) : driver{}, it{it} {}
+        auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator override {
+            auto* x = &(*it);
+            while(x) {
+                auto i = x->node.find(identifier);
+                if(i != x->node.end())
+                    return i;
+                if(!x->parent().has_value())
+                    return end;
+                x = x->parent().value();
+            }
+            return end;
+        }
+    private:
+        symbol_table_tree_t::_left_df_iterator it;
     };
 }
 
-#endif
+#endif //EXPR_TREE_DRIVER_H

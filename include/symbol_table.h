@@ -48,7 +48,7 @@ namespace expr {
             return *this;
         }
 
-        symbol_value_t &interpret(const std::string &s) {
+        auto interpret(const std::string &s) -> symbol_value_t& {
             std::stringstream ss{s};
             int i;
             float f;
@@ -87,6 +87,8 @@ namespace expr {
         std::optional<expr::symbol_value_t> delay_amount{};
     };
 
+    using symbol_table_tree_t = ya::tree<symbol_table_t>;
+
     auto operator+(const symbol_table_t &a, const symbol_table_t &b) -> symbol_table_t;
     auto operator<<(std::ostream &os, const symbol_value_t &v) -> std::ostream&;
     auto operator<<(std::ostream &os, const symbol_table_t &m) -> std::ostream&;
@@ -100,7 +102,6 @@ namespace expr {
 
     struct operator_t {
         operator_type_t operator_type;
-
         explicit operator_t(operator_type_t t) : operator_type{t} {}
     };
 
@@ -123,7 +124,7 @@ namespace expr {
         }
     };
 
-    using syntax_tree_t = tree<syntax_node_t>;
+    using syntax_tree_t = ya::tree<syntax_node_t>;
 
     auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream &;
     auto operator<<(std::ostream &o, const root_t &r) -> std::ostream &;

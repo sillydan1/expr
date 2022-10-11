@@ -33,7 +33,7 @@ option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver dr
 
 # DEPENDENCIES
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
-CPMAddPackage("gh:yalibs/yatree@1.0.1")
+CPMAddPackage("gh:yalibs/yatree#feature/parent")
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
@@ -74,6 +74,7 @@ add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_lexer_OUTPUTS}
         src/drivers/interpreter.cpp
+        src/drivers/tree_interpreter.cpp
         src/drivers/compiler.cpp
 
         src/clock.cpp

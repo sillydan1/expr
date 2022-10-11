@@ -40,10 +40,11 @@ namespace expr {
         virtual auto get_symbol(const std::string &identifier) -> syntax_tree_t = 0;
         virtual void add_tree(const syntax_tree_t& tree) = 0;
         virtual void add_tree(const std::string& identifier, const syntax_tree_t& tree) = 0;
-        auto contains(const std::string& identifier) const -> bool {
+        virtual auto contains(const std::string& identifier) const -> bool {
             return find(identifier) != end;
         }
-        auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator {
+        virtual auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator {
+            // TODO: Tree of environments
             for(auto& env : environments) {
                 auto env_it = env.get().find(identifier);
                 if(env_it != env.get().end())

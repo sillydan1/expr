@@ -176,11 +176,11 @@ namespace expr {
     }
 
     auto operator<<(std::ostream &o, const syntax_tree_t &tree) -> std::ostream & {
-        if (tree.children.empty())
+        if (tree.children().empty())
             return o << tree.node << " ";
         o << tree.node;
         o << "[";
-        for (auto &c: tree.children)
+        for (auto &c: tree.children())
             o << c;
         return o << "]";
     }
