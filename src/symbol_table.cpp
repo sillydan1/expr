@@ -171,11 +171,11 @@ namespace expr {
         return o << r.ident;
     }
 
-    auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream & {
+    auto operator<<(std::ostream& o, const underlying_syntax_node_t& n) -> std::ostream& {
         return std::visit(ya::overload([&o](auto &&x) -> std::ostream& { return o << x; }), n);
     }
 
-    auto operator<<(std::ostream &o, const syntax_tree_t &tree) -> std::ostream & {
+    auto operator<<(std::ostream& o, const syntax_tree_t& tree) -> std::ostream& {
         if (tree.children().empty())
             return o << tree.node << " ";
         o << tree.node;
@@ -183,6 +183,14 @@ namespace expr {
         for (auto &c: tree.children())
             o << c;
         return o << "]";
+    }
+
+    auto operator<<(std::ostream& o, const symbol_table_tree_t& t) -> std::ostream& {
+        auto printer_func = [&o](const symbol_table_t& x){
+            o << "\t<node>\n" << x;
+        };
+        t.apply_dfs(printer_func);
+        return o;
     }
 }
 

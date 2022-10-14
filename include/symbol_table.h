@@ -87,11 +87,13 @@ namespace expr {
         std::optional<expr::symbol_value_t> delay_amount{};
     };
 
+    // TODO: operator+/* should be slightly different here
     using symbol_table_tree_t = ya::tree<symbol_table_t>;
 
     auto operator+(const symbol_table_t &a, const symbol_table_t &b) -> symbol_table_t;
     auto operator<<(std::ostream &os, const symbol_value_t &v) -> std::ostream&;
     auto operator<<(std::ostream &os, const symbol_table_t &m) -> std::ostream&;
+    auto operator<<(std::ostream &os, const symbol_table_tree_t &t) -> std::ostream&;
 
     enum class operator_type_t {
         minus, plus, star, slash, percent, hat,

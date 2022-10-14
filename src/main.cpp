@@ -25,6 +25,7 @@
 #include "drivers/compiler.h"
 #include "drivers/z3_driver.h"
 #include "config.h"
+#include "drivers/tree_interpreter.h"
 #include <argvparse.h>
 #include <timer>
 #include <memory>
@@ -87,11 +88,20 @@ int main (int argc, char *argv[]) {
             unknowns = i.result;
         }
 
+        // TODO: Clean this up - but how? 🤔
+        //       maybe have a completely separate executable?
+        symbol_table_tree_t tt{env};
+        tt.emplace(unknowns);
+        auto it = tt.begin();
+        it++;
+
         std::shared_ptr<driver> drv{};
         if(cli_arguments["driver"].as_string() == "compiler")
             drv = std::make_shared<compiler>(std::initializer_list<std::reference_wrapper<const expr::symbol_table_t>>{env});
         else if(cli_arguments["driver"].as_string() == "interpreter")
             drv = std::make_shared<interpreter>(std::initializer_list<std::reference_wrapper<const expr::symbol_table_t>>{env});
+        else if(cli_arguments["driver"].as_string() == "tree_interpreter")
+            drv = std::make_shared<tree_interpreter>(it);
 #ifdef ENABLE_Z3
         else if(cli_arguments["driver"].as_string() == "z3")
             drv = std::make_shared<z3_driver>(env,unknowns);
@@ -124,6 +134,12 @@ int main (int argc, char *argv[]) {
             if(!drv_i->result.empty())
                 std::cout << drv_i->result << "\n";
             std::cout << "expression_result: " << drv_i->expression_result << std::endl;
+        }
+        if(cli_arguments["driver"].as_string() == "tree_interpreter") {
+            auto drv_t = std::dynamic_pointer_cast<tree_interpreter>(drv);
+            if(!drv_t->result.empty())
+                std::cout << drv_t->result << "\n";
+            std::cout << "expression_result: " << drv_t->expression_result << "\n\n" << tt;
         }
 #ifdef ENABLE_Z3
         if(cli_arguments["driver"].as_string() == "z3") {
