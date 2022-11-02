@@ -33,7 +33,7 @@ option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver dr
 
 # DEPENDENCIES
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
-CPMAddPackage("gh:yalibs/yatree#feature/parent")
+CPMAddPackage("gh:yalibs/yatree@1.2.0")
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
