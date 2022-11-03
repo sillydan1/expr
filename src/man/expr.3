@@ -4,11 +4,37 @@
 expr \- a variable environment manipulation expression parser written in C++20 with flex and bison.
 
 .SH DESCRIPTION
-TODO: Write this
-.B expr
-is a library enabling c/c++ applications to ... perform actions
-TODO: Describe the expr syntax
-TODO: Describe the expr types and how to use them
+The \fBexpr\fR language syntax consists of expressions and assignments. \fBexpr\fR accepts and produces maps of symbols
+called \fBsymbol tables\fR. These tables map symbol identifiers to their value and can be merged together or analysed.
+
+A simple example \fBexpr\fR program could be:
+
+.in +.5i
+.ll -.5i
+a := 0 * 5 ;
+.br
+b := 1 ;
+.ll
+.in
+
+This would result in a symbol table mapping the variable \fIa\fR to the integer \fI0\fR and variable \fIb\fR to the
+integer \fI1\fR. \fBexpr\fR assignment expressions, like the example above, consists of two segments: a right-hand side
+containing the symbol identifier and a left-hand side that can contain complex arithmetic.
+Most \fBexpr\fR drivers can be born with a symbol table as a lookup table for variable references in the right-hand
+side part of the expression. A slightly more complex \fBexpr\fR program could be (the symbol table containing the
+\fIa\fR and \fIb\fR variables is provided as a lookup environment):
+
+.in +.5i
+.ll -.5i
+x := (a + b) ;
+.br
+y := 33 % (b * 2) ;
+.ll
+.in
+
+Since \fIa\fR maps to \fI0\fR and \fIb\fR maps to \fI1\fR, this example would result in a symbol table mapping the
+variables \fIx\fR to \fI1\fR (0 + 1 = 1) and \fIy\fR to \fI1\fR (33 modulo (1 times 2) = 1). Take careful note that the
+resulting symbol table of this program does \fBnot\fR include the variables \fIa\fR and \fIb\fR.
 
 .SH DRIVERS
 .B expr
