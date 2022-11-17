@@ -57,4 +57,8 @@ namespace expr {
     void compiler::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
         trees[identifier] = tree;
     }
+    void compiler::add_tree(const std::string& access_modifier, const std::string& identifier,
+                            const expr::syntax_tree_t& tree) {
+        add_tree(identifier, tree);
+    }
 }

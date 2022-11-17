@@ -40,6 +40,7 @@ namespace expr {
         auto get_symbol(const std::string &identifier) -> syntax_tree_t override;
         void add_tree(const syntax_tree_t& tree) override;
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
+        void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) override;
 
         compiled_expr_collection_t trees;
     };

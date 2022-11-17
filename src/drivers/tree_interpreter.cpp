@@ -77,6 +77,11 @@ namespace expr {
         result[identifier] = evaluate(tree);
     }
 
+    void tree_interpreter::add_tree(const std::string& access_modifier, const std::string& identifier,
+                                    const expr::syntax_tree_t& tree) {
+        add_tree(identifier, tree);
+    }
+
     auto tree_interpreter::evaluate(const syntax_tree_t& tree) -> symbol_value_t {
         return std::visit(ya::overload(
                 [&](const identifier_t& r){

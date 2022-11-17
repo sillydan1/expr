@@ -23,7 +23,8 @@ statements:
 statement:
   "identifier" ASSIGN exp                          { drv->add_tree($1, expr::syntax_tree_t{}.concat($3)); }
 | "type" "identifier" ASSIGN exp                   { drv->add_tree($2, expr::syntax_tree_t{}.concat($4)); }
-| "access_modifier" "type" "identifier" ASSIGN exp { drv->add_tree($3, expr::syntax_tree_t{}.concat($5)); }
+| "access_modifier" "identifier" ASSIGN exp        { drv->add_tree($1, $2, expr::syntax_tree_t{}.concat($4)); }
+| "access_modifier" "type" "identifier" ASSIGN exp { drv->add_tree($1, $3, expr::syntax_tree_t{}.concat($5)); }
 | statement TERM                                   { }
 ;
 

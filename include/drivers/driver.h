@@ -29,6 +29,7 @@
 YY_DECL;
 
 namespace expr {
+    // TODO: Break this into an interface (functions) and a base abstract class (basic implementation)
     using symbol_table_ref_t = std::reference_wrapper<const expr::symbol_table_t>;
     using symbol_table_ref_collection_t = std::vector<std::reference_wrapper<const expr::symbol_table_t>>;
     struct driver {
@@ -40,6 +41,7 @@ namespace expr {
         virtual auto get_symbol(const std::string &identifier) -> syntax_tree_t = 0;
         virtual void add_tree(const syntax_tree_t& tree) = 0;
         virtual void add_tree(const std::string& identifier, const syntax_tree_t& tree) = 0;
+        virtual void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) = 0;
         virtual auto contains(const std::string& identifier) const -> bool {
             return find(identifier) != end;
         }

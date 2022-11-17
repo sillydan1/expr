@@ -36,6 +36,7 @@ namespace expr {
         auto get_symbol(const std::string& identifier) -> syntax_tree_t override;
         void add_tree(const syntax_tree_t& tree) override;
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
+        void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) override;
 
         auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
         auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;

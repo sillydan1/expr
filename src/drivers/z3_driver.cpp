@@ -66,6 +66,11 @@ namespace expr {
         std::cout << "z3_driver ignoring declaration\n";
     }
 
+    void z3_driver::add_tree(const std::string& access_modifier, const std::string& identifier,
+                             const expr::syntax_tree_t& tree) {
+        add_tree(identifier, tree);
+    }
+
     void z3_driver::solve() {
         switch (s.check()) {
             case z3::unsat: s.reset(); throw std::domain_error("unsat");

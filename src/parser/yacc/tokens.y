@@ -23,13 +23,13 @@ m4_changequote()
   LPAREN  "("
   RPAREN  ")"
   ASSIGN  ":="
-  ACCMOD  "access_modifier"
   TYPE    "type"
   TERM    ";"
 ;
 
 // Identifiers are strings
 %token <std::string> IDENTIFIER "identifier"
+%token <std::string> ACCMOD "access_modifier"
 %token <int> NUMBER "number"
 %token <float> FLOAT "float"
 %token <bool> BOOL "bool"
