@@ -38,7 +38,7 @@ CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 if(ENABLE_Z3)
-    CPMAddPackage("gh:Z3Prover/z3#z3-4.11.0")
+    CPMAddPackage("gh:Z3Prover/z3#z3-4.11.2")
 endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
