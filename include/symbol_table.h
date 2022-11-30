@@ -108,6 +108,7 @@ namespace expr {
     };
 
     struct identifier_t {
+        // TODO: For better lookup performance, save the hashes of identifiers instead (with a #ifndef NDEBUG option so you can debug the string)
         std::string ident;
     };
     struct root_t {};

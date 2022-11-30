@@ -26,7 +26,7 @@
 
 namespace expr {
     struct tree_driver : public driver {
-        tree_driver(const symbol_table_tree_t::_left_df_iterator& it) : driver{}, it{it} {}
+        tree_driver(const symbol_table_tree_t::iterator& it) : driver{}, it{it} {}
         auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator override {
             auto* x = &(*it);
             while(x) {
@@ -40,7 +40,7 @@ namespace expr {
             return end;
         }
     private:
-        symbol_table_tree_t::_left_df_iterator it;
+        symbol_table_tree_t::iterator it;
     };
 }
 

@@ -75,6 +75,7 @@ add_library(${PROJECT_NAME} SHARED
         ${FLEX_expr_lexer_OUTPUTS}
         src/drivers/interpreter.cpp
         src/drivers/tree_interpreter.cpp
+        src/drivers/tree_compiler.cpp
         src/drivers/compiler.cpp
 
         src/clock.cpp
