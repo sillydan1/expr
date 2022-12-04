@@ -192,6 +192,14 @@ namespace expr {
         t.apply_dfs(printer_func);
         return o;
     }
+
+    auto as_string(const symbol_value_t& v) -> std::string {
+        return std::visit(ya::overload{
+                [](const std::string &s) -> std::string { return s; },
+                [](const expr::clock_t &s) -> std::string { return std::to_string(s.time_units); },
+                [](auto &&v) -> std::string { return std::to_string(v); }
+        }, static_cast<const underlying_symbol_value_t &>(v));
+    }
 }
 
 auto std::hash<expr::symbol_value_t>::operator()(const expr::symbol_value_t& v) const -> size_t {

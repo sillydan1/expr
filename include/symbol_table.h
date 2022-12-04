@@ -94,6 +94,7 @@ namespace expr {
     auto operator<<(std::ostream &os, const symbol_value_t &v) -> std::ostream&;
     auto operator<<(std::ostream &os, const symbol_table_t &m) -> std::ostream&;
     auto operator<<(std::ostream &os, const symbol_table_tree_t &t) -> std::ostream&;
+    auto as_string(const symbol_value_t& v) -> std::string;
 
     enum class operator_type_t {
         minus, plus, star, slash, percent, hat,
