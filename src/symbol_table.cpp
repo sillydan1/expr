@@ -28,6 +28,14 @@ namespace expr {
         return put(other);
     }
 
+    auto symbol_table_t::get(const std::string& key) -> symbol_value_t& {
+        return this->operator[](key);
+    }
+
+    auto symbol_table_t::get(const std::string& key) const -> const symbol_value_t& {
+        return this->at(key);
+    }
+
     auto symbol_table_t::put(const symbol_table_t &other) -> symbol_table_t & {
         for (auto &e: other)
             this->insert_or_assign(e.first, e.second);

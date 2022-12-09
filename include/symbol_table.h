@@ -73,6 +73,8 @@ namespace expr {
     struct symbol_table_t : public underlying_symbol_table_t {
         auto operator+=(const symbol_table_t &) -> symbol_table_t&;
         auto operator*=(const symbol_table_t &) -> symbol_table_t&;
+        auto get(const std::string& key) const -> const symbol_value_t&;
+        auto get(const std::string& key) -> symbol_value_t&;
         auto put(const symbol_table_t &) -> symbol_table_t&;
         auto overwrite_elements(const symbol_table_t &) -> symbol_table_t&;
         auto is_overlapping(const symbol_table_t& other) -> bool;
