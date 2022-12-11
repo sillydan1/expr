@@ -115,7 +115,7 @@ namespace expr {
     auto z3_driver::as_z3_expression(const identifier_t& ref) -> z3::expr {
         if(known.contains(ref.ident))
             return std::visit(ya::overload(
-                    [this,&ref](const expr::clock_t& v) { return as_z3_expression(known.at(ref.ident)) + c.int_const(delay_identifier.c_str()); },
+                    [this,&ref](const expr::clock_t& v) { return c.int_val(v.time_units) + c.int_const(delay_identifier.c_str()); },
                     [this,&ref](auto&& x) { return as_z3_expression(known.at(ref.ident)); }
                     ), static_cast<const underlying_symbol_value_t&>(known.at(ref.ident)));
         auto it = find(ref.ident);
@@ -124,7 +124,7 @@ namespace expr {
                 [this, &ref](const float& _)        { return c.real_const(ref.ident.c_str()); },
                 [this, &ref](const bool& _)         { return c.bool_const(ref.ident.c_str()); },
                 [this, &ref](const std::string& _)  { return c.string_const(ref.ident.c_str()); },
-                [this, &ref](const expr::clock_t& _){ return c.int_const(ref.ident.c_str()); },
+                [this, &ref](const expr::clock_t& v){ return c.int_val(v.time_units) + c.int_const(delay_identifier.c_str()); },
                 [](auto&& x){ throw std::logic_error("unable to convert symbol reference to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(it->second));
     }
