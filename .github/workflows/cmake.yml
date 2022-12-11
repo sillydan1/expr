@@ -57,8 +57,8 @@ jobs:
       OBJDUMP: x86_64-w64-mingw32-objdump
       RESCOMP: x86_64-w64-mingw32-windres
     steps:
-      - name: Setup CygWin
-        uses: egor-tensin/setup-cygwin@v3
+      - name: Install Cygwin Action
+        uses: cygwin/cygwin-install-action@v3
         with:
           packages: flex bison mingw-w64-gcc
       - name: Install MinGW
