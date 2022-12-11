@@ -20,14 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include "drivers/interpreter.h"
-#include <utility>
-#include "parser.hpp"
+#include "drivers/tree_interpreter.h"
 
 namespace expr {
-    interpreter::interpreter(std::initializer_list<symbol_table_ref_t> environments) : driver{environments} {}
+    tree_interpreter::tree_interpreter(const symbol_table_tree_t::_left_df_iterator& it) : tree_driver(it) {}
 
-    int interpreter::parse(const std::string &f) {
+    int tree_interpreter::parse(const std::string &f) {
         if (f.empty()) {
 #ifdef DEFAULT_EXPRESSION_VALUE
             expression_result = DEFAULT_EXPRESSION_VALUE;
@@ -49,7 +47,7 @@ namespace expr {
         }
     }
 
-    auto interpreter::interpret_declarations(const std::string &f) -> symbol_table_t {
+    auto tree_interpreter::interpret_declarations(const std::string &f) -> symbol_table_t {
         result = {};
         auto res = parse(f);
         if(res != 0)
@@ -57,7 +55,7 @@ namespace expr {
         return result;
     }
 
-    auto interpreter::interpret_expression(const std::string &f) -> symbol_value_t {
+    auto tree_interpreter::interpret_expression(const std::string &f) -> symbol_value_t {
         expression_result = {};
         auto res = parse(f);
         if(res != 0)
@@ -65,26 +63,26 @@ namespace expr {
         return expression_result;
     }
 
-    auto interpreter::get_symbol(const std::string &identifier) -> syntax_tree_t {
+    auto tree_interpreter::get_symbol(const std::string &identifier) -> syntax_tree_t {
         if (!contains(identifier))
             throw std::out_of_range(identifier + " not found");
         return syntax_tree_t{identifier_t{identifier}};
     }
 
-    void interpreter::add_tree(const syntax_tree_t& tree) {
+    void tree_interpreter::add_tree(const syntax_tree_t& tree) {
         expression_result = evaluate(tree);
     }
 
-    void interpreter::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
+    void tree_interpreter::add_tree(const std::string& identifier, const syntax_tree_t& tree) {
         result[identifier] = evaluate(tree);
     }
 
-    void interpreter::add_tree(const std::string& access_modifier, const std::string& identifier,
-                               const syntax_tree_t& tree) {
+    void tree_interpreter::add_tree(const std::string& access_modifier, const std::string& identifier,
+                                    const expr::syntax_tree_t& tree) {
         add_tree(identifier, tree);
     }
 
-    auto interpreter::evaluate(const syntax_tree_t& tree) -> symbol_value_t {
+    auto tree_interpreter::evaluate(const syntax_tree_t& tree) -> symbol_value_t {
         return std::visit(ya::overload(
                 [&](const identifier_t& r){
                     auto s = find(r.ident);
@@ -125,7 +123,7 @@ namespace expr {
         ), static_cast<const underlying_syntax_node_t&>(tree.node));
     }
 
-    auto interpreter::evaluate(const compiler::compiled_expr_collection_t& trees) -> symbol_table_t {
+    auto tree_interpreter::evaluate(const compiler::compiled_expr_collection_t& trees) -> symbol_table_t {
         symbol_table_t res{};
         for(auto& tree : trees)
             res[tree.first] = evaluate(tree.second);

@@ -28,6 +28,14 @@ namespace expr {
         return put(other);
     }
 
+    auto symbol_table_t::get(const std::string& key) -> symbol_value_t& {
+        return this->operator[](key);
+    }
+
+    auto symbol_table_t::get(const std::string& key) const -> const symbol_value_t& {
+        return this->at(key);
+    }
+
     auto symbol_table_t::put(const symbol_table_t &other) -> symbol_table_t & {
         for (auto &e: other)
             this->insert_or_assign(e.first, e.second);
@@ -171,18 +179,34 @@ namespace expr {
         return o << r.ident;
     }
 
-    auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream & {
+    auto operator<<(std::ostream& o, const underlying_syntax_node_t& n) -> std::ostream& {
         return std::visit(ya::overload([&o](auto &&x) -> std::ostream& { return o << x; }), n);
     }
 
-    auto operator<<(std::ostream &o, const syntax_tree_t &tree) -> std::ostream & {
-        if (tree.children.empty())
+    auto operator<<(std::ostream& o, const syntax_tree_t& tree) -> std::ostream& {
+        if (tree.children().empty())
             return o << tree.node << " ";
         o << tree.node;
         o << "[";
-        for (auto &c: tree.children)
+        for (auto &c: tree.children())
             o << c;
         return o << "]";
+    }
+
+    auto operator<<(std::ostream& o, const symbol_table_tree_t& t) -> std::ostream& {
+        auto printer_func = [&o](const symbol_table_t& x){
+            o << "\t<node>\n" << x;
+        };
+        t.apply_dfs(printer_func);
+        return o;
+    }
+
+    auto as_string(const symbol_value_t& v) -> std::string {
+        return std::visit(ya::overload{
+                [](const std::string &s) -> std::string { return s; },
+                [](const expr::clock_t &s) -> std::string { return std::to_string(s.time_units); },
+                [](auto &&v) -> std::string { return std::to_string(v); }
+        }, static_cast<const underlying_symbol_value_t &>(v));
     }
 }
 

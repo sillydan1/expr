@@ -25,7 +25,7 @@ m4_changequote()
 ":="       return PARSER_NS ::parser::make_ASSIGN (loc);
 ";"        return PARSER_NS ::parser::make_TERM   (loc);
 
-{accmod}   return PARSER_NS ::parser::make_ACCMOD(loc);
+{accmod}   return PARSER_NS ::parser::make_ACCMOD(yytext, loc);
 {type}     return PARSER_NS ::parser::make_TYPE(loc);
 
 {int}      return make_NUMBER(yytext, loc);

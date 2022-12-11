@@ -20,22 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_COMPILER_H
-#define EXPR_COMPILER_H
-#include <map>
-#include <unordered_map>
-#include "drivers/driver.h"
+#ifndef EXPR_TREE_COMPILER_H
+#define EXPR_TREE_COMPILER_H
+#include "tree_driver.h"
 
 namespace expr {
-    class compiler : public driver {
-    public:
+    struct tree_compiler : tree_driver {
         using compiled_expr_t = syntax_tree_t;
 #ifndef NDEBUG
         using compiled_expr_collection_t = std::map<std::string, compiled_expr_t>;
 #else
         using compiled_expr_collection_t = std::unordered_map<std::string, compiled_expr_t>;
 #endif
-        compiler(std::initializer_list<symbol_table_ref_t> environments) : driver{environments}, trees{} {}
+        explicit tree_compiler(const symbol_table_tree_t::iterator& scope) : tree_driver{scope}, trees{} {}
         int parse(const std::string &f) override;
         auto get_symbol(const std::string &identifier) -> syntax_tree_t override;
         void add_tree(const syntax_tree_t& tree) override;
@@ -46,4 +43,4 @@ namespace expr {
     };
 }
 
-#endif //EXPR_COMPILER_H
+#endif //EXPR_TREE_COMPILER_H

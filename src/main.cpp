@@ -25,6 +25,7 @@
 #include "drivers/compiler.h"
 #include "drivers/z3_driver.h"
 #include "config.h"
+#include "drivers/tree_interpreter.h"
 #include <argvparse.h>
 #include <timer>
 #include <memory>

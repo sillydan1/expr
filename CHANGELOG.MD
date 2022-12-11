@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v2.1.0](https://github.com/sillydan1/expr/releases/tag/v2.1.0) - 2022-12-11
+
+<small>[Compare with v2.0.0](https://github.com/sillydan1/expr/compare/v2.0.0...v2.1.0)</small>
+
+### Bug Fixes
+- Add a lookup function to symbol table ([797cdee](https://github.com/sillydan1/expr/commit/797cdeeb170cc1aa465adc0331efafe8a616b671) by Asger Gitz-Johansen).
+- Removed tree_interpreter functionality in the demo ([1563f5f](https://github.com/sillydan1/expr/commit/1563f5f0689f45371d14bf4752d9998e23d681f4) by Asger Gitz-Johansen).
+
+### Features
+- Add as_string function ([b1bf12a](https://github.com/sillydan1/expr/commit/b1bf12a71cfc4270572b430274e979773ae945a2) by Asger Gitz-Johansen).
+- Add tree_compiler class ([feba171](https://github.com/sillydan1/expr/commit/feba17187e915172d2dbb832a089291839611475) by Asger Gitz-Johansen).
+- Extend the driver interface be aware of the access modifier ([418ce71](https://github.com/sillydan1/expr/commit/418ce71200423b321767698743ae754ed5cb1e78) by Asger Gitz-Johansen).
+- Add variables scopes in the form of trees of symboltables ([8f5ec2b](https://github.com/sillydan1/expr/commit/8f5ec2b9de720562d1ad931ba29dc2f0283699de) by Asger Gitz-Johansen).
+
+
 ## [v2.0.0](https://github.com/sillydan1/expr/releases/tag/v2.0.0) - 2022-09-19
 
 <small>[Compare with v1.7.0](https://github.com/sillydan1/expr/compare/v1.7.0...v2.0.0)</small>
@@ -52,7 +67,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [v1.4.1](https://github.com/sillydan1/expr/releases/tag/v1.4.1) - 2022-07-19
 
-<small>[Compare with v1.3.2](https://github.com/sillydan1/expr/compare/v1.3.2...v1.4.1)</small>
+<small>[Compare with v1.4.0](https://github.com/sillydan1/expr/compare/v1.4.0...v1.4.1)</small>
+
+
+## [v1.4.0](https://github.com/sillydan1/expr/releases/tag/v1.4.0) - 2022-07-19
+
+<small>[Compare with v1.3.2](https://github.com/sillydan1/expr/compare/v1.3.2...v1.4.0)</small>
 
 
 ## [v1.3.2](https://github.com/sillydan1/expr/releases/tag/v1.3.2) - 2022-05-02
@@ -77,7 +97,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [v1.1.2](https://github.com/sillydan1/expr/releases/tag/v1.1.2) - 2022-03-05
 
-<small>[Compare with v1.0.0](https://github.com/sillydan1/expr/compare/v1.0.0...v1.1.2)</small>
+<small>[Compare with v1.1.0](https://github.com/sillydan1/expr/compare/v1.1.0...v1.1.2)</small>
+
+
+## [v1.1.0](https://github.com/sillydan1/expr/releases/tag/v1.1.0) - 2022-03-05
+
+<small>[Compare with v1.0.0](https://github.com/sillydan1/expr/compare/v1.0.0...v1.1.0)</small>
 
 
 ## [v1.0.0](https://github.com/sillydan1/expr/releases/tag/v1.0.0) - 2022-03-05

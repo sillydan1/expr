@@ -20,30 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_COMPILER_H
-#define EXPR_COMPILER_H
-#include <map>
-#include <unordered_map>
-#include "drivers/driver.h"
+#ifndef EXPR_TREE_DRIVER_H
+#define EXPR_TREE_DRIVER_H
+#include "driver.h"
 
 namespace expr {
-    class compiler : public driver {
-    public:
-        using compiled_expr_t = syntax_tree_t;
-#ifndef NDEBUG
-        using compiled_expr_collection_t = std::map<std::string, compiled_expr_t>;
-#else
-        using compiled_expr_collection_t = std::unordered_map<std::string, compiled_expr_t>;
-#endif
-        compiler(std::initializer_list<symbol_table_ref_t> environments) : driver{environments}, trees{} {}
-        int parse(const std::string &f) override;
-        auto get_symbol(const std::string &identifier) -> syntax_tree_t override;
-        void add_tree(const syntax_tree_t& tree) override;
-        void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
-        void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) override;
-
-        compiled_expr_collection_t trees;
+    struct tree_driver : public driver {
+        tree_driver(const symbol_table_tree_t::iterator& it) : driver{}, it{it} {}
+        auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator override {
+            auto* x = &(*it);
+            while(x) {
+                auto i = x->node.find(identifier);
+                if(i != x->node.end())
+                    return i;
+                if(!x->parent().has_value())
+                    return end;
+                x = x->parent().value();
+            }
+            return end;
+        }
+    private:
+        symbol_table_tree_t::iterator it;
     };
 }
 
-#endif //EXPR_COMPILER_H
+#endif //EXPR_TREE_DRIVER_H

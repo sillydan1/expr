@@ -48,7 +48,7 @@ namespace expr {
             return *this;
         }
 
-        symbol_value_t &interpret(const std::string &s) {
+        auto interpret(const std::string &s) -> symbol_value_t& {
             std::stringstream ss{s};
             int i;
             float f;
@@ -73,6 +73,8 @@ namespace expr {
     struct symbol_table_t : public underlying_symbol_table_t {
         auto operator+=(const symbol_table_t &) -> symbol_table_t&;
         auto operator*=(const symbol_table_t &) -> symbol_table_t&;
+        auto get(const std::string& key) const -> const symbol_value_t&;
+        auto get(const std::string& key) -> symbol_value_t&;
         auto put(const symbol_table_t &) -> symbol_table_t&;
         auto overwrite_elements(const symbol_table_t &) -> symbol_table_t&;
         auto is_overlapping(const symbol_table_t& other) -> bool;
@@ -87,9 +89,14 @@ namespace expr {
         std::optional<expr::symbol_value_t> delay_amount{};
     };
 
+    // TODO: operator+/* should be slightly different here
+    using symbol_table_tree_t = ya::tree<symbol_table_t>;
+
     auto operator+(const symbol_table_t &a, const symbol_table_t &b) -> symbol_table_t;
     auto operator<<(std::ostream &os, const symbol_value_t &v) -> std::ostream&;
     auto operator<<(std::ostream &os, const symbol_table_t &m) -> std::ostream&;
+    auto operator<<(std::ostream &os, const symbol_table_tree_t &t) -> std::ostream&;
+    auto as_string(const symbol_value_t& v) -> std::string;
 
     enum class operator_type_t {
         minus, plus, star, slash, percent, hat,
@@ -100,11 +107,11 @@ namespace expr {
 
     struct operator_t {
         operator_type_t operator_type;
-
         explicit operator_t(operator_type_t t) : operator_type{t} {}
     };
 
     struct identifier_t {
+        // TODO: For better lookup performance, save the hashes of identifiers instead (with a #ifndef NDEBUG option so you can debug the string)
         std::string ident;
     };
     struct root_t {};
@@ -123,7 +130,7 @@ namespace expr {
         }
     };
 
-    using syntax_tree_t = tree<syntax_node_t>;
+    using syntax_tree_t = ya::tree<syntax_node_t>;
 
     auto operator<<(std::ostream &o, const operator_t &p) -> std::ostream &;
     auto operator<<(std::ostream &o, const root_t &r) -> std::ostream &;
