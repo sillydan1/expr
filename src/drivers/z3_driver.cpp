@@ -119,6 +119,8 @@ namespace expr {
                     [this,&ref](auto&& x) { return as_z3_expression(known.at(ref.ident)); }
                     ), static_cast<const underlying_symbol_value_t&>(known.at(ref.ident)));
         auto it = find(ref.ident);
+        if(it == end)
+            throw std::logic_error{ref.ident + " not found"};
         return std::visit(ya::overload(
                 [this, &ref](const int& _)          { return c.int_const(ref.ident.c_str()); },
                 [this, &ref](const float& _)        { return c.real_const(ref.ident.c_str()); },
