@@ -4,11 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [v2.1.1](https://github.com/sillydan1/expr/releases/tag/v2.1.1) - 2022-12-12
+
+<small>[Compare with v2.1.0](https://github.com/sillydan1/expr/compare/v2.1.0...v2.1.1)</small>
+
+### Bug Fixes
+- Make sure that the identifier if found ([7807870](https://github.com/sillydan1/expr/commit/7807870fd367c7467cd3a2f282f513d70b705de8) by Asger Gitz-Johansen).
+- Z3_driver will now calculate delays properly ([629a1e2](https://github.com/sillydan1/expr/commit/629a1e2c4b414dbe271bc88635d5f5974eded142) by Asger Gitz-Johansen).
+
+
 ## [v2.1.0](https://github.com/sillydan1/expr/releases/tag/v2.1.0) - 2022-12-11
 
 <small>[Compare with v2.0.0](https://github.com/sillydan1/expr/compare/v2.0.0...v2.1.0)</small>
 
 ### Bug Fixes
+- Drop support for windows builds ([f74524e](https://github.com/sillydan1/expr/commit/f74524eecf9bd2136e3e1f119faa19c3164406f0) by Asger Gitz-Johansen).
 - Add a lookup function to symbol table ([797cdee](https://github.com/sillydan1/expr/commit/797cdeeb170cc1aa465adc0331efafe8a616b671) by Asger Gitz-Johansen).
 - Removed tree_interpreter functionality in the demo ([1563f5f](https://github.com/sillydan1/expr/commit/1563f5f0689f45371d14bf4752d9998e23d681f4) by Asger Gitz-Johansen).
 
