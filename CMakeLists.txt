@@ -37,8 +37,11 @@ CPMAddPackage("gh:yalibs/yatree@1.2.1")
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
+
 if(ENABLE_Z3)
-    CPMAddPackage("gh:Z3Prover/z3#z3-4.11.2")
+    include(cmake/Z3.cmake)
+    get_z3_zip_file(z3-4.11.2)
+    CPMAddPackage(NAME z3 VERSION z3-4.11.2 URL ${z3vstr})
 endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
@@ -67,7 +70,8 @@ include_directories(
         ${yatimer_SOURCE_DIR}/include
         ${yahashcombine_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
-        ${z3_SOURCE_DIR}/src/api
+        ${z3_SOURCE_DIR}/src/api/c++
+        ${z3_SOURCE_DIR}/include
         include
         src)
 add_library(${PROJECT_NAME} SHARED
@@ -90,9 +94,11 @@ add_library(${PROJECT_NAME} SHARED
 
 if(ENABLE_Z3)
     target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
-    target_link_libraries(${PROJECT_NAME} libz3)
+    target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
+    target_link_libraries(${PROJECT_NAME} z3)
     target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
 endif()
 
 add_executable(${PROJECT_NAME}_demo src/main.cpp)
+set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
 target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)
