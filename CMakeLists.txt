@@ -62,18 +62,6 @@ add_custom_command(OUTPUT
 BISON_TARGET(expr_parser ${CMAKE_CURRENT_BINARY_DIR}/yacc.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_lexer ${CMAKE_CURRENT_BINARY_DIR}/lex.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_lexer expr_parser)
-include_directories(
-        ${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}/src
-        ${yaoverload_SOURCE_DIR}/include
-        ${yatree_SOURCE_DIR}/include
-        ${yatimer_SOURCE_DIR}/include
-        ${yahashcombine_SOURCE_DIR}/include
-        ${argvparse_SOURCE_DIR}/include
-        ${z3_SOURCE_DIR}/src/api/c++
-        ${z3_SOURCE_DIR}/include
-        include
-        src)
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_lexer_OUTPUTS}
@@ -91,6 +79,19 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/modulo.cpp
         src/operations/pow.cpp
         src/operations/boolean.cpp)
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+        ${yaoverload_SOURCE_DIR}/include
+        ${yatree_SOURCE_DIR}/include
+        ${yatimer_SOURCE_DIR}/include
+        ${yahashcombine_SOURCE_DIR}/include
+        ${argvparse_SOURCE_DIR}/include
+        ${z3_SOURCE_DIR}/src/api/c++
+        ${z3_SOURCE_DIR}/include
+        include
+        src)
 
 if(ENABLE_Z3)
     target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
