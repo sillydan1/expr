@@ -28,6 +28,9 @@ configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 
+# OPTIONS
+option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
+
 # DEPENDENCIES
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
 CPMAddPackage("gh:yalibs/yatree@1.2.1")
@@ -35,9 +38,11 @@ CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 
-include(cmake/Z3.cmake)
-get_z3_zip_file(z3-4.11.2)
-CPMAddPackage(NAME z3 VERSION z3-4.11.2 URL ${z3vstr})
+if(ENABLE_Z3)
+    include(cmake/Z3.cmake)
+    get_z3_zip_file(z3-4.11.2)
+    CPMAddPackage(NAME z3 VERSION z3-4.11.2 URL ${z3vstr})
+endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
 find_package(FLEX REQUIRED)
@@ -87,10 +92,12 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/pow.cpp
         src/operations/boolean.cpp)
 
-target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
-target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
-target_link_libraries(${PROJECT_NAME} z3)
-target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
+if(ENABLE_Z3)
+    target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
+    target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
+    target_link_libraries(${PROJECT_NAME} z3)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
+endif()
 
 add_executable(${PROJECT_NAME}_demo src/main.cpp)
 set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
