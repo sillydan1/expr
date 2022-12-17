@@ -22,7 +22,7 @@
 cmake_minimum_required(VERSION 3.21)
 # to generate a changelog, use: (python3 -m pip install git-changelog)
 # $ git-changelog -s conventional . -o CHANGELOG.MD
-project(expr VERSION 2.1.1)
+project(expr VERSION 2.2.0)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
@@ -37,8 +37,11 @@ CPMAddPackage("gh:yalibs/yatree@1.2.1")
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
+
 if(ENABLE_Z3)
-    CPMAddPackage("gh:Z3Prover/z3#z3-4.11.2")
+    include(cmake/Z3.cmake)
+    get_z3_zip_file(z3-4.11.2)
+    CPMAddPackage(NAME z3 VERSION z3-4.11.2 URL ${z3vstr})
 endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
@@ -59,17 +62,6 @@ add_custom_command(OUTPUT
 BISON_TARGET(expr_parser ${CMAKE_CURRENT_BINARY_DIR}/yacc.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 FLEX_TARGET(expr_lexer ${CMAKE_CURRENT_BINARY_DIR}/lex.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_lexer expr_parser)
-include_directories(
-        ${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}/src
-        ${yaoverload_SOURCE_DIR}/include
-        ${yatree_SOURCE_DIR}/include
-        ${yatimer_SOURCE_DIR}/include
-        ${yahashcombine_SOURCE_DIR}/include
-        ${argvparse_SOURCE_DIR}/include
-        ${z3_SOURCE_DIR}/src/api
-        include
-        src)
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
         ${FLEX_expr_lexer_OUTPUTS}
@@ -88,11 +80,28 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/pow.cpp
         src/operations/boolean.cpp)
 
+target_include_directories(${PROJECT_NAME} PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+        ${yaoverload_SOURCE_DIR}/include
+        ${yatree_SOURCE_DIR}/include
+        ${yatimer_SOURCE_DIR}/include
+        ${yahashcombine_SOURCE_DIR}/include
+        ${argvparse_SOURCE_DIR}/include
+        ${z3_SOURCE_DIR}/src/api/c++
+        ${z3_SOURCE_DIR}/include
+        include
+        src)
+
 if(ENABLE_Z3)
     target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
-    target_link_libraries(${PROJECT_NAME} libz3)
+    target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
+    target_link_libraries(${PROJECT_NAME} z3)
     target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
+    add_custom_target(copy_z3 COMMAND ${CMAKE_COMMAND} -E copy ${z3_SOURCE_DIR}/bin/libz3.* ${CMAKE_BINARY_DIR})
+    add_dependencies(${PROJECT_NAME} copy_z3)
 endif()
 
 add_executable(${PROJECT_NAME}_demo src/main.cpp)
+set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
 target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)

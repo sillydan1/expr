@@ -23,6 +23,8 @@
 #ifndef EXPR_TREE_COMPILER_H
 #define EXPR_TREE_COMPILER_H
 #include "tree_driver.h"
+#include <unordered_map>
+#include <map>
 
 namespace expr {
     struct tree_compiler : tree_driver {

@@ -136,25 +136,26 @@ namespace expr {
                 [this](const identifier_t& r) { return as_z3_expression(r); },
                 [&](const operator_t& o) {
                     switch (o.operator_type) {
-                        case operator_type_t::minus:    return as_z3_expression(tree.children()[0]) - as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::plus:     return as_z3_expression(tree.children()[0]) + as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::star:     return as_z3_expression(tree.children()[0]) * as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::slash:    return as_z3_expression(tree.children()[0]) / as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::percent:  return as_z3_expression(tree.children()[0]) % as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::hat:      return z3::pw(as_z3_expression(tree.children()[0]), as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::_and: return  as_z3_expression(tree.children()[0]) && as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::_or:  return  as_z3_expression(tree.children()[0]) || as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::_xor: return  as_z3_expression(tree.children()[0]) xor as_z3_expression(tree.children()[1]); break;
-                        case operator_type_t::_not: return !as_z3_expression(tree.children()[0]); break;
-                        case operator_type_t::_implies: return implies(as_z3_expression(tree.children()[0]),as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::gt: return (as_z3_expression(tree.children()[0]) > as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::ge: return (as_z3_expression(tree.children()[0]) >= as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::ne: return (as_z3_expression(tree.children()[0]) != as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::ee: return (as_z3_expression(tree.children()[0]) == as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::le: return (as_z3_expression(tree.children()[0]) <= as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::lt: return (as_z3_expression(tree.children()[0]) < as_z3_expression(tree.children()[1])); break;
-                        case operator_type_t::parentheses: return (as_z3_expression(tree.children()[0])); break;
+                        case operator_type_t::minus:    return as_z3_expression(tree.children()[0]) - as_z3_expression(tree.children()[1]);
+                        case operator_type_t::plus:     return as_z3_expression(tree.children()[0]) + as_z3_expression(tree.children()[1]);
+                        case operator_type_t::star:     return as_z3_expression(tree.children()[0]) * as_z3_expression(tree.children()[1]);
+                        case operator_type_t::slash:    return as_z3_expression(tree.children()[0]) / as_z3_expression(tree.children()[1]);
+                        case operator_type_t::percent:  return as_z3_expression(tree.children()[0]) % as_z3_expression(tree.children()[1]);
+                        case operator_type_t::hat:      return z3::pw(as_z3_expression(tree.children()[0]), as_z3_expression(tree.children()[1]));
+                        case operator_type_t::_and: return  as_z3_expression(tree.children()[0]) && as_z3_expression(tree.children()[1]);
+                        case operator_type_t::_or:  return  as_z3_expression(tree.children()[0]) || as_z3_expression(tree.children()[1]);
+                        case operator_type_t::_xor: return  as_z3_expression(tree.children()[0]) xor as_z3_expression(tree.children()[1]);
+                        case operator_type_t::_not: return !as_z3_expression(tree.children()[0]);
+                        case operator_type_t::_implies: return implies(as_z3_expression(tree.children()[0]),as_z3_expression(tree.children()[1]));
+                        case operator_type_t::gt: return (as_z3_expression(tree.children()[0]) > as_z3_expression(tree.children()[1]));
+                        case operator_type_t::ge: return (as_z3_expression(tree.children()[0]) >= as_z3_expression(tree.children()[1]));
+                        case operator_type_t::ne: return (as_z3_expression(tree.children()[0]) != as_z3_expression(tree.children()[1]));
+                        case operator_type_t::ee: return (as_z3_expression(tree.children()[0]) == as_z3_expression(tree.children()[1]));
+                        case operator_type_t::le: return (as_z3_expression(tree.children()[0]) <= as_z3_expression(tree.children()[1]));
+                        case operator_type_t::lt: return (as_z3_expression(tree.children()[0]) < as_z3_expression(tree.children()[1]));
+                        case operator_type_t::parentheses: return (as_z3_expression(tree.children()[0]));
                     }
+                    throw std::logic_error("unsupported operator");
                 },
                 [this](const symbol_value_t& o){ return as_z3_expression(o); },
                 [&](const root_t& r){ return as_z3_expression(tree.children()[0]); },

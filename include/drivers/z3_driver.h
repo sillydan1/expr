@@ -25,7 +25,7 @@
 #define EXPR_Z3_DRIVER_H
 #include "operations.h"
 #include "drivers/driver.h"
-#include <c++/z3++.h>
+#include <z3++.h>
 
 namespace expr {
     struct z3_driver : public driver {
