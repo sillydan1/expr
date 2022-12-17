@@ -21,11 +21,24 @@
  * SOFTWARE.
  */
 #include "drivers/z3_driver.h"
+#include <z3++.h>
 
 namespace expr {
+    struct z3_driver::impl {
+        impl(z3_driver* that) : c{}, s{c}, that{that} {}
+        z3::context c;
+        z3::solver s;
+        z3_driver* that;
+
+        auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
+        auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
+        auto as_z3_expression(const identifier_t& ref) -> z3::expr;
+        auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
+    };
+
     z3_driver::z3_driver(const symbol_table_t& known_env, const symbol_table_t& unknown_env)
     // TODO: delay_identifier should be randomly generated
-     : driver{{known_env, unknown_env}}, c{}, s{c},
+     : driver{{known_env, unknown_env}}, pimpl{new impl{this}},
        delay_identifier{"d"}, known{known_env}, unknown{unknown_env} {}
 
     z3_driver::~z3_driver() = default;
@@ -58,7 +71,7 @@ namespace expr {
     }
 
     void z3_driver::add_tree(const syntax_tree_t& tree) {
-        s.add(as_z3_expression(tree)); // Note: Only accepts boolean expressions (will throw if not)
+        pimpl->s.add(pimpl->as_z3_expression(tree)); // Note: Only accepts boolean expressions (will throw if not)
         solve();
     }
 
@@ -72,24 +85,24 @@ namespace expr {
     }
 
     void z3_driver::solve() {
-        switch (s.check()) {
-            case z3::unsat: s.reset(); throw std::domain_error("unsat");
-            case z3::unknown: s.reset(); throw std::logic_error("unknown");
+        switch (pimpl->s.check()) {
+            case z3::unsat: pimpl->s.reset(); throw std::domain_error("unsat");
+            case z3::unknown: pimpl->s.reset(); throw std::logic_error("unknown");
             case z3::sat:
-                auto m = s.get_model();
-                s.reset();
+                auto m = pimpl->s.get_model();
+                pimpl->s.reset();
                 for(int i = 0; i < m.size(); i++) {
                     auto xx = m[i];
                     auto interp = xx.is_const() ? m.get_const_interp(xx) : m.get_func_interp(xx).else_value();
                     if(xx.name().str() == delay_identifier)
-                        result.set_delay_amount(as_symbol_value(interp));
+                        result.set_delay_amount(pimpl->as_symbol_value(interp));
                     else
-                        result[xx.name().str()] = as_symbol_value(interp);
+                        result[xx.name().str()] = pimpl->as_symbol_value(interp);
                 }
         }
     }
 
-    auto z3_driver::as_symbol_value(const z3::expr &e) -> symbol_value_t {
+    auto z3_driver::impl::as_symbol_value(const z3::expr &e) -> symbol_value_t {
         if(e.is_int())
             return (int) e.as_int64();
         if(e.is_real())
@@ -101,7 +114,7 @@ namespace expr {
         throw std::logic_error("invalid z3::expr value - unable to convert to expr::symbol_value_t");
     }
 
-    auto z3_driver::as_z3_expression(const symbol_value_t& val) -> z3::expr {
+    auto z3_driver::impl::as_z3_expression(const symbol_value_t& val) -> z3::expr {
         return std::visit(ya::overload(
             [this](const int& i)          { return c.int_val(i); },
             [this](const float& f)        { return c.real_val(std::to_string(f).c_str()); },
@@ -112,26 +125,26 @@ namespace expr {
         ), static_cast<const underlying_symbol_value_t&>(val));
     }
 
-    auto z3_driver::as_z3_expression(const identifier_t& ref) -> z3::expr {
-        if(known.contains(ref.ident))
+    auto z3_driver::impl::as_z3_expression(const identifier_t& ref) -> z3::expr {
+        if(that->known.contains(ref.ident))
             return std::visit(ya::overload(
-                    [this,&ref](const expr::clock_t& v) { return c.int_val(v.time_units) + c.int_const(delay_identifier.c_str()); },
-                    [this,&ref](auto&& x) { return as_z3_expression(known.at(ref.ident)); }
-                    ), static_cast<const underlying_symbol_value_t&>(known.at(ref.ident)));
-        auto it = find(ref.ident);
-        if(it == end)
+                    [this,&ref](const expr::clock_t& v) { return c.int_val(v.time_units) + c.int_const(that->delay_identifier.c_str()); },
+                    [this,&ref](auto&& x) { return as_z3_expression(that->known.at(ref.ident)); }
+                    ), static_cast<const underlying_symbol_value_t&>(that->known.at(ref.ident)));
+        auto it = that->find(ref.ident);
+        if(it == that->end)
             throw std::logic_error{ref.ident + " not found"};
         return std::visit(ya::overload(
                 [this, &ref](const int& _)          { return c.int_const(ref.ident.c_str()); },
                 [this, &ref](const float& _)        { return c.real_const(ref.ident.c_str()); },
                 [this, &ref](const bool& _)         { return c.bool_const(ref.ident.c_str()); },
                 [this, &ref](const std::string& _)  { return c.string_const(ref.ident.c_str()); },
-                [this, &ref](const expr::clock_t& v){ return c.int_val(v.time_units) + c.int_const(delay_identifier.c_str()); },
+                [this, &ref](const expr::clock_t& v){ return c.int_val(v.time_units) + c.int_const(that->delay_identifier.c_str()); },
                 [](auto&& x){ throw std::logic_error("unable to convert symbol reference to z3::expr"); }
         ), static_cast<const underlying_symbol_value_t&>(it->second));
     }
 
-    auto z3_driver::as_z3_expression(const syntax_tree_t &tree) -> z3::expr {
+    auto z3_driver::impl::as_z3_expression(const syntax_tree_t &tree) -> z3::expr {
         return std::visit(ya::overload(
                 [this](const identifier_t& r) { return as_z3_expression(r); },
                 [&](const operator_t& o) {

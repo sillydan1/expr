@@ -38,7 +38,6 @@ CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 include(cmake/Z3.cmake)
 get_z3_zip_file(z3-4.11.2)
 CPMAddPackage(NAME z3 VERSION z3-4.11.2 URL ${z3vstr})
-set(z3_SOURCE_DIR "${z3_SOURCE_DIR}" PARENT_SCOPE)
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
 find_package(FLEX REQUIRED)

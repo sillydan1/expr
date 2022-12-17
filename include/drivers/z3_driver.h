@@ -24,7 +24,7 @@
 #define EXPR_Z3_DRIVER_H
 #include "operations.h"
 #include "drivers/driver.h"
-#include <z3++.h>
+#include <memory>
 
 namespace expr {
     struct z3_driver : public driver {
@@ -37,15 +37,10 @@ namespace expr {
         void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
         void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) override;
 
-        auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
-        auto as_z3_expression(const syntax_tree_t& tree) -> z3::expr;
-        auto as_z3_expression(const identifier_t& ref) -> z3::expr;
-        auto as_z3_expression(const symbol_value_t& val) -> z3::expr;
-
         symbol_table_t result{};
     protected:
-        z3::context c{};
-        z3::solver s;
+        struct impl;
+        std::unique_ptr<impl> pimpl;
         std::string delay_identifier;
         const symbol_table_t& known;
         const symbol_table_t& unknown;
