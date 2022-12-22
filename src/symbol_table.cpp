@@ -93,7 +93,8 @@ namespace expr {
         for(auto& e : *this)
             std::visit(ya::overload(
                     [&tu](clock_t& v){ v.delay(tu); },
-                    [](auto&&){}), static_cast<const underlying_symbol_value_t&>(e.second));
+                    [](auto&&){ /* ignored - don't delay non-clocks */ }),
+                       static_cast<underlying_symbol_value_t&>(e.second));
     }
 
     void symbol_table_t::set_delay_amount(const expr::symbol_value_t& time_units) {
