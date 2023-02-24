@@ -37,7 +37,10 @@ cmake-build-*
 build
 bin
 
-# emacs editor things
+# editor things
 .emacs*
-
 .DS_Store
+compile_commands.json
+Debug/
+.cache/
+

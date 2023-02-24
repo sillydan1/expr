@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch interpreter x := 0_ms;",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Debug/expr_demo",
+            "args": [
+              "--environment", "x := 0_ms;",
+              "-d", "interpreter",
+              "-e", "y := 0_ms;"
+            ],
+            "cwd": "${workspaceFolder}/Debug"
+        }
+    ]
+}

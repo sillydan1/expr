@@ -25,6 +25,7 @@
 #include <string>
 #include "symbol_table.h"
 #include "parser.hpp"
+#include "drivers/buffer_state.h"
 #define YY_DECL yy::parser::symbol_type yylex (expr::driver* drv)
 YY_DECL;
 
@@ -34,7 +35,7 @@ namespace expr {
     using symbol_table_ref_collection_t = std::vector<std::reference_wrapper<const expr::symbol_table_t>>;
     struct driver {
         driver(std::initializer_list<symbol_table_ref_t> environments)
-         : trace_parsing(false), trace_scanning(false), environments{environments} {}
+         : trace_parsing(false), trace_scanning(false), environments{environments}, buffer{} {}
         virtual ~driver() = default;
 
         virtual int parse(const std::string &f) = 0;
@@ -66,6 +67,7 @@ namespace expr {
     protected:
         expr::symbol_table_t::const_iterator end{};
         symbol_table_ref_collection_t environments;
+        yy_buffer_state* buffer;
     };
 }
 
