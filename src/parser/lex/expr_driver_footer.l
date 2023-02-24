@@ -5,7 +5,7 @@ void expr::driver::scan_begin() {
     if(file.empty() || file == "-")
         yyin = stdin;
     else
-        yy_scan_string(file.c_str());
+        buffer = yy_scan_string(file.c_str());
 }
 
 void expr::driver::scan_end() {
