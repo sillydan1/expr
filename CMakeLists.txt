@@ -27,15 +27,19 @@ include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
+find_package(FLEX REQUIRED)
+find_package(BISON REQUIRED)
 
 # OPTIONS
 option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
 
 # DEPENDENCIES
+# library dependencies
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
-CPMAddPackage("gh:yalibs/yatree@1.2.1")
-CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
+CPMAddPackage("gh:yalibs/yatree@1.2.1")
+# demo dependencies
+CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 
 if(ENABLE_Z3)
@@ -45,22 +49,10 @@ if(ENABLE_Z3)
 endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
-find_package(FLEX REQUIRED)
-find_package(BISON REQUIRED)
 
-add_custom_command(OUTPUT
-        ${CMAKE_CURRENT_BINARY_DIR}/lex.l
-        COMMAND m4
-        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/lex -P ${PROJECT_SOURCE_DIR}/src/parser/lex/scanner.l > ${CMAKE_CURRENT_BINARY_DIR}/lex.l
-        VERBATIM)
-add_custom_command(OUTPUT
-        ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
-        COMMAND m4
-        ARGS -I ${PROJECT_SOURCE_DIR}/src/parser/yacc -P ${PROJECT_SOURCE_DIR}/src/parser/yacc/parser.y > ${CMAKE_CURRENT_BINARY_DIR}/yacc.y
-        VERBATIM)
+BISON_TARGET(expr_parser src/parser/expr.y)
+FLEX_TARGET(expr_lexer src/parser/expr.l)
 
-BISON_TARGET(expr_parser ${CMAKE_CURRENT_BINARY_DIR}/yacc.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
-FLEX_TARGET(expr_lexer ${CMAKE_CURRENT_BINARY_DIR}/lex.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(expr_lexer expr_parser)
 add_library(${PROJECT_NAME} SHARED
         ${BISON_expr_parser_OUTPUTS}
@@ -105,3 +97,4 @@ endif()
 add_executable(${PROJECT_NAME}_demo src/main.cpp)
 set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
 target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)
+
