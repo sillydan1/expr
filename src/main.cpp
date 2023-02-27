@@ -21,11 +21,8 @@
  * SOFTWARE.
  */
 #include <iostream>
-#include "drivers/interpreter.h"
-#include "drivers/compiler.h"
-#include "drivers/z3_driver.h"
 #include "config.h"
-#include "drivers/tree_interpreter.h"
+#include "symbol_table.h"
 #include <argvparse.h>
 #include <timer>
 #include <memory>
@@ -67,78 +64,6 @@ int main (int argc, char *argv[]) {
             << "======================================================================\n";
         return 0;
     }
-    try {
-        if(cli_arguments["environment"]) {
-            interpreter i{{}};
-            auto res = i.parse(cli_arguments["environment"].as_string());
-            if(res != 0) {
-                std::cout << "error: " << i.error << std::endl;
-                return res;
-            }
-            env = i.result;
-        }
-        symbol_table_t unknowns{};
-        if(cli_arguments["unknown-environment"]) {
-            interpreter i{{}};
-            auto res = i.parse(cli_arguments["unknown-environment"].as_string());
-            if(res != 0) {
-                std::cout << "error: " << i.error << std::endl;
-                return res;
-            }
-            unknowns = i.result;
-        }
-
-        std::shared_ptr<driver> drv{};
-        if(cli_arguments["driver"].as_string() == "compiler")
-            drv = std::make_shared<compiler>(std::initializer_list<std::reference_wrapper<const expr::symbol_table_t>>{env});
-        else if(cli_arguments["driver"].as_string() == "interpreter")
-            drv = std::make_shared<interpreter>(std::initializer_list<std::reference_wrapper<const expr::symbol_table_t>>{env});
-#ifdef ENABLE_Z3
-        else if(cli_arguments["driver"].as_string() == "z3")
-            drv = std::make_shared<z3_driver>(env,unknowns);
-#endif
-        else {
-            std::cerr << "no such driver available " << cli_arguments["driver"].as_string()
-                      << " please check your spelling and compilation flags" << std::endl;
-            return 1;
-        }
-
-        drv->trace_parsing = static_cast<bool>(cli_arguments["parser-trace"]);
-        drv->trace_scanning = static_cast<bool>(cli_arguments["scanner-trace"]);
-        ya::timer<int> t{};
-        auto res = drv->parse(cli_arguments["expression"].as_string());
-        if(res != 0) {
-            std::cout << "error: " << drv->error << "\n";
-            return res;
-        }
-
-        if(cli_arguments["driver"].as_string() == "compiler") {
-            auto drv_c = std::dynamic_pointer_cast<compiler>(drv);
-            for(auto& tree : drv_c->trees)
-                std::cout << tree.first << ": " << tree.second << "\n";
-            std::cout << "\n";
-            interpreter i{{env}};
-            std::cout << i.evaluate(drv_c->trees) << "\n";
-        }
-        if(cli_arguments["driver"].as_string() == "interpreter") {
-            auto drv_i = std::dynamic_pointer_cast<interpreter>(drv);
-            if(!drv_i->result.empty())
-                std::cout << drv_i->result << "\n";
-            std::cout << "expression_result: " << drv_i->expression_result << std::endl;
-        }
-#ifdef ENABLE_Z3
-        if(cli_arguments["driver"].as_string() == "z3") {
-            auto drv_z = std::dynamic_pointer_cast<z3_driver>(drv);
-            std::cout << "result: \n" << drv_z->result;
-
-            std::cout << "\n==========\n";
-            std::cout << "env + result: \n" << (env + drv_z->result);
-        }
-#endif
-        std::cout << "\n" << t.milliseconds_elapsed() << "ms" << std::endl;
-        return res;
-    } catch(const std::exception& e) {
-        std::cout << e.what() << std::endl;
-        return 1;
-    }
+    std::cout << "this main file is still not working. Look again later" << std::endl;
+    return 0;
 }

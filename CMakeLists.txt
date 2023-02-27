@@ -20,9 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 cmake_minimum_required(VERSION 3.21)
-# to generate a changelog, use: (python3 -m pip install git-changelog)
-# $ git-changelog -s conventional . -o CHANGELOG.MD
-project(expr VERSION 2.2.0)
+project(expr VERSION 3.0.0)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
@@ -50,18 +48,7 @@ endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
 
-BISON_TARGET(expr_parser src/parser/expr.y)
-FLEX_TARGET(expr_lexer src/parser/expr.l)
-
-ADD_FLEX_BISON_DEPENDENCY(expr_lexer expr_parser)
 add_library(${PROJECT_NAME} SHARED
-        ${BISON_expr_parser_OUTPUTS}
-        ${FLEX_expr_lexer_OUTPUTS}
-        src/drivers/interpreter.cpp
-        src/drivers/tree_interpreter.cpp
-        src/drivers/tree_compiler.cpp
-        src/drivers/compiler.cpp
-
         src/clock.cpp
         src/symbol_table.cpp
         src/operations/add.cpp
@@ -94,7 +81,7 @@ if(ENABLE_Z3)
     add_dependencies(${PROJECT_NAME} copy_z3)
 endif()
 
-add_executable(${PROJECT_NAME}_demo src/main.cpp)
-set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
-target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)
+#add_executable(${PROJECT_NAME}_demo src/main.cpp)
+#set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
+#target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)
 
