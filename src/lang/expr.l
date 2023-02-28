@@ -2,11 +2,11 @@
 #include "expr-parser.hpp"
 #include "expr-scanner.hpp"
 #undef YY_DECL
-#define YY_DECL int expr::scanner::yylex(expt::parser::semantic_type* const lval, expr::parser::location_type* loc)
+#define YY_DECL int expr::scanner::yylex(expr::parser::semantic_type* const lval, expr::parser::location_type* loc)
 using token = expr::parser::token;
 #define yyterminate() return( token::END )
 #define YY_NO_UNISTD_H
-#define YY_USER_ACTION loc->stop(); loc->columns(yyleng);
+#define YY_USER_ACTION loc->step(); loc->columns(yyleng);
 %}
 
 %option c++ noyywrap nodefault
@@ -26,40 +26,40 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
 
 %%
 
-{blank}+   loc.step();
-\n+        { loc.lines(yyleng); loc.step(); }
+{blank}+   /* nothing */
+\n+        /* nothing */
 
-"-"        return token::MINUS(loc);
-"+"        return token::PLUS(loc);
-"*"        return token::STAR(loc);
-"/"        return token::SLASH(loc);
-"%"        return token::PERCENT(loc);
-"^"        return token::HAT(loc);
-"&&"       return token::AND(loc);
-"||"       return token::OR(loc);
-"^^"       return token::XOR(loc);
-"=>"       return token::IMPLIES(loc);
-">"        return token::GT(loc);
-">="       return token::GE(loc);
-"=="       return token::EE(loc);
-"!="       return token::NE(loc);
-"<="       return token::LE(loc);
-"<"        return token::LT(loc);
-"!"        return token::NOT(loc);
-"("        return token::LPAREN(loc);
-")"        return token::RPAREN(loc);
-":="       return token::ASSIGN(loc);
-";"        return token::TERM(loc);
-{accmod}   return token::ACCESS_MODIFIER(yytext, loc);
-{type}     return token::TYPE(loc);
-{int}      return token::NUMBER(yytext, loc);
-{flt}      return token::FLOAT(yytext, loc);
-{str}      return token::STRING(yytext, loc);
-{clk}      return token::CLOCK(yytext, loc);
-{bool}     return token::BOOL(yytext, loc);
-{id}       return token::IDENTIFIER(yytext, loc);
-<<EOF>>    return token::YYEOF(loc);
-.          throw expr::parser::syntax_error(loc, "invalid character: " + std::string(yytext));
+"-"        return token::MINUS;
+"+"        return token::PLUS;
+"*"        return token::STAR;
+"/"        return token::SLASH;
+"%"        return token::PERCENT;
+"^"        return token::HAT;
+"&&"       return token::AND;
+"||"       return token::OR;
+"^^"       return token::XOR;
+"=>"       return token::IMPLIES;
+">"        return token::GT;
+">="       return token::GE;
+"=="       return token::EE;
+"!="       return token::NE;
+"<="       return token::LE;
+"<"        return token::LT;
+"!"        return token::NOT;
+"("        return token::LPAREN;
+")"        return token::RPAREN;
+":="       return token::ASSIGN;
+";"        return token::TERM;
+{accmod}   return token::ACCESS_MOD;
+{type}     return token::TYPE;
+{int}      return token::NUMBER;
+{flt}      return token::FLOAT;
+{str}      return token::STRING;
+{clk}      return token::CLOCK;
+{bool}     return token::BOOL;
+{id}       return token::IDENTIFIER;
+<<EOF>>    return token::YYEOF;
+.          throw expr::parser::syntax_error(*loc, "invalid character: " + std::string(YYText()));
 
 %%
 /* ================================================== */

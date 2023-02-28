@@ -11,5 +11,12 @@ ADD_FLEX_BISON_DEPENDENCY(expr_lexer expr_parser)
 add_library(${PROJECT_NAME} SHARED ${BISON_expr_parser_OUTPUTS} ${FLEX_expr_lexer_OUTPUTS})
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${CMAKE_CURRENT_BINARY_DIR} 
+    ${yaoverload_SOURCE_DIR}/include
+    ${yatree_SOURCE_DIR}/include
+    ${yatimer_SOURCE_DIR}/include
+    ${yahashcombine_SOURCE_DIR}/include
+    ${argvparse_SOURCE_DIR}/include
     .. .)
+target_link_libraries(${PROJECT_NAME}
+    expr)
 
