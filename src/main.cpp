@@ -21,11 +21,11 @@
  * SOFTWARE.
  */
 #include <iostream>
-#include "config.h"
-#include "symbol_table.h"
 #include <argvparse.h>
 #include <timer>
 #include <memory>
+#include "config.h"
+#include "symbol_table.h"
 
 int main (int argc, char *argv[]) {
     using namespace expr;

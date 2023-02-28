@@ -9,19 +9,25 @@
 %locations
 
 %code requires {
+    #include <memory>
+    #include "symbol_table.h"
     namespace expr {
         class scanner;
         class factory;
+        struct parser_args {
+            std::shared_ptr<scanner> scn;
+            std::shared_ptr<factory> fct;
+        };
     }
 }
 
-%parse-param { scanner& scn, factory& fct }
+%parse-param { parser_args& args }
 
 %code {
     #include <iostream>
     #include "expr-scanner.hpp"
     #undef yylex
-    #define yylex scn.yylex
+    #define yylex args.scn->yylex
 }
 
 /* ================================================== */
@@ -31,8 +37,8 @@
 %token <int> NUMBER
 %token <float> FLOAT
 %token <bool> BOOL
-%token <expr::clock_t> CLOCK
-%nterm <expr::syntax_tree_t> exp bin_op mono_op lit
+%token <clock_t> CLOCK
+%nterm <syntax_tree_t> exp bin_op mono_op lit
 
 %left XOR
 %left OR
@@ -57,10 +63,10 @@ statements:
 ;
 
 statement:
-  IDENTIFIER ASSIGN exp                 { fct.add_tree($1, expr::syntax_tree_t{}.concat($3)); }
-| TYPE IDENTIFIER ASSIGN exp            { fct.add_tree($2, expr::syntax_tree_t{}.concat($4)); }
-| ACCESS_MOD IDENTIFIER ASSIGN exp      { fct.add_tree($1, $2, expr::syntax_tree_t{}.concat($4)); }
-| ACCESS_MOD TYPE IDENTIFIER ASSIGN exp { fct.add_tree($1, $3, expr::syntax_tree_t{}.concat($5)); }
+  IDENTIFIER ASSIGN exp                 { args.fct->build_declaration($1,     args.fct->build_root($3)); }
+| TYPE IDENTIFIER ASSIGN exp            { args.fct->build_declaration($2,     args.fct->build_root($4)); }
+| ACCESS_MOD IDENTIFIER ASSIGN exp      { args.fct->build_declaration($2, $1, args.fct->build_root($4)); }
+| ACCESS_MOD TYPE IDENTIFIER ASSIGN exp { args.fct->build_declaration($3, $1, args.fct->build_root($5)); }
 | statement TERM                        { }
 ;
 
@@ -71,38 +77,38 @@ exp:
 ;
 
 bin_op:
-  exp PLUS exp          { $$ = fct.op (plus,$1,$3);     }
-| exp MINUS exp         { $$ = fct.op (minus,$1,$3);    }
-| exp STAR exp          { $$ = fct.op (star,$1,$3);     }
-| exp SLASH exp         { $$ = fct.op (slash,$1,$3);    }
-| exp PERCENT exp       { $$ = fct.op (percent,$1,$3);  }
-| exp HAT exp           { $$ = fct.op (hat,$1,$3);      }
-| exp GT  exp           { $$ = fct.op (gt,$1,$3);       }
-| exp GE exp            { $$ = fct.op (ge,$1,$3);       }
-| exp EE exp            { $$ = fct.op (ee,$1,$3);       }
-| exp NE exp            { $$ = fct.op (ne,$1,$3);       }
-| exp LE exp            { $$ = fct.op (le,$1,$3);       }
-| exp LT  exp           { $$ = fct.op (lt,$1,$3);       }
-| exp OR exp            { $$ = fct.op (_or,$1,$3);      }
-| exp XOR exp           { $$ = fct.op (_xor,$1,$3);     }
-| exp IMPLIES exp       { $$ = fct.op (_implies,$1,$3); }
-| exp AND exp           { $$ = fct.op (_and,$1,$3);     }
+  exp PLUS exp          { $$ = args.fct->build_operator (expr::operator_type_t::plus,$1,$3); }
+| exp MINUS exp         { $$ = args.fct->build_operator (expr::operator_type_t::minus,$1,$3); }
+| exp STAR exp          { $$ = args.fct->build_operator (expr::operator_type_t::star,$1,$3); }
+| exp SLASH exp         { $$ = args.fct->build_operator (expr::operator_type_t::slash,$1,$3); }
+| exp PERCENT exp       { $$ = args.fct->build_operator (expr::operator_type_t::percent,$1,$3); }
+| exp HAT exp           { $$ = args.fct->build_operator (expr::operator_type_t::hat,$1,$3); }
+| exp GT  exp           { $$ = args.fct->build_operator (expr::operator_type_t::gt,$1,$3); }
+| exp GE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ge,$1,$3); }
+| exp EE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ee,$1,$3); }
+| exp NE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ne,$1,$3); }
+| exp LE exp            { $$ = args.fct->build_operator (expr::operator_type_t::le,$1,$3); }
+| exp LT  exp           { $$ = args.fct->build_operator (expr::operator_type_t::lt,$1,$3); }
+| exp OR exp            { $$ = args.fct->build_operator (expr::operator_type_t::_or,$1,$3); }
+| exp XOR exp           { $$ = args.fct->build_operator (expr::operator_type_t::_xor,$1,$3); }
+| exp IMPLIES exp       { $$ = args.fct->build_operator (expr::operator_type_t::_implies,$1,$3); }
+| exp AND exp           { $$ = args.fct->build_operator (expr::operator_type_t::_and,$1,$3); }
 ;
 
 mono_op:
-  NOT exp               { $$ = fct.op (_not,$2);        }
-| LPAREN exp RPAREN     { $$ = fct.op (parentheses,$2); }
+  NOT exp               { $$ = args.fct->build_operator (expr::operator_type_t::_not,$2); }
+| LPAREN exp RPAREN     { $$ = args.fct->build_operator (expr::operator_type_t::parentheses,$2); }
 ;
 
 lit:
-  NUMBER                { $$ = fct.lit ($1);   }
-| MINUS NUMBER          { $$ = fct.lit (-$2);  }
-| FLOAT                 { $$ = fct.lit ($1);   }
-| MINUS FLOAT           { $$ = fct.lit (-$2);  }
-| STRING                { $$ = fct.lit ($1);   }
-| BOOL                  { $$ = fct.lit ($1);   }
-| CLOCK                 { $$ = fct.lit ($1);   }
-| IDENTIFIER            { $$ = fct.ident ($1); }
+  NUMBER                { $$ = args.fct->build_literal ($1); }
+| MINUS NUMBER          { $$ = args.fct->build_literal (-$2); }
+| FLOAT                 { $$ = args.fct->build_literal ($1); }
+| MINUS FLOAT           { $$ = args.fct->build_literal (-$2); }
+| STRING                { $$ = args.fct->build_literal ($1); }
+| BOOL                  { $$ = args.fct->build_literal ($1); }
+| CLOCK                 { $$ = args.fct->build_literal ($1); }
+| IDENTIFIER            { $$ = args.fct->build_identifier ($1); }
 ;
 
 %%

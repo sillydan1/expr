@@ -72,6 +72,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include
         src)
 
+add_subdirectory(src/lang)
+
 if(ENABLE_Z3)
     target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
     target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
