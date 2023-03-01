@@ -209,6 +209,15 @@ namespace expr {
                 [](auto &&v) -> std::string { return std::to_string(v); }
         }, static_cast<const underlying_symbol_value_t &>(v));
     }
+
+    auto stob(const char *s) -> bool {
+        auto cpy = std::string{s};
+        std::transform(cpy.begin(), cpy.end(), cpy.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        bool b;
+        std::istringstream(s) >> std::boolalpha >> b;
+        return b;
+    }
 }
 
 auto std::hash<expr::symbol_value_t>::operator()(const expr::symbol_value_t& v) const -> size_t {

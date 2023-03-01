@@ -51,13 +51,13 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
 ":="       { return token::ASSIGN; }
 ";"        { return token::TERM; }
 {type}     { return token::TYPE; }
-{int}      { return token::NUMBER; }
-{flt}      { return token::FLOAT; }
-{clk}      { return token::CLOCK; }
-{bool}     { yylval = YYText(); return token::BOOL; } /* TODO: implement converter functions */
-{str}      { yylval = YYText(); return token::STRING; }
-{accmod}   { yylval = YYText(); return token::ACCESS_MOD; }
-{id}       { yylval = YYText(); return token::IDENTIFIER; }
+{int}      { lval->build<int>(atoi(YYText())); return token::NUMBER; }
+{flt}      { lval->build<float>(atof(YYText())); return token::FLOAT; }
+{clk}      { lval->build<expr::clock_t>(stoclk(YYText())); return token::CLOCK; }
+{bool}     { lval->build<bool>(stob(YYText())); return token::BOOL; }
+{str}      { lval->build<std::string>(std::string{YYText()}); return token::STRING; }
+{accmod}   { lval->build<std::string>(std::string{YYText()}); return token::ACCESS_MOD; }
+{id}       { lval->build<std::string>(std::string{YYText()}); return token::IDENTIFIER; }
 <<EOF>>    { return token::YYEOF; }
 .          { throw expr::parser::syntax_error(*loc, "invalid character: " + std::string(YYText())); }
 

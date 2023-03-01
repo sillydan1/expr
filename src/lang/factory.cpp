@@ -1,5 +1,6 @@
 #include "factory.h"
 #include "symbol_table.h"
+#include <cstdlib>
 
 namespace expr {
     auto ast_factory::build_operator(const operator_type_t& op, const std::vector<syntax_tree_t>& children) -> syntax_tree_t {

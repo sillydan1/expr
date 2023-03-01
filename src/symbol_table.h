@@ -137,6 +137,8 @@ namespace expr {
     auto operator<<(std::ostream &o, const identifier_t &r) -> std::ostream &;
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream &;
     auto operator<<(std::ostream &o, const syntax_tree_t &t) -> std::ostream &;
+
+    auto stob(const char *s) -> bool;
 }
 
 namespace std {
