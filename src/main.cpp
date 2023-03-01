@@ -25,7 +25,10 @@
 #include <timer>
 #include <memory>
 #include "config.h"
+#include "factory.h"
 #include "symbol_table.h"
+
+void perform_action(std::map<std::string, argument_t>& cli_args);
 
 int main (int argc, char *argv[]) {
     using namespace expr;
@@ -65,5 +68,24 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     std::cout << "this main file is still not working. Look again later" << std::endl;
+    perform_action(cli_arguments);
     return 0;
 }
+
+#include <sstream>
+#include <istream>
+#include "expr-scanner.hpp"
+#include "expr-parser.hpp"
+
+void perform_action(std::map<std::string, argument_t>& cli_args)  {
+    using namespace expr;
+    auto expression = cli_args["expression"].as_string();
+    std::cout << "trying :'" << expression << "'\n";
+    std::istringstream s{expression};
+    scanner sc{s, std::cerr};
+    ast_factory factory{};
+    parser_args pa{&sc, &factory};
+    parser p{pa};
+    p.parse();
+}
+

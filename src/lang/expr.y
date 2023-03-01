@@ -15,8 +15,8 @@
     namespace expr {
         class scanner;
         struct parser_args {
-            std::shared_ptr<scanner> scn;
-            std::shared_ptr<ast_factory> fct;
+            scanner* scn;
+            ast_factory* fct;
         };
     }
 }

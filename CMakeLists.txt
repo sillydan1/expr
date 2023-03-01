@@ -83,7 +83,7 @@ if(ENABLE_Z3)
     add_dependencies(${PROJECT_NAME} copy_z3)
 endif()
 
-#add_executable(${PROJECT_NAME}_demo src/main.cpp)
-#set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
-#target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} argvparse)
+add_executable(${PROJECT_NAME}_demo src/main.cpp)
+set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
+target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} expr_lang argvparse)
 
