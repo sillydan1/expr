@@ -29,37 +29,37 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
 {blank}+   /* nothing */
 \n+        /* nothing */
 
-"-"        return token::MINUS;
-"+"        return token::PLUS;
-"*"        return token::STAR;
-"/"        return token::SLASH;
-"%"        return token::PERCENT;
-"^"        return token::HAT;
-"&&"       return token::AND;
-"||"       return token::OR;
-"^^"       return token::XOR;
-"=>"       return token::IMPLIES;
-">"        return token::GT;
-">="       return token::GE;
-"=="       return token::EE;
-"!="       return token::NE;
-"<="       return token::LE;
-"<"        return token::LT;
-"!"        return token::NOT;
-"("        return token::LPAREN;
-")"        return token::RPAREN;
-":="       return token::ASSIGN;
-";"        return token::TERM;
-{accmod}   return token::ACCESS_MOD;
-{type}     return token::TYPE;
-{int}      return token::NUMBER;
-{flt}      return token::FLOAT;
-{str}      return token::STRING;
-{clk}      return token::CLOCK;
-{bool}     return token::BOOL;
-{id}       return token::IDENTIFIER;
-<<EOF>>    return token::YYEOF;
-.          throw expr::parser::syntax_error(*loc, "invalid character: " + std::string(YYText()));
+"-"        { return token::MINUS; }
+"+"        { return token::PLUS; }
+"*"        { return token::STAR; }
+"/"        { return token::SLASH; }
+"%"        { return token::PERCENT; }
+"^"        { return token::HAT; }
+"&&"       { return token::AND; }
+"||"       { return token::OR; }
+"^^"       { return token::XOR; }
+"=>"       { return token::IMPLIES; }
+">"        { return token::GT; }
+">="       { return token::GE; }
+"=="       { return token::EE; }
+"!="       { return token::NE; }
+"<="       { return token::LE; }
+"<"        { return token::LT; }
+"!"        { return token::NOT; }
+"("        { return token::LPAREN; }
+")"        { return token::RPAREN; }
+":="       { return token::ASSIGN; }
+";"        { return token::TERM; }
+{type}     { return token::TYPE; }
+{int}      { return token::NUMBER; }
+{flt}      { return token::FLOAT; }
+{clk}      { return token::CLOCK; }
+{bool}     { yylval = YYText(); return token::BOOL; } /* TODO: implement converter functions */
+{str}      { yylval = YYText(); return token::STRING; }
+{accmod}   { yylval = YYText(); return token::ACCESS_MOD; }
+{id}       { yylval = YYText(); return token::IDENTIFIER; }
+<<EOF>>    { return token::YYEOF; }
+.          { throw expr::parser::syntax_error(*loc, "invalid character: " + std::string(YYText())); }
 
 %%
 /* ================================================== */
