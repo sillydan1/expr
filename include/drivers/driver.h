@@ -29,10 +29,9 @@
 YY_DECL;
 
 namespace expr {
-    // TODO: Break this into an interface (functions) and a base abstract class (basic implementation)
     using symbol_table_ref_t = std::reference_wrapper<const expr::symbol_table_t>;
     using symbol_table_ref_collection_t = std::vector<std::reference_wrapper<const expr::symbol_table_t>>;
-    struct driver {
+    struct [[deprecated("this class assumes that you use an older flexer/parser", "expr::factory")]] driver {
         driver(std::initializer_list<symbol_table_ref_t> environments)
          : trace_parsing(false), trace_scanning(false), environments{environments}, buffer{} {}
         virtual ~driver() = default;
