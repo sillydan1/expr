@@ -67,7 +67,6 @@ int main (int argc, char *argv[]) {
             << "======================================================================\n";
         return 0;
     }
-    std::cout << "this main file is still not working. Look again later" << std::endl;
     perform_action(cli_arguments);
     return 0;
 }
@@ -84,9 +83,16 @@ void perform_action(std::map<std::string, argument_t>& cli_args)  {
 
     std::istringstream s{expression};
     ast_factory factory{};
+    declaration_tree_builder builder{};
     scanner sc{s, std::cerr, &factory};
-    parser_args pa{&sc, &factory};
+    parser_args pa{&sc, &factory, &builder};
     parser p{pa};
-    p.parse();
+    auto pp = p.parse();
+    auto res = builder.build();
+    std::cout << " [" << pp << "] result: \n";
+    for(auto& r : res.declarations)
+        std::cout << "\t" << r.first << " :=> " << r.second.tree << "\n";
+    if(res.raw_expression)
+        std::cout << res.raw_expression.value() << "\n";
 }
 

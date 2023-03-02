@@ -34,11 +34,14 @@
     #include <memory>
     #include "symbol_table.h"
     #include "ast-factory.h"
+    #include "language-builder.h"
+
     namespace expr {
         class scanner;
         struct parser_args {
             scanner* scn;
             ast_factory* fct;
+            language_builder* builder;
         };
     }
 }
@@ -79,7 +82,7 @@
 
 unit:
   statements    { }
-| exp           { args.fct->build_root($1); } /* TODO: something something "expression_result" */
+| exp           { args.builder->add_expression(args.fct->build_root($1)); }
 ;
 
 statements:
@@ -88,10 +91,10 @@ statements:
 ;
 
 statement:
-  IDENTIFIER ASSIGN exp                 { args.fct->build_declaration($1, args.fct->build_root($3)        ); }
-| TYPE IDENTIFIER ASSIGN exp            { args.fct->build_declaration($2, args.fct->build_root($4), $1    ); }
-| ACCESS_MOD IDENTIFIER ASSIGN exp      { args.fct->build_declaration($2, args.fct->build_root($4), $1    ); }
-| ACCESS_MOD TYPE IDENTIFIER ASSIGN exp { args.fct->build_declaration($3, args.fct->build_root($5), $2, $1); }
+  IDENTIFIER ASSIGN exp                 { args.builder->add_declaration($1, args.fct->build_root($3)        ); }
+| TYPE IDENTIFIER ASSIGN exp            { args.builder->add_declaration($2, args.fct->build_root($4), $1    ); }
+| ACCESS_MOD IDENTIFIER ASSIGN exp      { args.builder->add_declaration($2, args.fct->build_root($4), $1    ); }
+| ACCESS_MOD TYPE IDENTIFIER ASSIGN exp { args.builder->add_declaration($3, args.fct->build_root($5), $2, $1); }
 | statement TERM                        { }
 ;
 
