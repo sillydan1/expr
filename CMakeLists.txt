@@ -49,8 +49,8 @@ endif()
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
 
 add_library(${PROJECT_NAME} SHARED
-        src/clock.cpp
-        src/symbol_table.cpp
+        src/symbol/clock.cpp
+        src/symbol/symbol_table.cpp
         src/operations/add.cpp
         src/operations/subtract.cpp
         src/operations/multiply.cpp
@@ -62,13 +62,14 @@ add_library(${PROJECT_NAME} SHARED
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
         ${CMAKE_CURRENT_BINARY_DIR}/src
-        ${yaoverload_SOURCE_DIR}/include
         ${yatree_SOURCE_DIR}/include
         ${yatimer_SOURCE_DIR}/include
+        ${yaoverload_SOURCE_DIR}/include
         ${yahashcombine_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
         ${z3_SOURCE_DIR}/src/api/c++
         ${z3_SOURCE_DIR}/include
+        src/symbol
         include
         src)
 
