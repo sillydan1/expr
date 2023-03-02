@@ -11,7 +11,7 @@
 %code requires {
     #include <memory>
     #include "symbol_table.h"
-    #include "factory.h"
+    #include "ast-factory.h"
     namespace expr {
         class scanner;
         struct parser_args {
@@ -32,8 +32,10 @@
 
 /* ================================================== */
 %token YYEOF 0
-%token MINUS PLUS STAR SLASH PERCENT HAT AND OR XOR IMPLIES GT GE EE NE LE LT NOT LPAREN RPAREN ASSIGN TYPE TERM
-%token <std::string> IDENTIFIER STRING ACCESS_MOD
+%token MINUS PLUS STAR SLASH PERCENT HAT AND OR XOR IMPLIES GT GE EE NE LE LT NOT LPAREN RPAREN ASSIGN TERM
+%token <std::string> IDENTIFIER STRING 
+%token <symbol_access_modifier_t> ACCESS_MOD
+%token <symbol_type_name_t> TYPE
 %token <int> NUMBER
 %token <float> FLOAT
 %token <bool> BOOL
@@ -63,10 +65,10 @@ statements:
 ;
 
 statement:
-  IDENTIFIER ASSIGN exp                 { args.fct->build_declaration($1,     args.fct->build_root($3)); }
-| TYPE IDENTIFIER ASSIGN exp            { args.fct->build_declaration($2,     args.fct->build_root($4)); }
-| ACCESS_MOD IDENTIFIER ASSIGN exp      { args.fct->build_declaration($2, $1, args.fct->build_root($4)); }
-| ACCESS_MOD TYPE IDENTIFIER ASSIGN exp { args.fct->build_declaration($3, $1, args.fct->build_root($5)); }
+  IDENTIFIER ASSIGN exp                 { args.fct->build_declaration($1, args.fct->build_root($3)        ); }
+| TYPE IDENTIFIER ASSIGN exp            { args.fct->build_declaration($2, args.fct->build_root($4), $1    ); }
+| ACCESS_MOD IDENTIFIER ASSIGN exp      { args.fct->build_declaration($2, args.fct->build_root($4), $1    ); }
+| ACCESS_MOD TYPE IDENTIFIER ASSIGN exp { args.fct->build_declaration($3, args.fct->build_root($5), $2, $1); }
 | statement TERM                        { }
 ;
 

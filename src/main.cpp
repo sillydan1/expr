@@ -25,7 +25,7 @@
 #include <timer>
 #include <memory>
 #include "config.h"
-#include "factory.h"
+#include "ast-factory.h"
 #include "symbol_table.h"
 
 void perform_action(std::map<std::string, argument_t>& cli_args);

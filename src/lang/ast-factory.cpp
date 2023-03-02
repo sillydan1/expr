@@ -1,4 +1,4 @@
-#include "factory.h"
+#include "ast-factory.h"
 #include "symbol_table.h"
 #include <cstdlib>
 
@@ -29,16 +29,14 @@ namespace expr {
     auto ast_factory::build_root(const syntax_tree_t& child) -> syntax_tree_t {
         return syntax_tree_t{}.concat(child);
     }
-
-    auto ast_factory::build_declaration(const std::string& identifier, const syntax_tree_t& tree) -> syntax_tree_t {
-        // TODO: Add identifier to thingy
-        std::cout << "default" << " " << identifier << tree << "\n";
-        return tree;
+   
+    auto ast_factory::build_declaration(const std::string &identifier, const syntax_tree_t &tree, const symbol_access_modifier_t& access_modifier) -> syntax_tree_t {
+        return build_declaration(identifier, tree, symbol_type_name_t::_auto, access_modifier);
     }
 
-    auto ast_factory::build_declaration(const std::string& identifier, const std::string& access_modifier, const syntax_tree_t& tree) -> syntax_tree_t {
-        // TODO: add identifier to thingy
-        std::cout << access_modifier << " " << identifier << tree << "\n";
+    auto ast_factory::build_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_type_name_t& type_name, const symbol_access_modifier_t& access_modifier) -> syntax_tree_t {
+        // TODO: add the thing to the thing
+        std::cout << identifier << " " << type_name << " " << access_modifier << ": " << tree << std::endl;
         return tree;
     }
 }

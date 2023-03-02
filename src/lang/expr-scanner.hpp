@@ -1,6 +1,6 @@
 #ifndef EXPR_SCANNER_HPP
 #define EXPR_SCANNER_HPP
-#include "factory.h"
+#include "ast-factory.h"
 #if ! defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif

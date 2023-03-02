@@ -35,6 +35,20 @@
 #include "clock.h"
 
 namespace expr {
+    enum class symbol_access_modifier_t {
+        _private, _public, _protected
+    };
+
+    enum class symbol_type_name_t {
+        _int, _long, _float, _double, _string, _bool, _clock, _auto
+    };
+
+    auto stotypename(const std::string& s) -> symbol_type_name_t;
+    auto stoaccmod(const std::string& s) -> symbol_access_modifier_t;
+
+    std::ostream& operator<<(std::ostream& out, const symbol_type_name_t& value);
+    std::ostream& operator<<(std::ostream& out, const symbol_access_modifier_t& value);
+
     using underlying_symbol_value_t = std::variant<int, float, bool, std::string, clock_t>;
     struct symbol_value_t : public underlying_symbol_value_t {
         symbol_value_t() = default;
@@ -136,7 +150,6 @@ namespace expr {
     auto operator<<(std::ostream &o, const identifier_t &r) -> std::ostream &;
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream &;
     auto operator<<(std::ostream &o, const syntax_tree_t &t) -> std::ostream &;
-
     auto stob(const char *s) -> bool;
 }
 

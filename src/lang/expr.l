@@ -51,7 +51,7 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
 ":="       return token::ASSIGN;
 ";"        return token::TERM;
 {type}     { 
-                // TODO: define an enum for the available types and set lval (remember to set the token type in expr.y)
+                lval->build<expr::symbol_type_name_t>(stotypename(std::string{YYText()}));
                 return token::TYPE; 
            }
 {int}      { 
@@ -76,8 +76,7 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
                 return token::STRING; 
            }
 {accmod}   { 
-                // TODO: define an enum for the available types and set lval (remember to set the token type in expr.y)
-                lval->build<std::string>(std::string{YYText()}); 
+                lval->build<expr::symbol_access_modifier_t>(stoaccmod(std::string{YYText()}));
                 return token::ACCESS_MOD; 
            }
 {id}       { 

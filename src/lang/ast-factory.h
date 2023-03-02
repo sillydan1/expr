@@ -17,8 +17,8 @@ namespace expr {
         virtual auto build_identifier(const std::string& identifier) -> syntax_tree_t;
         virtual auto build_root(const syntax_tree_t& child) -> syntax_tree_t;
 
-        virtual auto build_declaration(const std::string& identifier, const syntax_tree_t& tree) -> syntax_tree_t;
-        virtual auto build_declaration(const std::string& identifier, const std::string& access_modifier, const syntax_tree_t& tree) -> syntax_tree_t;
+        virtual auto build_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_access_modifier_t& access_modifier) -> syntax_tree_t;
+        virtual auto build_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_type_name_t& type_name = symbol_type_name_t::_auto, const symbol_access_modifier_t& access_modifier = symbol_access_modifier_t::_private) -> syntax_tree_t;
     };
 }
 
