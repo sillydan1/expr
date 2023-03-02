@@ -76,6 +76,7 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
                 return token::STRING; 
            }
 {accmod}   { 
+                // TODO: define an enum for the available types and set lval (remember to set the token type in expr.y)
                 lval->build<std::string>(std::string{YYText()}); 
                 return token::ACCESS_MOD; 
            }

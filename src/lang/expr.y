@@ -77,27 +77,27 @@ exp:
 ;
 
 bin_op:
-  exp PLUS exp          { $$ = args.fct->build_operator (expr::operator_type_t::plus,{$1,$3}); }
-| exp MINUS exp         { $$ = args.fct->build_operator (expr::operator_type_t::minus,{$1,$3}); }
-| exp STAR exp          { $$ = args.fct->build_operator (expr::operator_type_t::star,{$1,$3}); }
-| exp SLASH exp         { $$ = args.fct->build_operator (expr::operator_type_t::slash,{$1,$3}); }
-| exp PERCENT exp       { $$ = args.fct->build_operator (expr::operator_type_t::percent,{$1,$3}); }
-| exp HAT exp           { $$ = args.fct->build_operator (expr::operator_type_t::hat,{$1,$3}); }
-| exp GT  exp           { $$ = args.fct->build_operator (expr::operator_type_t::gt,{$1,$3}); }
-| exp GE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ge,{$1,$3}); }
-| exp EE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ee,{$1,$3}); }
-| exp NE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ne,{$1,$3}); }
-| exp LE exp            { $$ = args.fct->build_operator (expr::operator_type_t::le,{$1,$3}); }
-| exp LT  exp           { $$ = args.fct->build_operator (expr::operator_type_t::lt,{$1,$3}); }
-| exp OR exp            { $$ = args.fct->build_operator (expr::operator_type_t::_or,{$1,$3}); }
-| exp XOR exp           { $$ = args.fct->build_operator (expr::operator_type_t::_xor,{$1,$3}); }
-| exp IMPLIES exp       { $$ = args.fct->build_operator (expr::operator_type_t::_implies,{$1,$3}); }
-| exp AND exp           { $$ = args.fct->build_operator (expr::operator_type_t::_and,{$1,$3}); }
+  exp PLUS exp          { $$ = args.fct->build_operator (expr::operator_type_t::plus,$1,$3); }
+| exp MINUS exp         { $$ = args.fct->build_operator (expr::operator_type_t::minus,$1,$3); }
+| exp STAR exp          { $$ = args.fct->build_operator (expr::operator_type_t::star,$1,$3); }
+| exp SLASH exp         { $$ = args.fct->build_operator (expr::operator_type_t::slash,$1,$3); }
+| exp PERCENT exp       { $$ = args.fct->build_operator (expr::operator_type_t::percent,$1,$3); }
+| exp HAT exp           { $$ = args.fct->build_operator (expr::operator_type_t::hat,$1,$3); }
+| exp GT  exp           { $$ = args.fct->build_operator (expr::operator_type_t::gt,$1,$3); }
+| exp GE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ge,$1,$3); }
+| exp EE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ee,$1,$3); }
+| exp NE exp            { $$ = args.fct->build_operator (expr::operator_type_t::ne,$1,$3); }
+| exp LE exp            { $$ = args.fct->build_operator (expr::operator_type_t::le,$1,$3); }
+| exp LT  exp           { $$ = args.fct->build_operator (expr::operator_type_t::lt,$1,$3); }
+| exp OR exp            { $$ = args.fct->build_operator (expr::operator_type_t::_or,$1,$3); }
+| exp XOR exp           { $$ = args.fct->build_operator (expr::operator_type_t::_xor,$1,$3); }
+| exp IMPLIES exp       { $$ = args.fct->build_operator (expr::operator_type_t::_implies,$1,$3); }
+| exp AND exp           { $$ = args.fct->build_operator (expr::operator_type_t::_and,$1,$3); }
 ;
 
 mono_op:
-  NOT exp               { $$ = args.fct->build_operator (expr::operator_type_t::_not,{$2}); }
-| LPAREN exp RPAREN     { $$ = args.fct->build_operator (expr::operator_type_t::parentheses,{$2}); }
+  NOT exp               { $$ = args.fct->build_operator (expr::operator_type_t::_not,$2); }
+| LPAREN exp RPAREN     { $$ = args.fct->build_operator (expr::operator_type_t::parentheses,$2); }
 ;
 
 lit:

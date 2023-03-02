@@ -81,6 +81,7 @@ void perform_action(std::map<std::string, argument_t>& cli_args)  {
     using namespace expr;
     auto expression = cli_args["expression"].as_string();
     std::cout << "trying :'" << expression << "'\n";
+
     std::istringstream s{expression};
     ast_factory factory{};
     scanner sc{s, std::cerr, &factory};

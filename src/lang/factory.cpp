@@ -3,6 +3,14 @@
 #include <cstdlib>
 
 namespace expr {
+    auto ast_factory::build_operator(const operator_type_t& op, const syntax_tree_t& child) -> syntax_tree_t {
+        return build_operator(op, {child});
+    }
+
+    auto ast_factory::build_operator(const operator_type_t& op, const syntax_tree_t& child1, const syntax_tree_t& child2) -> syntax_tree_t {
+        return build_operator(op, {child1, child2});
+    }
+
     auto ast_factory::build_operator(const operator_type_t& op, const std::vector<syntax_tree_t>& children) -> syntax_tree_t {
         syntax_tree_t result{operator_t{op}};
         for(auto& child : children)
