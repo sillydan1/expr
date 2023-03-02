@@ -33,12 +33,13 @@
 /* ================================================== */
 %token YYEOF 0
 %token MINUS PLUS STAR SLASH PERCENT HAT AND OR XOR IMPLIES GT GE EE NE LE LT NOT LPAREN RPAREN ASSIGN TERM
-%token <std::string> IDENTIFIER STRING 
+%token <std::string> IDENTIFIER
 %token <symbol_access_modifier_t> ACCESS_MOD
 %token <symbol_type_name_t> TYPE
 %token <int> NUMBER
 %token <float> FLOAT
 %token <bool> BOOL
+%token <std::string> STRING 
 %token <clock_t> CLOCK
 %nterm <syntax_tree_t> exp bin_op mono_op lit
 
