@@ -26,6 +26,7 @@
 #include <memory>
 #include "config.h"
 #include "ast-factory.h"
+#include "driver/evaluator.h"
 #include "symbol_table.h"
 
 void perform_action(std::map<std::string, argument_t>& cli_args);
@@ -94,5 +95,13 @@ void perform_action(std::map<std::string, argument_t>& cli_args)  {
         std::cout << "\t" << r.first << " :=> " << r.second.tree << "\n";
     if(res.raw_expression)
         std::cout << res.raw_expression.value() << "\n";
+
+    std::cout << " evaluated: \n";
+    symbol_operator op{};
+    evaluator e{{}, op};
+    for(auto& r : res.declarations) {
+        auto k = e.evaluate(r.second.tree);
+        std::cout << "\t" << r.first << " :-> " << k << "\n";
+    }
 }
 

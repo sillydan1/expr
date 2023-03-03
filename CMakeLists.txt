@@ -57,7 +57,9 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/divide.cpp
         src/operations/modulo.cpp
         src/operations/pow.cpp
-        src/operations/boolean.cpp)
+        src/operations/boolean.cpp
+        src/driver/evaluator.cpp
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
