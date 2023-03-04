@@ -76,7 +76,7 @@ struct context {
         std::cout << " sat check: \n";
         expr::z3_driver z{known_environment, unknown_environment};
         if(result.expression) {
-            auto sol =  z.find_solution(res.expression.value());
+            auto sol =  z.find_solution(result.expression.value());
             if(!sol)
                 std::cout << "\tunsat\n";
             else {
