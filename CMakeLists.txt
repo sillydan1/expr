@@ -29,7 +29,7 @@ find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 
 # OPTIONS
-option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
+option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" ON)
 
 # DEPENDENCIES
 # library dependencies

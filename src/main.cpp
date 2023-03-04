@@ -95,7 +95,7 @@ void perform_action(std::map<std::string, argument_t>& cli_args)  {
     for(auto& r : res.declarations)
         std::cout << "\t" << r.first << " :=> " << r.second.tree << "\n";
     if(res.raw_expression)
-        std::cout << res.raw_expression.value() << "\n";
+        std::cout << "\t raw_expression = " << res.raw_expression.value() << "\n";
 
     std::cout << " evaluated: \n";
     symbol_operator op{};
@@ -111,8 +111,12 @@ void perform_action(std::map<std::string, argument_t>& cli_args)  {
         auto sol =  z.find_solution(res.raw_expression.value());
         if(!sol)
             std::cout << "\tunsat\n";
-        else
-            std::cout << "\t" << sol.value() << "\n";
+        else {
+            if(sol.value().empty())
+                std::cout << "\t already satisfied\n";
+            else
+                std::cout << "\t" << sol.value() << "\n";
+        }
     }
 }
 
