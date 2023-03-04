@@ -27,6 +27,7 @@
 #include "config.h"
 #include "ast-factory.h"
 #include "driver/evaluator.h"
+#include "driver/z3/z3-driver.h"
 #include "symbol_table.h"
 
 void perform_action(std::map<std::string, argument_t>& cli_args);
@@ -102,6 +103,16 @@ void perform_action(std::map<std::string, argument_t>& cli_args)  {
     for(auto& r : res.declarations) {
         auto k = e.evaluate(r.second.tree);
         std::cout << "\t" << r.first << " :-> " << k << "\n";
+    }
+
+    std::cout << " z3'd: \n";
+    z3_driver z{{},{}};
+    if(res.raw_expression) {
+        auto sol =  z.find_solution(res.raw_expression.value());
+        if(!sol)
+            std::cout << "\tunsat\n";
+        else
+            std::cout << "\t" << sol.value() << "\n";
     }
 }
 

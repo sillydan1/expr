@@ -29,7 +29,7 @@ find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 
 # OPTIONS
-option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
+option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" ON)
 
 # DEPENDENCIES
 # library dependencies
@@ -78,7 +78,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 add_subdirectory(src/lang)
 
 if(ENABLE_Z3)
-    target_sources(${PROJECT_NAME} PUBLIC src/drivers/z3_driver.cpp)
+    target_sources(${PROJECT_NAME} PUBLIC src/driver/z3/z3-driver.cpp)
     target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
     target_link_libraries(${PROJECT_NAME} z3)
     target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
