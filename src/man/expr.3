@@ -1,4 +1,4 @@
-.TH expr 3 2022-10-11 "version v2.1.0" expr
+.TH expr 3 2023-03-05 "version v3.0.0" expr
 
 .SH NAME
 expr \- a variable environment manipulation expression parser written in C++20 with flex and bison.
@@ -36,21 +36,22 @@ Since \fIa\fR maps to \fI0\fR and \fIb\fR maps to \fI1\fR, this example would re
 variables \fIx\fR to \fI1\fR (0 + 1 = 1) and \fIy\fR to \fI1\fR (33 modulo (1 times 2) = 1). Take careful note that the
 resulting symbol table of this program does \fBnot\fR include the variables \fIa\fR and \fIb\fR.
 
-.SH DRIVERS
+.SH USE CASES
 .B expr
-provides a series of expression drivers with slightly different use cases:
-\fIcompiler\fR, \fIinterpreter\fR, \fItree_interpreter\fR and \fIz3\fR.
-The \fIcompiler\fR driver can compile a string, or list of strings into a binary format based on
+provides the facilities for some slightly different use cases:
+\fIcompilation\fR, \fIevaluation\fR and \fIsat check\fR with Z3 sat solver.
+When \fIcompiling\fR, you can compile a string, or list of strings into a binary format based on
 an abstract syntax tree (AST) structure.
-The \fIinterpreter\fR and \fItree_interpreter\fR drivers can accept either the binary AST format,
-or an expression string and returns a modified \fBsymbol table\fR based on the interpreted expression.
-The \fIz3\fR driver is a special driver, using the Z3 sat solver to check if the provided expression
-string (must be a boolean expression) is satisfiable, and then generate a \fBsymbol table\fR that contains
+When \fIevaluating\fR, you feed the AST format into the provided \fBevaluator\fR class and it returns a symbol table.
+Note that symbol tables can be "combined" with eachother, so a symbol table can be interpreted as either a specific
+state of symbols and values, or a "difference" from some other state. You can combine tables with the \fB+-operator\fR, 
+or the provided \fBput\fR method. 
+
+When \fIsat solving\fR, you can use the Z3 sat solver to check if a provided expression
+string (must be a boolean expression) is satisfiable, and then generate a symbol table that contains
 the variable assignments required to force the expression to \fRtrue\fR.
 
-Note that the \fIz3\fR driver might not be available if not explicitly told to be compiled with the rest of the library.
-
-The \fItree_*\fR driver variants operate on trees of \fBsymbol tables\fR to provide scopes with variable shadowing.
+Note that the \fIz3\fR functionality might not be available if not explicitly told to be compiled with the rest of the library.
 
 .SH AUTHOR
 Asger Gitz\-Johansen <asger.gitz@hotmail.com>.
@@ -66,3 +67,4 @@ SOFTWARE.
 
 .SH SEE ALSO
 expr_demo(1), aaltitoad(3)
+
