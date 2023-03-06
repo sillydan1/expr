@@ -27,7 +27,6 @@
 #include <argvparse.h>
 #include <stdexcept>
 #include <timer>
-#include "_deps/argvparse-src/src/arguments.h"
 #include "config.h"
 #include "ast-factory.h"
 #include "driver/evaluator.h"
