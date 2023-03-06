@@ -28,6 +28,8 @@
 namespace expr {
     class language_builder {
     public:
+        language_builder() = default;
+        virtual ~language_builder() = default;
         virtual auto add_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_access_modifier_t& access_modifier) -> language_builder& = 0;
         virtual auto add_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_type_name_t& type_name = symbol_type_name_t::_auto, const symbol_access_modifier_t& access_modifier = symbol_access_modifier_t::_private) -> language_builder& = 0;
         virtual auto add_expression(const syntax_tree_t& tree) -> language_builder& = 0;
@@ -35,6 +37,8 @@ namespace expr {
 
     class declaration_tree_builder : public language_builder {
     public:
+        declaration_tree_builder() = default;
+        virtual ~declaration_tree_builder() = default;
         struct result_t {
             struct decl_t {
                 symbol_access_modifier_t access_modifier{};
