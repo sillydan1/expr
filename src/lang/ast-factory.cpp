@@ -21,7 +21,6 @@
  * SOFTWARE.
  */
 #include "ast-factory.h"
-#include "symbol_table.h"
 #include <cstdlib>
 
 namespace expr {

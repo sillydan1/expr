@@ -22,7 +22,7 @@
  */
 #ifndef EXPR_FACTORY_H
 #define EXPR_FACTORY_H
-#include "symbol_table.h"
+#include "symbol/symbol_table.h"
 
 namespace expr {
     /* 

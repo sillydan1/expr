@@ -21,7 +21,6 @@
  * SOFTWARE.
  */
 #include "language-builder.h"
-#include "symbol_table.h"
 
 namespace expr {
     auto declaration_tree_builder::add_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_access_modifier_t& access_modifier) -> declaration_tree_builder& {

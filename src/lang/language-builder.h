@@ -22,7 +22,7 @@
  */
 #ifndef EXPR_LANG_SYMBOL_TABLE_BUILDER_H
 #define EXPR_LANG_SYMBOL_TABLE_BUILDER_H
-#include "symbol_table.h"
+#include "symbol/symbol_table.h"
 #include <string>
 
 namespace expr {

@@ -76,6 +76,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src)
 
 add_subdirectory(src/lang)
+target_link_libraries(${PROJECT_NAME} expr_lang)
 
 if(ENABLE_Z3)
     target_sources(${PROJECT_NAME} PUBLIC src/driver/z3/z3-driver.cpp)

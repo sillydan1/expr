@@ -32,7 +32,7 @@
 
 %code requires {
     #include <memory>
-    #include "symbol_table.h"
+    #include "symbol/symbol_table.h"
     #include "ast-factory.h"
     #include "language-builder.h"
 
