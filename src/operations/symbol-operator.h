@@ -28,7 +28,7 @@
 namespace expr {
     struct symbol_operator {
         virtual auto add(const symbol_value_t &a, const symbol_value_t &b) const -> symbol_value_t { return ::operator+(a,b); };
-        virtual auto sub(const symbol_value_t &a, const symbol_value_t &b) const -> symbol_value_t { return a - b; };
+        virtual auto sub(const symbol_value_t &a, const symbol_value_t &b) const -> symbol_value_t { return ::operator-(a,b); };
         virtual auto mul(const symbol_value_t &a, const symbol_value_t &b) const -> symbol_value_t { return a * b; };
         virtual auto div(const symbol_value_t &a, const symbol_value_t &b) const -> symbol_value_t { return a / b; };
         virtual auto mod(const symbol_value_t &a, const symbol_value_t &b) const -> symbol_value_t { return a % b; };
