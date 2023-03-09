@@ -37,6 +37,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${yatimer_SOURCE_DIR}/include
     ${yahashcombine_SOURCE_DIR}/include
     ${argvparse_SOURCE_DIR}/include
+    ${FLEX_INCLUDE_DIRS}
+    ${BISON_INCLUDE_DIRS}
     .. .)
 target_link_libraries(${PROJECT_NAME} expr)
 

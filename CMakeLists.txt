@@ -25,8 +25,6 @@ include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
-find_package(FLEX REQUIRED)
-find_package(BISON REQUIRED)
 
 # OPTIONS
 option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" ON)
@@ -71,8 +69,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${argvparse_SOURCE_DIR}/include
         ${z3_SOURCE_DIR}/src/api/c++
         ${z3_SOURCE_DIR}/include
-        ${FLEX_INCLUDE_DIRS}
-        ${BISON_INCLUDE_DIRS}
         src/symbol
         include
         src)
