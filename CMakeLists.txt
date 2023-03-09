@@ -71,6 +71,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${argvparse_SOURCE_DIR}/include
         ${z3_SOURCE_DIR}/src/api/c++
         ${z3_SOURCE_DIR}/include
+        ${FLEX_INCLUDE_DIRS}
+        ${BISON_INCLUDE_DIRS}
         src/symbol
         include
         src)
