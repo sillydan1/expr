@@ -34,7 +34,7 @@ namespace expr {
         virtual auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
         virtual auto contains(const std::string& identifier) const -> bool;
         virtual auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator;
-    private:
+    protected:
         symbol_table_ref_collection_t environments;
         expr::symbol_table_t::const_iterator end{};
         const symbol_operator& op;
