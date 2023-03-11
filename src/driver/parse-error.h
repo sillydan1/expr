@@ -31,13 +31,5 @@ namespace expr {
     };
 }
 
-// std::istringstream s{expression};
-// ast_factory factory{};
-// declaration_tree_builder builder{};
-// scanner sc{s, std::cerr, &factory};
-// parser_args pa{&sc, &factory, &builder};
-// parser p{pa};
-// auto pp = p.parse();
-// auto res = builder.build();
 #endif
 
