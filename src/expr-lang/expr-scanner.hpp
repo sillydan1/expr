@@ -22,13 +22,13 @@
  */
 #ifndef EXPR_SCANNER_HPP
 #define EXPR_SCANNER_HPP
-#include "ast-factory.h"
+#include "expr-lang/ast-factory.h"
 #if ! defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
 
-#include "expr-parser.hpp"
-#include "location.hh"
+#include "expr-lang/expr-parser.hpp"
+#include "expr-lang/location.hh"
 
 namespace expr {
     class scanner : public yyFlexLexer {
