@@ -36,7 +36,9 @@
 
 namespace expr {
     enum class symbol_access_modifier_t {
-        _private, _public, _protected
+        _private = 0, 
+        _protected = 1,
+        _public = 2
     };
 
     enum class symbol_type_name_t {
