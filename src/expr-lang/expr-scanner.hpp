@@ -27,7 +27,7 @@
 #include <FlexLexer.h>
 #endif
 
-#include "expr-lang/expr-parser.hpp"
+#include "expr-parser.hpp"
 #include "expr-lang/location.hh"
 
 namespace expr {
