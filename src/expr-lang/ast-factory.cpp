@@ -25,6 +25,9 @@
 #include <cstdlib>
 
 namespace expr {
+    ast_factory::ast_factory() {}
+    ast_factory::~ast_factory() {}
+    
     auto ast_factory::build_operator(const operator_type_t& op, const syntax_tree_t& child) -> syntax_tree_t {
         return build_operator(op, std::vector<syntax_tree_t>{child});
     }

@@ -30,8 +30,8 @@ namespace expr {
      * */
     class ast_factory {
     public:
-        ast_factory() = default;
-        virtual ~ast_factory() = default;
+        ast_factory();
+        virtual ~ast_factory();
         virtual auto build_operator(const operator_type_t& op, const syntax_tree_t& child) -> syntax_tree_t;
         virtual auto build_operator(const operator_type_t& op, const syntax_tree_t& child1, const syntax_tree_t& child2) -> syntax_tree_t;
         virtual auto build_operator(const operator_type_t& op, const std::vector<syntax_tree_t>& children) -> syntax_tree_t;
