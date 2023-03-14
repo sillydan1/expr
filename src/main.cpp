@@ -100,7 +100,7 @@ struct cli_context {
         expr::ast_factory factory{};
         expr::declaration_tree_builder builder{};
         expr::scanner sc{iss, std::cerr, &factory};
-        expr::parser_args pa{&sc, &factory, &builder};
+        expr::parser_args pa{s, &sc, &factory, &builder};
         expr::parser p{pa};
         if(p.parse() != 0)
             throw std::logic_error("unable to parse the expression(s)");
@@ -151,15 +151,15 @@ int main (int argc, char *argv[]) {
         return 0;
     }
     std::string environment = "";
-    if(cli_arguments["environment"].as_string() == "-") {
+    if(cli_arguments["environment"].as_string_or_default("") == "-") {
         std::rewind(stdin);
         std::cout << "provide an environment. End with <<EOF>> (ctrl+d):\n<<\n";
         std::istreambuf_iterator<char> begin(std::cin), end;
         environment = std::string(begin, end);
         std::cout << "\n>>\n";
     }
-    std::string expression = "";
-    if(cli_arguments["expression"].as_string_or_default("-") == "-") {
+    std::string expression = cli_arguments["expression"].as_string_or_default("-");
+    if(expression == "-") {
         std::rewind(stdin);
         std::cout << "provide an expression. End with <<EOF>> (ctrl+d):\n<<\n";
         std::istreambuf_iterator<char> begin(std::cin), end;

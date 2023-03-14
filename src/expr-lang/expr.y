@@ -28,6 +28,7 @@
 %define api.namespace { expr }
 %define api.value.type variant
 %define parse.assert
+%define parse.error detailed
 %locations
 
 %code requires {
@@ -39,6 +40,7 @@
     namespace expr {
         class scanner;
         struct parser_args {
+            std::optional<std::string> expression; // used for debugging / error message purposes
             scanner* scn;
             ast_factory* fct;
             language_builder* builder;
@@ -143,6 +145,13 @@ lit:
 /* ================================================== */
 
 void expr::parser::error(const location_type& l, const std::string& msg) {
-    std::cerr << msg << " at " << l << "\n";
+    // TODO: This assumes that the input string is always 1 line - it will not look good on multiline inputs
+    if(args.expression) {
+        std::cerr << msg << "\n" << args.expression.value() << "\n"; 
+        for(int i = 0; i < l.begin.column - 1; i++)
+            std::cerr << "_";
+        std::cerr << "^\n";
+    } else
+        std::cerr << msg << " at " << l << "\n"; // boring
 }
 
