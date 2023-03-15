@@ -46,7 +46,7 @@ endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
 
-add_library(${PROJECT_NAME} STATIC
+add_library(${PROJECT_NAME} SHARED
         src/symbol/clock.cpp
         src/symbol/symbol_table.cpp
         src/operations/add.cpp
@@ -58,7 +58,6 @@ add_library(${PROJECT_NAME} STATIC
         src/operations/boolean.cpp
         src/driver/evaluator.cpp
         )
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENCT_CODE ON)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
