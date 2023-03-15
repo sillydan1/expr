@@ -25,9 +25,11 @@
 %defines "expr-parser.hpp"
 %output "expr-parser.cpp"
 %define api.parser.class { parser }
+%define api.value.automove true
 %define api.namespace { expr }
 %define api.value.type variant
 %define parse.assert
+%define parse.lac full
 %define parse.error detailed
 %locations
 
