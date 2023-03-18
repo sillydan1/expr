@@ -2,13 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch demo x := 3",
+            "name": "Launch demo x:=0_ms",
             "type": "codelldb",
             "request": "launch",
             "program": "${workspaceFolder}/Debug/expr_demo",
             "args": [
-              "-d", "interpreter",
-              "-e", "x := 3;"
+              "-d", "evaluator",
+              "-e", "x:=0_ms"
             ],
             "cwd": "${workspaceFolder}/Debug"
         },

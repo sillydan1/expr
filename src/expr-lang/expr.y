@@ -30,6 +30,7 @@
 %define api.value.type variant
 %define parse.assert
 %define parse.lac full
+%define parse.trace true
 %define parse.error detailed
 %locations
 

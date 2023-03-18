@@ -150,12 +150,20 @@ int main (int argc, char *argv[]) {
             << "======================================================================\n";
         return 0;
     }
-    std::string environment = "";
-    if(cli_arguments["environment"].as_string_or_default("") == "-") {
+    std::string environment = cli_arguments["environment"].as_string_or_default("");
+    if(environment == "-") {
         std::rewind(stdin);
         std::cout << "provide an environment. End with <<EOF>> (ctrl+d):\n<<\n";
         std::istreambuf_iterator<char> begin(std::cin), end;
         environment = std::string(begin, end);
+        std::cout << "\n>>\n";
+    }
+    std::string unknown_environment = cli_arguments["unknown-environment"].as_string_or_default("");
+    if(unknown_environment == "-") {
+        std::rewind(stdin);
+        std::cout << "provide an environment. End with <<EOF>> (ctrl+d):\n<<\n";
+        std::istreambuf_iterator<char> begin(std::cin), end;
+        unknown_environment  = std::string(begin, end);
         std::cout << "\n>>\n";
     }
     std::string expression = cli_arguments["expression"].as_string_or_default("-");
@@ -167,7 +175,7 @@ int main (int argc, char *argv[]) {
         std::cout << "\n>>\n";
     }
 
-    cli_context c{environment, cli_arguments["unknown-environment"].as_string_or_default("")};
+    cli_context c{environment, unknown_environment};
     auto res = c.parse_expressions(expression);
     if(cli_arguments["driver"].as_string() == "evaluator")
         c.evaluate(res);

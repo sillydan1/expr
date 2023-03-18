@@ -34,6 +34,7 @@ using token = expr::parser::token;
 %option c++ noyywrap nodefault
 %option yyclass="expr::scanner"
 %option outfile="expr-scanner.cpp"
+%option prefix="expr"
 
 /* ================================================== */
 id     [a-z_A-Z]([.\(\)a-zA-Z_0-9]*[a-zA-Z_0-9]+)?
