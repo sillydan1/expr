@@ -27,112 +27,19 @@
 #include <argvparse.h>
 #include <stdexcept>
 #include <timer>
+#include <unistd.h>
 #include "config.h"
-#include "ast-factory.h"
-#include "driver/evaluator.h"
-#include "symbol_table.h"
-#include "expr-scanner.hpp"
-#include "expr-parser.hpp"
-#ifdef ENABLE_Z3
-#include "driver/z3/z3-driver.h"
-#endif
-
-struct language_result {
-    std::map<std::string, expr::syntax_tree_t> declarations;
-    std::optional<expr::syntax_tree_t> expression;
-    auto get_symbol_table() -> expr::symbol_table_t {
-        expr::symbol_operator op{};
-        expr::evaluator e{{}, op};
-        expr::symbol_table_t env{};
-        for(auto& r : declarations)
-            env[r.first] = e.evaluate(r.second);
-        return env;
-    }
-};
-
-struct cli_context {
-    cli_context(const std::string& environment, const std::string& unknown) : known_environment{}, unknown_environment{} {
-        known_environment = parse_expressions(environment).get_symbol_table();
-        unknown_environment = parse_expressions(unknown).get_symbol_table();
-    }
-
-    void evaluate(const language_result& result) {
-        expr::symbol_operator op{};
-        expr::evaluator e{{known_environment}, op};
-        expr::symbol_table_t env{};
-        for(auto& r : result.declarations)
-            env[r.first] = e.evaluate(r.second);
-        std::cout << " evaluated: \n";
-        for(auto& s : env)
-            std::cout << "\t" << s.first << " :-> " << s.second << "\n";
-        if(result.expression)
-            std::cout << "\t" << e.evaluate(result.expression.value()) << "\n";
-    }
-
-    void compile(const language_result& result) {
-        std::cout << " result: \n";
-        for(auto& r : result.declarations)
-            std::cout << "\t" << r.first << " :=> " << r.second << "\n";
-        if(result.expression)
-            std::cout << "\t expression = " << result.expression.value() << "\n";
-    }
-
-#ifdef ENABLE_Z3
-    void sat_check(const language_result& result) {
-        std::cout << " sat check: \n";
-        expr::z3_driver z{known_environment, unknown_environment};
-        if(result.expression) {
-            auto sol =  z.find_solution(result.expression.value());
-            if(!sol)
-                std::cout << "\tunsat\n";
-            else {
-                if(sol.value().empty())
-                    std::cout << "\t already satisfied\n";
-                else
-                    std::cout << "\t" << sol.value() << "\n";
-            }
-        }
-    }
-#endif
-
-    auto parse_expressions(const std::string& s) -> language_result {
-        std::istringstream iss{s};
-        expr::ast_factory factory{};
-        expr::declaration_tree_builder builder{};
-        expr::scanner sc{iss, std::cerr, &factory};
-        expr::parser_args pa{s, &sc, &factory, &builder};
-        expr::parser p{pa};
-        if(p.parse() != 0)
-            throw std::logic_error("unable to parse the expression(s)");
-        auto res = builder.build();
-        language_result result{};
-        for(auto& e : res.declarations)
-            result.declarations[e.first] = e.second.tree;
-        if(res.raw_expression)
-            result.expression = res.raw_expression.value();
-        return result;
-    }
-
-public:
-    expr::symbol_table_t known_environment{};
-    expr::symbol_table_t unknown_environment{};
-};
+#include "generic-driver.h"
 
 int main (int argc, char *argv[]) {
     using namespace expr;
-    symbol_table_t env{};
-    env["false_b"] = false;
-    env["one_i"] = 1;
-    env["two_f"] = 2.0f;
-    env["hello_s"] = "Hello";
     std::vector<option_t> my_options = {
-        {"expression", 'e',            argument_requirement::REQUIRE_ARG,  "(required) provide the expression to process"},
-        {"driver", 'd',                argument_requirement::REQUIRE_ARG,  "(required) determine which driver to use [z3, evaluator, compiler]"},
-        {"environment", 'm',           argument_requirement::OPTIONAL_ARG, "provide an environment"},
-        {"unknown-environment", 'u',   argument_requirement::REQUIRE_ARG,  "provide an environment of unknown variables (z3 driver only)"},
+        {"expression", 'e',            argument_requirement::REQUIRE_ARG,  "provide the expression to process, prompt appears if not provided"},
+        {"environment", 'm',           argument_requirement::OPTIONAL_ARG, "provide an environment, use \"-\" for interactive prompt"},
+        {"unknown-environment", 'u',   argument_requirement::REQUIRE_ARG,  "provide an environment of unknown variables (z3 only), use \"-\" for interactive prompt"},
     };
     auto cli_arguments = get_arguments(my_options, argc, argv);
-    if(cli_arguments["help"] || !cli_arguments["expression"] || !cli_arguments["driver"]) {
+    if(cli_arguments["help"]) {
         std::cout
             << "=================== Welcome to the " << PROJECT_NAME << " v" << PROJECT_VER << " demo ==================\n"
             << "USAGE: " << argv[0] << " [OPTIONS]\n"
@@ -175,18 +82,9 @@ int main (int argc, char *argv[]) {
         std::cout << "\n>>\n";
     }
 
-    cli_context c{environment, unknown_environment};
-    auto res = c.parse_expressions(expression);
-    if(cli_arguments["driver"].as_string() == "evaluator")
-        c.evaluate(res);
-    else if(cli_arguments["driver"].as_string() == "compiler")
-        c.compile(res);
-#ifdef ENABLE_Z3
-    else if(cli_arguments["driver"].as_string() == "z3")
-        c.sat_check(res);
-#endif
-    else
-        throw std::logic_error("unsupported driver");
+    expr::generic_driver c{};
+    c.parse_expressions(expression);
+    c.print(c.parse_symbol_table(environment), c.parse_symbol_table(unknown_environment)); 
     return 0;
 }
 
