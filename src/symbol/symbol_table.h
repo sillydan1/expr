@@ -35,11 +35,27 @@
 #include "clock.h"
 
 namespace expr {
+    enum class symbol_access_modifier_t {
+        _private = 0, 
+        _protected = 1,
+        _public = 2
+    };
+
+    enum class symbol_type_name_t {
+        _int, _long, _float, _double, _string, _bool, _clock, _auto
+    };
+
+    auto stotypename(const std::string& s) -> symbol_type_name_t;
+    auto stoaccmod(const std::string& s) -> symbol_access_modifier_t;
+
+    std::ostream& operator<<(std::ostream& out, const symbol_type_name_t& value);
+    std::ostream& operator<<(std::ostream& out, const symbol_access_modifier_t& value);
+
     using underlying_symbol_value_t = std::variant<int, float, bool, std::string, clock_t>;
     struct symbol_value_t : public underlying_symbol_value_t {
         symbol_value_t() = default;
 
-        template<typename T>
+        template<typename T> 
         symbol_value_t(const T &x) : underlying_symbol_value_t{x} {}
 
         template<typename T>
@@ -89,7 +105,6 @@ namespace expr {
         std::optional<expr::symbol_value_t> delay_amount{};
     };
 
-    // TODO: operator+/* should be slightly different here
     using symbol_table_tree_t = ya::tree<symbol_table_t>;
 
     auto operator+(const symbol_table_t &a, const symbol_table_t &b) -> symbol_table_t;
@@ -137,6 +152,7 @@ namespace expr {
     auto operator<<(std::ostream &o, const identifier_t &r) -> std::ostream &;
     auto operator<<(std::ostream &o, const underlying_syntax_node_t &n) -> std::ostream &;
     auto operator<<(std::ostream &o, const syntax_tree_t &t) -> std::ostream &;
+    auto stob(const char *s) -> bool;
 }
 
 namespace std {
@@ -148,17 +164,5 @@ namespace std {
     };
 }
 
-#ifndef BINOP_CTOR
-#define BINOP_CTOR(op,arg1,arg2) expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::op}}.concat(arg1).concat(arg2)
-#endif
-#ifndef IDENT_CTOR
-#define IDENT_CTOR(arg1) drv->get_symbol(arg1);
-#endif
-#ifndef MONOOP_CTOR
-#define MONOOP_CTOR(op,arg1) expr::syntax_tree_t{expr::operator_t{expr::operator_type_t::op}}.concat(arg1)
-#endif
-#ifndef LIT_CTOR
-#define LIT_CTOR(arg1) expr::syntax_tree_t{arg1}
 #endif
 
-#endif

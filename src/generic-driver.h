@@ -20,26 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_CLOCK_H
-#define EXPR_CLOCK_H
-#include <ostream>
+#ifndef GENERIC_DRIVER_H
+#define GENERIC_DRIVER_H
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include "symbol_table.h"
 
 namespace expr {
-    struct clock_t {
-        unsigned int time_units = 0;
-        void reset();
-        void delay(unsigned int delta);
-        void delay(long delta);
-        void delay(int delta);
-        auto operator+=(const unsigned int& delta) -> clock_t&;
-        auto operator==(const clock_t& o) const -> bool;
-        auto operator!=(const clock_t& o) const -> bool;
-        auto operator=(const clock_t& o) -> clock_t&;
-        auto operator=(const int& o) -> clock_t&;
+    struct generic_driver {
+        std::unordered_map<std::string, syntax_tree_t> declarations;
+        std::optional<syntax_tree_t> expression;
+        auto get_symbol_table(const symbol_table_t& env) -> symbol_table_t;
+        auto get_expression_value(const symbol_table_t& env) -> symbol_value_t;
+        void parse_expressions(const std::string& s);
+        auto parse_symbol_table(const std::string& s) -> symbol_table_t;
+        void print(const symbol_table_t& known, const symbol_table_t& unknown);
     };
-    auto stoclk(const char* str) -> clock_t;
-    auto operator<<(std::ostream& o, const expr::clock_t& c) -> std::ostream&;
 }
-auto operator"" _ms(unsigned long long val) -> expr::clock_t;
 
-#endif //EXPR_CLOCK_H
+#endif
+

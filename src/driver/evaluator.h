@@ -20,28 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_TREE_DRIVER_H
-#define EXPR_TREE_DRIVER_H
-#include "driver.h"
+#ifndef EXPR_INTERPRETER_H
+#define EXPR_INTERPRETER_H
+#include "operations/symbol-operator.h"
+#include "symbol_table.h"
 
 namespace expr {
-    struct tree_driver : public driver {
-        tree_driver(const symbol_table_tree_t::iterator& it) : driver{}, it{it} {}
-        auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator override {
-            auto* x = &(*it);
-            while(x) {
-                auto i = x->node.find(identifier);
-                if(i != x->node.end())
-                    return i;
-                if(!x->parent().has_value())
-                    return end;
-                x = x->parent().value();
-            }
-            return end;
-        }
-    private:
-        symbol_table_tree_t::iterator it;
+    using symbol_table_ref_collection_t = std::vector<std::reference_wrapper<const expr::symbol_table_t>>;
+    class evaluator {
+    public:
+        evaluator(const symbol_table_ref_collection_t& environments, const symbol_operator& op);
+        virtual ~evaluator() = default;
+        virtual auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
+        virtual auto contains(const std::string& identifier) const -> bool;
+        virtual auto find(const std::string& identifier) const -> expr::symbol_table_t::const_iterator;
+    protected:
+        symbol_table_ref_collection_t environments;
+        expr::symbol_table_t::const_iterator end{};
+        symbol_operator op;
     };
 }
 
-#endif //EXPR_TREE_DRIVER_H
+#endif
+

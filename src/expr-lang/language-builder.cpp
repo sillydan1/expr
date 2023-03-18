@@ -20,29 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_TREE_COMPILER_H
-#define EXPR_TREE_COMPILER_H
-#include "tree_driver.h"
-#include <unordered_map>
-#include <map>
+#include "language-builder.h"
 
 namespace expr {
-    struct tree_compiler : tree_driver {
-        using compiled_expr_t = syntax_tree_t;
-#ifndef NDEBUG
-        using compiled_expr_collection_t = std::map<std::string, compiled_expr_t>;
-#else
-        using compiled_expr_collection_t = std::unordered_map<std::string, compiled_expr_t>;
-#endif
-        explicit tree_compiler(const symbol_table_tree_t::iterator& scope) : tree_driver{scope}, trees{} {}
-        int parse(const std::string &f) override;
-        auto get_symbol(const std::string &identifier) -> syntax_tree_t override;
-        void add_tree(const syntax_tree_t& tree) override;
-        void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
-        void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) override;
+    auto declaration_tree_builder::add_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_access_modifier_t& access_modifier) -> declaration_tree_builder& {
+        result.declarations[identifier] = {access_modifier, symbol_type_name_t::_auto, tree};
+        return *this;
+    }
 
-        compiled_expr_collection_t trees;
-    };
+    auto declaration_tree_builder::add_declaration(const std::string& identifier, const syntax_tree_t& tree, const symbol_type_name_t& type_name, const symbol_access_modifier_t& access_modifier) -> declaration_tree_builder& {
+        result.declarations[identifier] = {access_modifier, type_name, tree};
+        return *this;
+    }
+
+    auto declaration_tree_builder::add_expression(const syntax_tree_t& tree) -> declaration_tree_builder& {
+        result.raw_expression = tree;
+        return *this;
+    }
+
+    auto declaration_tree_builder::build() -> result_t {
+        return result; // TODO: check for proper build
+    }
 }
 
-#endif //EXPR_TREE_COMPILER_H

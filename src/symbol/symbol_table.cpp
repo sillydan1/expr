@@ -21,7 +21,9 @@
  * SOFTWARE.
  */
 #include "symbol_table.h"
+#include "extensions.h"
 #include <overload>
+#include <stdexcept>
 
 namespace expr {
     auto symbol_table_t::operator+=(const symbol_table_t &other) -> symbol_table_t& {
@@ -208,6 +210,73 @@ namespace expr {
                 [](const expr::clock_t &s) -> std::string { return std::to_string(s.time_units); },
                 [](auto &&v) -> std::string { return std::to_string(v); }
         }, static_cast<const underlying_symbol_value_t &>(v));
+    }
+
+    auto stob(const char *s) -> bool {
+        auto cpy = std::string{s};
+        std::transform(cpy.begin(), cpy.end(), cpy.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        bool b;
+        std::istringstream(s) >> std::boolalpha >> b;
+        return b;
+    }
+    
+    auto stotypename(const std::string& s) -> symbol_type_name_t {
+        switch(hash_djb2a(s)) {
+            case "auto"_sh: return symbol_type_name_t::_auto;
+            case "var"_sh: return symbol_type_name_t::_auto;
+            case "int"_sh: return symbol_type_name_t::_int;
+            case "long"_sh: return symbol_type_name_t::_int;
+            case "float"_sh: return symbol_type_name_t::_float;
+            case "double"_sh: return symbol_type_name_t::_float;
+            case "string"_sh: return symbol_type_name_t::_string;
+            case "bool"_sh: return symbol_type_name_t::_bool;
+            case "clock"_sh: return symbol_type_name_t::_clock;
+            case "timer"_sh: return symbol_type_name_t::_clock;
+            default: throw std::logic_error(std::string{s+" is not a valid type name"}.c_str());
+        }
+    }
+
+    auto stoaccmod(const std::string& s) -> symbol_access_modifier_t {
+        switch(hash_djb2a(s)) {
+            case "public"_sh: return symbol_access_modifier_t::_public;
+            case "Public"_sh: return symbol_access_modifier_t::_public;
+            case "private"_sh: return symbol_access_modifier_t::_private;
+            case "Private"_sh: return symbol_access_modifier_t::_private;
+            case "protected"_sh: return symbol_access_modifier_t::_protected;
+            case "Protected"_sh: return symbol_access_modifier_t::_protected;
+            default: throw std::logic_error(std::string{s+" is not a valid access modifier"}.c_str());
+        }
+    }
+
+    std::ostream& operator<<(std::ostream& out, const symbol_type_name_t& value){
+        const char* s = "invalid";
+#define PROCESS_VAL(p) case(p): s = #p; break;
+        switch(value) {
+            PROCESS_VAL(symbol_type_name_t::_int);
+            PROCESS_VAL(symbol_type_name_t::_long);
+            PROCESS_VAL(symbol_type_name_t::_float);
+            PROCESS_VAL(symbol_type_name_t::_double);
+            PROCESS_VAL(symbol_type_name_t::_string);
+            PROCESS_VAL(symbol_type_name_t::_bool);
+            PROCESS_VAL(symbol_type_name_t::_clock);
+            PROCESS_VAL(symbol_type_name_t::_auto);
+    }
+#undef PROCESS_VAL
+        return out << s;
+    }
+    
+    std::ostream& operator<<(std::ostream& out, const symbol_access_modifier_t& value){
+        const char* s = "invalid";
+#define PROCESS_VAL(p) case(p): s = #p; break;
+        switch(value) {
+            PROCESS_VAL(symbol_access_modifier_t::_private);
+            PROCESS_VAL(symbol_access_modifier_t::_public);
+            PROCESS_VAL(symbol_access_modifier_t::_protected);
+        }
+#undef PROCESS_VAL
+
+        return out << s;
     }
 }
 

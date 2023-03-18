@@ -20,32 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef EXPR_INTERPRETER_H
-#define EXPR_INTERPRETER_H
-#include "operations.h"
-#include "drivers/driver.h"
-#include "compiler.h"
-#include "generic_symbol_operator.h"
+#ifndef EXPR_Z3_DRIVER_H
+#define EXPR_Z3_DRIVER_H
+#include "../parse-error.h"
+#include "symbol_table.h"
+#include <z3++.h>
 
 namespace expr {
-    struct interpreter : public driver, generic_symbol_operator {
-        interpreter(std::initializer_list<symbol_table_ref_t> environments);
-        ~interpreter() override = default;
-
-        auto parse(const std::string &f) -> int override;
-        auto interpret_declarations(const std::string& f) -> symbol_table_t;
-        auto interpret_expression(const std::string& f) -> symbol_value_t;
-        auto get_symbol(const std::string& identifier) -> syntax_tree_t override;
-        void add_tree(const syntax_tree_t& tree) override;
-        void add_tree(const std::string& identifier, const syntax_tree_t& tree) override;
-        void add_tree(const std::string& access_modifier, const std::string& identifier, const syntax_tree_t& tree) override;
-
-        symbol_table_t result{};
-        symbol_value_t expression_result{};
-
-        auto evaluate(const syntax_tree_t& tree) -> symbol_value_t;
-        auto evaluate(const compiler::compiled_expr_collection_t& tree) -> symbol_table_t;
+    class z3_driver {
+    public:
+        z3_driver(const symbol_table_t& known, const symbol_table_t& unknown);
+        auto find_solution(const syntax_tree_t& expression) -> std::optional<symbol_table_t>;
+    private:
+        auto as_z3(const syntax_tree_t &tree) -> z3::expr;
+        auto as_z3(const identifier_t& ref) -> z3::expr;
+        auto as_z3(const symbol_value_t& val) -> z3::expr;
+        auto as_symbol_value(const z3::expr& e) -> symbol_value_t;
+        z3::context c;
+        z3::solver s;
+        std::string delay_identifier;
+        const symbol_table_t& known;
+        const symbol_table_t& unknown;
     };
 }
 
 #endif
+

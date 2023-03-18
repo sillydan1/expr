@@ -2,6 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch demo x:=0_ms",
+            "type": "codelldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/Debug/expr_demo",
+            "args": [
+              "-e", "x:=0_ms"
+            ],
+            "cwd": "${workspaceFolder}/Debug"
+        },
+        {
             "name": "Launch interpreter x := 0_ms;",
             "type": "cppdbg",
             "request": "launch",

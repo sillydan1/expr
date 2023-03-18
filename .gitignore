@@ -36,11 +36,13 @@ cmake-build-*
 .idea
 build
 bin
+Debug/
+Release/
+Testing/
 
 # editor things
 .emacs*
 .DS_Store
 compile_commands.json
-Debug/
 .cache/
 
