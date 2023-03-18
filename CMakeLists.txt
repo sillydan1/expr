@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 
 # OPTIONS
-option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" ON)
+option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
 
 # DEPENDENCIES
 # library dependencies

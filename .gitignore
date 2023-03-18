@@ -38,6 +38,7 @@ build
 bin
 Debug/
 Release/
+Testing/
 
 # editor things
 .emacs*
