@@ -23,7 +23,7 @@ jobs:
       - name: Initialize Submodules
         uses: snickerbockers/submodules-init@v4
       - name: Install dependencies
-        run: sudo apt-get install -y flex bison make flexc++ bisonc++
+        run: sudo apt-get install -y flex bison make flexc++ bisonc++ libbison-dev libfl-dev cmake
       - name: Create Build Environment
         run: cmake -E make_directory ${{github.workspace}}/build
       - name: Configure CMake
