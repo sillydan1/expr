@@ -112,3 +112,9 @@ type   int|long|float|double|string|bool|clock|timer|var|auto
 %%
 /* ================================================== */
 
+namespace expr {
+    scanner::scanner(std::istream& arg_yyin, std::ostream& arg_yyout, ast_factory* fct) : exprFlexLexer{arg_yyin, arg_yyout}, fct(fct) {}
+    scanner::scanner(std::istream* arg_yyin, std::ostream* arg_yyout, ast_factory* fct) : exprFlexLexer{arg_yyin, arg_yyout}, fct(fct) {}
+    scanner::~scanner() {}
+}
+
