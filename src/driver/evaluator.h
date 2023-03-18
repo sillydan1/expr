@@ -37,7 +37,7 @@ namespace expr {
     protected:
         symbol_table_ref_collection_t environments;
         expr::symbol_table_t::const_iterator end{};
-        const symbol_operator& op;
+        symbol_operator op;
     };
 }
 
