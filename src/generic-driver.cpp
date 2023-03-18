@@ -79,8 +79,10 @@ namespace expr {
         else {
             if(sol.value().empty())
                 std::cout << "\t> already satisfied\n";
-            else
-                std::cout << "\t> " << sol.value() << "\n";
+            else {
+                for(auto& v : sol.value())
+                    std::cout << "\t> " << v.first << " :-> " << v.second << "\n";
+            }
         }
 #else
         std::cout << "\t> not compiled with z3 support\n"; 

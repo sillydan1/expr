@@ -73,6 +73,21 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         include
         src)
 
+add_library(${PROJECT_NAME}_generic_driver SHARED src/generic-driver.cpp)
+target_include_directories(${PROJECT_NAME}_generic_driver PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+        ${yatree_SOURCE_DIR}/include
+        ${yatimer_SOURCE_DIR}/include
+        ${yaoverload_SOURCE_DIR}/include
+        ${yahashcombine_SOURCE_DIR}/include
+        ${argvparse_SOURCE_DIR}/include
+        ${z3_SOURCE_DIR}/src/api/c++
+        ${z3_SOURCE_DIR}/include
+        src/symbol
+        include
+        src)
+
 add_subdirectory(src/expr-lang)
 
 if(ENABLE_Z3)
@@ -84,7 +99,8 @@ if(ENABLE_Z3)
     add_dependencies(${PROJECT_NAME} copy_z3)
 endif()
 
-add_executable(${PROJECT_NAME}_demo src/main.cpp src/generic-driver.cpp)
+add_executable(${PROJECT_NAME}_demo src/main.cpp)
 set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
-target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} expr_lang argvparse)
+target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} expr_lang argvparse ${PROJECT_NAME}_generic_driver)
+target_link_libraries(${PROJECT_NAME}_generic_driver expr_lang)
 
