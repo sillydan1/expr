@@ -97,7 +97,7 @@ namespace expr {
         parser_args pa{s, &sc, &factory, &builder};
         parser p{pa};
         if(p.parse() != 0)
-            throw std::logic_error("unable to parse the expression(s)" + s);
+            throw std::logic_error("unable to parse the expression(s)");
         auto res = builder.build();
         for(auto& e : res.declarations)
             declarations[e.first] = e.second.tree;
@@ -113,7 +113,7 @@ namespace expr {
         parser_args pa{s, &sc, &factory, &builder};
         parser p{pa};
         if(p.parse() != 0)
-            throw std::logic_error("unable to parse the expression(s): " + s);
+            throw std::logic_error("unable to parse the expression(s)");
         auto res = builder.build();
         symbol_operator op{};
         evaluator e{{}, op};

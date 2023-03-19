@@ -21,12 +21,22 @@
  * SOFTWARE.
  */
 #include "z3-driver.h"
+#include "implementation/uuid.h"
 #include "symbol_table.h"
+#include <uuid>
 
 namespace expr {
-    // TODO: delay_identfier should be randomly generated to avoid known/unknown collissions
+    auto generate_unique_identifier(const symbol_table_t& env0, const symbol_table_t& env1) -> std::string {
+        // Reroll until you hit something that hasn't been declared yet. 
+        // (this breaks if the environments declare ALL POSSIBLE UUIDv4 combinations, but that is very unlikely, so I consider that out-of-scope)
+        auto result = ya::uuid_v4();
+        while(env0.contains(result) || env1.contains(result))
+            result = ya::uuid_v4(); 
+        return result;
+    }
+
     z3_driver::z3_driver(const symbol_table_t& known, const symbol_table_t& unknown) 
-     : c{}, s{c}, delay_identifier{"d"}, known{known}, unknown{unknown} {} 
+     : c{}, s{c}, delay_identifier{generate_unique_identifier(known, unknown)}, known{known}, unknown{unknown} {} 
     
     auto z3_driver::find_solution(const syntax_tree_t& expression) -> std::optional<symbol_table_t> {
         s.add(as_z3(expression)); // NOTE: Only accepts boolean expressions (will throw if not)
