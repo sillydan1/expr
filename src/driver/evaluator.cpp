@@ -53,7 +53,7 @@ namespace expr {
                 },
                 [&](const operator_t& o) {
                     switch (o.operator_type) {
-                        // FIX: This this does not consider if children().size() > 2 
+                        // TODO:: This this does not consider if children().size() > 2 
                         case operator_type_t::minus:    return op.sub(evaluate(tree.children()[0]), evaluate(tree.children()[1]));
                         case operator_type_t::plus:     return op.add(evaluate(tree.children()[0]), evaluate(tree.children()[1]));
                         case operator_type_t::star:     return op.mul(evaluate(tree.children()[0]), evaluate(tree.children()[1]));

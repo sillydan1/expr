@@ -148,12 +148,34 @@ lit:
 /* ================================================== */
 
 void expr::parser::error(const location_type& l, const std::string& msg) {
-    // TODO: This assumes that the input string is always 1 line - it will not look good on multiline inputs
+    // TODO: We should print to the injected stream instead of directly to cerr
+    // TODO: This should provide a WINDOW to peek into rather than print the entire file/expression
+    // TODO: This is a mess... I can't use yylineno and l.begin/end.line is always just '1' so this insane code will suffice for now
     if(args.expression) {
-        std::cerr << msg << "\n" << args.expression.value() << "\n"; 
-        for(int i = 0; i < l.begin.column - 1; i++)
-            std::cerr << "_";
-        std::cerr << "^\n";
+        std::cerr << msg << " between column " << l.begin.column << " and " << l.end.column << ":\n";
+        auto& e = args.expression.value();
+        int i = 0; int offset = 0;
+        for(; i < l.begin.column - 1; i++, offset++) {
+            if(e[i] == '\n')
+                offset = 0;
+            std::cerr << e[i];
+        }
+        for(; i < l.end.column - 1; i++)
+            std::cerr << e[i];
+        for(; i < e.size() - 1; i++) {
+            if(e[i] == '\n')
+                break;
+            std::cerr << e[i];
+        }
+        std::cerr << "\n";
+        for(int j = 0; j < offset-1; j++)
+            std::cerr << "~";
+        for(int j = l.begin.column - 1; j < l.end.column-1; j++)
+            std::cerr << "^";
+        std::cerr << "\n";
+        for(i++; i < e.size() - 1; i++)
+            std::cerr << e[i];
+        std::cerr << "\n";
     } else
         std::cerr << msg << " at " << l << "\n"; // boring
 }

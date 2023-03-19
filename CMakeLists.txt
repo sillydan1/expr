@@ -34,6 +34,7 @@ option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver dr
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
 CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
 CPMAddPackage("gh:yalibs/yatree@1.2.1")
+CPMAddPackage("gh:yalibs/yauuid@1.0.1")
 # demo dependencies
 CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
@@ -66,6 +67,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${yatimer_SOURCE_DIR}/include
         ${yaoverload_SOURCE_DIR}/include
         ${yahashcombine_SOURCE_DIR}/include
+        ${yauuid_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
         ${z3_SOURCE_DIR}/src/api/c++
         ${z3_SOURCE_DIR}/include

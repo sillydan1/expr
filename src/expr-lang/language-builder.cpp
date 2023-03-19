@@ -39,7 +39,7 @@ namespace expr {
     }
 
     auto declaration_tree_builder::build() -> result_t {
-        return result; // TODO: check for proper build
+        return result;
     }
 }
 
