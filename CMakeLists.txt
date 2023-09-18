@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 cmake_minimum_required(VERSION 3.18)
-project(expr VERSION 3.0.2)
+project(expr VERSION 3.0.3)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
@@ -41,7 +41,7 @@ CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 
 if(ENABLE_Z3)
     include(cmake/Z3.cmake)
-    set(Z3_VERSION_NUMBER z3-4.12.1)
+    set(Z3_VERSION_NUMBER z3-4.12.2)
     get_z3_zip_file(${Z3_VERSION_NUMBER})
     CPMAddPackage(NAME z3 VERSION ${Z3_VERSION_NUMBER} URL ${z3vstr})
 endif()
