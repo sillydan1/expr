@@ -22,6 +22,7 @@
  */
 #include "operations/divide.h"
 #include "operations/util.h"
+#include <cstdint>
 #include <sstream>
 using namespace expr;
 
