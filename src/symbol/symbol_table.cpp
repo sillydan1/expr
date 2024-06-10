@@ -24,6 +24,7 @@
 #include "extensions.h"
 #include <overload>
 #include <stdexcept>
+#include <algorithm>
 
 namespace expr {
     auto symbol_table_t::operator+=(const symbol_table_t &other) -> symbol_table_t& {
