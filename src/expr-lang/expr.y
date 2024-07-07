@@ -92,7 +92,7 @@ unit:
 
 statements:
   %empty               { }
-| statement statements { }
+| statements statement { }
 ;
 
 statement:
