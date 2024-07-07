@@ -29,6 +29,12 @@ set(CXX_STANDARD_REQUIRED ON)
 # OPTIONS
 option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver driver. OFF by default" OFF)
 
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
 # DEPENDENCIES
 # library dependencies
 CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
@@ -40,10 +46,13 @@ CPMAddPackage("gh:yalibs/yatimer@1.0.0")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 
 if(ENABLE_Z3)
-    include(cmake/Z3.cmake)
-    set(Z3_VERSION_NUMBER z3-4.12.2)
-    get_z3_zip_file(${Z3_VERSION_NUMBER})
-    CPMAddPackage(NAME z3 VERSION ${Z3_VERSION_NUMBER} URL ${z3vstr})
+        find_package(Z3 REQUIRED)
+        if(NOT Z3_FOUND)
+                include(cmake/Z3.cmake)
+                set(Z3_VERSION_NUMBER z3-4.13.0)
+                get_z3_zip_file(${Z3_VERSION_NUMBER})
+                CPMAddPackage(NAME z3 VERSION ${Z3_VERSION_NUMBER} URL ${z3vstr})
+        endif()
 endif()
 
 set(${PROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "expr_BUILD_DIR" FORCE)
@@ -59,7 +68,7 @@ add_library(${PROJECT_NAME} SHARED
         src/operations/pow.cpp
         src/operations/boolean.cpp
         src/driver/evaluator.cpp
-        )
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
@@ -72,6 +81,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         ${argvparse_SOURCE_DIR}/include
         ${z3_SOURCE_DIR}/src/api/c++
         ${z3_SOURCE_DIR}/include
+        ${Z3_CXX_INCLUDE_DIRS}
+        ${Z3_C_INCLUDE_DIRS}
         src/symbol
         include
         src)
@@ -85,8 +96,8 @@ target_include_directories(${PROJECT_NAME}_generic_driver PUBLIC
         ${yaoverload_SOURCE_DIR}/include
         ${yahashcombine_SOURCE_DIR}/include
         ${argvparse_SOURCE_DIR}/include
-        ${z3_SOURCE_DIR}/src/api/c++
-        ${z3_SOURCE_DIR}/include
+        ${Z3_CXX_INCLUDE_DIRS}
+        ${Z3_C_INCLUDE_DIRS}
         src/symbol
         include
         src)
@@ -94,16 +105,19 @@ target_include_directories(${PROJECT_NAME}_generic_driver PUBLIC
 add_subdirectory(src/expr-lang)
 
 if(ENABLE_Z3)
-    target_sources(${PROJECT_NAME} PUBLIC src/driver/z3/z3-driver.cpp)
-    target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
-    target_link_libraries(${PROJECT_NAME} z3)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
-    add_custom_target(copy_z3 COMMAND ${CMAKE_COMMAND} -E copy ${z3_SOURCE_DIR}/bin/libz3.* ${CMAKE_BINARY_DIR})
-    add_dependencies(${PROJECT_NAME} copy_z3)
+        target_sources(${PROJECT_NAME} PUBLIC src/driver/z3/z3-driver.cpp)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC ENABLE_Z3)
+        if(NOT Z3_FOUND)
+                target_link_directories(${PROJECT_NAME} PUBLIC ${z3_SOURCE_DIR}/bin)
+                target_link_libraries(${PROJECT_NAME} z3)
+                add_custom_target(copy_z3 COMMAND ${CMAKE_COMMAND} -E copy ${z3_SOURCE_DIR}/bin/libz3.* ${CMAKE_BINARY_DIR})
+                add_dependencies(${PROJECT_NAME} copy_z3)
+        else()
+                target_link_libraries(${PROJECT_NAME} z3::libz3)
+        endif()
 endif()
 
 add_executable(${PROJECT_NAME}_demo src/main.cpp)
 set_target_properties(${PROJECT_NAME}_demo PROPERTIES RPATH ${z3_SOURCE_DIR}/bin)
 target_link_libraries(${PROJECT_NAME}_demo ${PROJECT_NAME} expr_lang argvparse ${PROJECT_NAME}_generic_driver)
 target_link_libraries(${PROJECT_NAME}_generic_driver expr_lang)
-
