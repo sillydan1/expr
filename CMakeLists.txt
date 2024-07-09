@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 cmake_minimum_required(VERSION 3.18)
-project(expr VERSION 3.0.5)
+project(expr VERSION 3.0.6)
 include(cmake/CPM.cmake)
 configure_file(src/config.h.in config.h)
 set(CMAKE_CXX_STANDARD 20)
@@ -31,12 +31,12 @@ option(ENABLE_Z3 "Enables the download and compilation of the expr::z3_driver dr
 
 # DEPENDENCIES
 # library dependencies
-CPMAddPackage("gh:yalibs/yaoverload@1.0.0")
-CPMAddPackage("gh:yalibs/yahashcombine@1.0.0")
-CPMAddPackage("gh:yalibs/yatree@1.2.2")
-CPMAddPackage("gh:yalibs/yauuid@1.0.1")
+CPMAddPackage("gh:yalibs/yaoverload@1.0.1")
+CPMAddPackage("gh:yalibs/yahashcombine@1.0.1")
+CPMAddPackage("gh:yalibs/yatree@1.2.3")
+CPMAddPackage("gh:yalibs/yauuid@1.0.2")
 # demo dependencies
-CPMAddPackage("gh:yalibs/yatimer@1.0.0")
+CPMAddPackage("gh:yalibs/yatimer@1.0.1")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 
 if(ENABLE_Z3)
