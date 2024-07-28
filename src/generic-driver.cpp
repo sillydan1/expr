@@ -118,7 +118,7 @@ namespace expr {
         symbol_operator op{};
         evaluator e{{}, op};
         symbol_table_t result{};
-        for(auto& r : res.declarations)
+        for(auto& r : res.declarations) // TODO: https://github.com/sillydan1/expr/issues/21
             result[r.first] = e.evaluate(r.second.tree);
         return result;
     }
