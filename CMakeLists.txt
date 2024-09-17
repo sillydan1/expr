@@ -40,7 +40,7 @@ CPMAddPackage("gh:yalibs/yatimer@1.0.1")
 CPMAddPackage("gh:sillydan1/argvparse@1.2.3")
 
 if(ENABLE_Z3)
-        find_package(Z3 REQUIRED)
+        find_package(Z3)
         if(NOT Z3_FOUND)
                 include(cmake/Z3.cmake)
                 set(Z3_VERSION_NUMBER z3-4.13.0)
